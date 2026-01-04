@@ -65,6 +65,7 @@ jobs:
         port: ${{ secrets.EC2_SSH_PORT }}
         timeout: 60s
         script: |
+          sudo docker pull ha2yo/storerader
           sudo docker stop boot-prac-ci
           sudo docker rm boot-prac-ci
           sudo docker run -it -d -p 8080:8080 --name boot-prac-ci ha2yo/storerader
