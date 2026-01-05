@@ -26,7 +26,7 @@ jobs:
     
     # Docker 이미지 Build (2)
     - name: docker image build
-      run: docker build -t ha2yo/storerader ./backend
+      run: docker build -t ha2yo/storerader-backend ./backend
     
     # DockerHub Login (3)
     - name: docker login 
@@ -37,7 +37,7 @@ jobs:
 
     # Docker Hub push (4)
     - name: docker Hub push
-      run: docker push ha2yo/storerader
+      run: docker push ha2yo/storerader-backend
 
     # GET GitHub IP (5)
     - name: get GitHub IP 
@@ -67,10 +67,10 @@ jobs:
         port: ${{ secrets.EC2_SSH_PORT }}
         timeout: 60s
         script: |
-          sudo docker pull ha2yo/storerader
-          sudo docker stop boot-prac-ci
-          sudo docker rm boot-prac-ci
-          sudo docker run -it -d -p 80:8080 --name boot-prac-ci ha2yo/storerader
+          sudo docker pull ha2yo/storerader-backend
+          sudo docker stop con-storerader-back
+          sudo docker rm con-storerader-back
+          sudo docker run -it -d -p 80:8080 --name con-storerader-back ha2yo/storerader-backend
         
     # REMOVE Github IP FROM security group (9)
     - name: Remove IP FROM security group
