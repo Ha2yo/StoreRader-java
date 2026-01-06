@@ -15,7 +15,7 @@ services:
     container_name: con-storerader-front
     restart: always
     ports:
-      - "3000:80"
+      - "80:80"
     depends_on:
       - backend
     networks:
