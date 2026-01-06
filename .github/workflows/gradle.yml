@@ -1,10 +1,8 @@
-name: Java CI with Gradle
+name: Java & frontend CI/CD with Docker Compose
 
 # master 브랜치에 push, PR 이벤트 발생시 동작.
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
     branches: [ "master" ]
 
 jobs:
@@ -25,8 +23,10 @@ jobs:
       working-directory: ./backend
     
     # Docker 이미지 Build (2)
-    - name: docker image build
-      run: docker build -t ha2yo/storerader ./backend
+    - name: Backend docker image build
+      run: | 
+        docker build -t ha2yo/storerader-backend ./backend
+        docker build -t ha2yo/storerader-frontend ./frontend
     
     # DockerHub Login (3)
     - name: docker login 
@@ -37,7 +37,9 @@ jobs:
 
     # Docker Hub push (4)
     - name: docker Hub push
-      run: docker push ha2yo/storerader
+      run: |
+        docker push ha2yo/storerader-backend
+        docker push ha2yo/storerader-frontend
 
     # GET GitHub IP (5)
     - name: get GitHub IP 
@@ -56,6 +58,17 @@ jobs:
     - name: Add GitHub IP to AWS
       run: |
         aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+    # (7.5) docker-compose.yml 파일을 EC2로 복사
+    - name: Copy docker-compose.yml to EC2
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.EC2_SSH_PORT }}
+        source: "docker-compose.yml"
+        target: "~/" # EC2의 홈 디렉토리로 복사
         
     # AWS EC2 Server Connect & Docker 명령어 실행 (8)
     - name: AWS EC2 Connection
@@ -67,10 +80,10 @@ jobs:
         port: ${{ secrets.EC2_SSH_PORT }}
         timeout: 60s
         script: |
-          sudo docker pull ha2yo/storerader
-          sudo docker stop boot-prac-ci
-          sudo docker rm boot-prac-ci
-          sudo docker run -it -d -p 80:8080 --name boot-prac-ci ha2yo/storerader
+          sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+          sudo docker-compose pull
+          sudo docker-compose up -d
+          sudo docker image prune -f
         
     # REMOVE Github IP FROM security group (9)
     - name: Remove IP FROM security group
