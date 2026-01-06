@@ -1,5 +1,9 @@
 FROM amazoncorretto:21
 
-COPY ../build/libs/*-SNAPSHOT.jar app.jar
+WORKDIR /app
 
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+# 인자 정리
+ARG JAR_FILE=build/libs/*.jar
+COPY ${JAR_FILE} app.jar
+
+ENTRYPOINT ["java", "-jar","app.jar"]
