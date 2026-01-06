@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    image: ha2yo/storerader-backend
+    image: ghcr.io/ha2yo/storerader-backend:latest
     container_name: con-storerader-back
     restart: always
     ports:
@@ -11,7 +11,7 @@ services:
       - network
 
   frontend:
-    image: ha2yo/storerader-frontend
+    image: ghcr.io/ha2yo/storerader-frontend:latest
     container_name: con-storerader-front
     restart: always
     ports:
