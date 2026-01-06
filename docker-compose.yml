@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  backend:
+    image: ha2yo/storerader-backend
+    container_name: con-storerader-back
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - network
+
+  frontend:
+    image: ha2yo/storerader-frontend
+    container_name: con-storerader-front
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - network
+
+networks:
+  network:
