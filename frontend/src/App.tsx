@@ -9,12 +9,9 @@ function App() {
 
     useEffect(() => {
         const tryNavigate = async () => {
-            // 오프라인 상태에서는 초기 이동 중단
 
             // 서버 상태가 정상일 때만 홈 화면으로 이동
             if (status === "ok") {
-                localStorage.removeItem("lastSearchTerm");
-                localStorage.removeItem("selectedGoodName");
                 navigate("/home");
             }
         };
@@ -24,6 +21,7 @@ function App() {
 
     return (
         <div className='container'>
+            <h1>초기화면</h1>
         </div>
     );
 }

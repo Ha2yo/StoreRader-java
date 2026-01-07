@@ -30,7 +30,7 @@ function Navigation() {
 
   // 특정 페이지에서 네비게이션 바를 숨긴다
   const hideNav =
-    location.pathname === "/" ||
+
     location.pathname === "/search" ||
     location.pathname === "/maintenance";
   if (hideNav) return null;
