@@ -3,7 +3,7 @@ import HomePage from "../pages/Home.tsx";
 import MyPage from "../pages/MyInfo.tsx";
 import MapPage from "../pages/Map.ts";
 import SearchPage from "../pages/Search.tsx";
-import MaintenencePage from "../pages/Maintenence.tsx";
+import MaintenancePage from "../pages/Maintenance.tsx";
 import App from "../App";
 import Navigation from "./Navigation.tsx";
 
@@ -30,7 +30,7 @@ function RoutingContents() {
                 <Route path='/map' element={<MapPage />} />
                 <Route path='/myInfo' element={<MyPage />} />
                 <Route path='/search' element={<SearchPage />} />
-                <Route path='/maintenance' element={<MaintenencePage />} />
+                <Route path='/maintenance' element={<MaintenancePage />} />
             </Routes>
         </>
     );
