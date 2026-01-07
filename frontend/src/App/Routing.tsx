@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "../pages/Home.tsx";
 import MyPage from "../pages/MyInfo.tsx";
-import MapPage from "../pages/Map.ts";
+import MapPage from "../pages/Map.tsx";
 import SearchPage from "../pages/Search.tsx";
 import MaintenancePage from "../pages/Maintenance.tsx";
 import App from "../App";
