@@ -4,7 +4,7 @@ import MyPage from "../pages/MyInfo";
 import MapPage from "../pages/Map";
 import SearchPage from "../pages/Search";
 import MaintenancePage from "../pages/Maintenance";
-import App from "../App";
+import App from "./App";
 import Navigation from "./Navigation";
 
 function Routing() {
