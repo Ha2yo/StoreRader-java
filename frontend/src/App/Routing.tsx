@@ -1,11 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "../pages/Home.tsx";
-import MyPage from "../pages/MyInfo.tsx";
-import MapPage from "../pages/Map.tsx";
-import SearchPage from "../pages/Search.tsx";
-import MaintenancePage from "../pages/Maintenance.tsx";
+import HomePage from "../pages/Home";
+import MyPage from "../pages/MyInfo";
+import MapPage from "../pages/Map";
+import SearchPage from "../pages/Search";
+import MaintenancePage from "../pages/Maintenance";
 import App from "../App";
-import Navigation from "./Navigation.tsx";
+import Navigation from "./Navigation";
 
 function Routing() {
     return (
