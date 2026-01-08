@@ -3,7 +3,7 @@ import { useMyInfo } from "../hooks/useMyInfo";
 // import UserHistoryList from "./UseHistory";
 
 export default function MyInfo() {
-  const { user, history, handleLogin, handleLogout, loadHistory } = useMyInfo();
+  const { user, handleLogin, handleLogout, loadHistory } = useMyInfo();
 
   if (user == null) {
     return (

@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // 로그인 시
-  function login(name: string, email: string, picture: string, jwt: string) {
+  function login(name: string, email: string, picture: string) {
     // localStorage.setItem("jwt", jwt);
     localStorage.setItem("name", name);
     localStorage.setItem("email", email);
