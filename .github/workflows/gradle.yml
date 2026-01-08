@@ -33,7 +33,10 @@ jobs:
     - name: Build Backend & Frontend image
       run: | 
         docker build -t ha2yo/storerader-backend ./backend
-        docker build -t ha2yo/storerader-frontend ./frontend
+        docker build \
+          --build-arg VITE_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+          --build-arg VITE_GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }} \
+          -t ha2yo/storerader-frontend ./frontend
     
     # (4) Docker Hub push
     - name: docker Hub push
