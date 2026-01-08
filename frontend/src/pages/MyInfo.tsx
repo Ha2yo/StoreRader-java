@@ -1,9 +1,11 @@
-function MyInfo() {
+import MyInfo from "../features/my-info-page/component/MyInfo";
+
+function Mypage() {
   return (
-    <div className='container'>
-      <h1>MyInfo</h1>
+    <div>
+      <MyInfo />
     </div>
   );
 }
 
-export default MyInfo;
+export default Mypage;

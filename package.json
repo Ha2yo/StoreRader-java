@@ -1,7 +1,11 @@
 {
   "dependencies": {
+    "@choochmeque/tauri-plugin-google-auth-api": "^0.3.6",
     "bootstrap": "^5.3.8",
     "react-bootstrap": "^2.10.10",
     "react-router-dom": "^7.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3"
   }
 }

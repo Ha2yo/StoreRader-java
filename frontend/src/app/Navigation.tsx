@@ -88,16 +88,16 @@ function Navigation() {
       </svg></Nav.Link>
 
       {/* MyInfo 버튼 */}
-      <Nav.Link as={Link} to="/myInfo"><svg
+      <Nav.Link as={Link} to="/my-info"><svg
         width="26"
         height="26"
         viewBox="0 0 24 24"
         fill="none"
-        stroke={pathname === "/myInfo" ? activeColor : inactiveColor}
+        stroke={pathname === "/my-info" ? activeColor : inactiveColor}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        style={iconStyle(pathname === "/myInfo")}
+        style={iconStyle(pathname === "/my-info")}
       >
         <circle cx="12" cy="7" r="4" />
         <path d="M4 21c0-4 4-7 8-7s8 3 8 7" />

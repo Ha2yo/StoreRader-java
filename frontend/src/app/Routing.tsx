@@ -6,12 +6,15 @@ import SearchPage from "../pages/Search";
 import MaintenancePage from "../pages/Maintenance";
 import App from "./App";
 import Navigation from "./Navigation";
+import { AuthProvider } from "../contexts/AuthContext";
 
 function Routing() {
     return (
-        <BrowserRouter>
-            <RoutingContents />
-        </BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <RoutingContents />
+            </BrowserRouter>
+        </AuthProvider>
     );
 }
 
@@ -28,7 +31,7 @@ function RoutingContents() {
                 <Route path='/' element={<App />} />
                 <Route path='/home' element={<HomePage />} />
                 <Route path='/map' element={<MapPage />} />
-                <Route path='/myInfo' element={<MyPage />} />
+                <Route path='/my-info' element={<MyPage />} />
                 <Route path='/search' element={<SearchPage />} />
                 <Route path='/maintenance' element={<MaintenancePage />} />
             </Routes>
