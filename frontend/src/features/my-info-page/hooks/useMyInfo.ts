@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 // import { fetchUserHistory } from "../api/fetchUserHistory";
-// import { requestGoogleLogin } from "../api/googleLogin";
+import { requestGoogleLogin } from "../api/googleLogin";
 import { requestGoogleLogout } from "../api/googleLogout";
 import type { UserHistoryItem } from "../types/MyInfo.types";
 
@@ -11,7 +11,7 @@ export function useMyInfo() {
 
   // Google OAuth → 백엔드 인증 → JWT 발급
   async function handleLogin() {
-    // const google = await requestGoogleLogin();
+    requestGoogleLogin();
     // const serverRes = await requestBackendLogin(google.idToken!);
 
     // if (serverRes.jwt) {

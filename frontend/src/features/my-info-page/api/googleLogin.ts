@@ -6,7 +6,6 @@ export async function requestGoogleLogin() {
   window.location.href = 
   `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${GOOGLE_REDIRECT_URI}&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
  
-
   // return ({
   //   clientId: googleClientId,
   //   clientSecret: googleClientPWD,
