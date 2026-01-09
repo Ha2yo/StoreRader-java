@@ -1,12 +1,29 @@
 version: '3.8'
 
 services:
+  database:
+    image: postgres:16
+    container_name: con-storerader-db
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    environment:
+      - "POSTGRES_USER=${DB_USER}"
+      - "POSTGRES_PASSWORD=${DB_PASSWORD}"
+      - "POSTGRES_DB=${DB_NAME}"
+    networks:
+      - network
+
   backend:
     image: ha2yo/storerader-backend
     container_name: con-storerader-back
     restart: always
     ports:
       - 8080:8080
+    depends_on:
+      - database
     networks:
       - network
 
@@ -20,6 +37,8 @@ services:
       - backend
     networks:
       - network
+
+
 
 networks:
   network:

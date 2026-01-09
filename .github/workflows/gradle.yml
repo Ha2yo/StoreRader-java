@@ -37,7 +37,7 @@ jobs:
           --build-arg VITE_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
           --build-arg VITE_GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }} \
           -t ha2yo/storerader-frontend ./frontend
-    
+
     # (4) Docker Hub push
     - name: docker Hub push
       run: |
@@ -85,8 +85,14 @@ jobs:
         script: |
           set -e
           cd ~/StoreRader-java
+
+          echo "DB_NAME=${{ secrets.DB_NAME }}" > .env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+          echo "DB_PASSWORD='${{ secrets.DB_PASSWORD }}'" >> .env
+
           sudo docker-compose pull
           sudo docker-compose up -d --remove-orphans
+          
           sudo docker image prune -f
         
     # (10) REMOVE Github IP FROM security group
