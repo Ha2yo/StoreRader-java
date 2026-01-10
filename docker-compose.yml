@@ -25,7 +25,14 @@ services:
     depends_on:
       - database
     environment:
+      - "SPRING_DATASOURCE_URL=jdbc:postgresql://con-storerader-db:5432/${DB_NAME}"
+      - "SPRING_DATASOURCE_USERNAME=${DB_USER}"
+      - "SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}"
+      - "SPRING_JPA_HIBERNATE_DDL_AUTO=none"
+      - "SPRING_FLYWAY_ENABLED=true"
+      - "SPRING_FLYWAY_BASELINE_ON_MIGRATE=true"
       - "SPRING_FLYWAY_LOCATIONS=classpath:db/migration"
+      - "LOGGING_LEVEL_ORG_FLYWAYDB=DEBUG"
     networks:
       - network
 
