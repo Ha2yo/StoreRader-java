@@ -24,7 +24,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	runtimeOnly 'org.postgresql:postgresql'
 	implementation 'org.flywaydb:flyway-core'
-	implementation 'org.flywaydb:database-postgresql'
+	implementation 'org.flywaydb:flyway-database-postgresql'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
