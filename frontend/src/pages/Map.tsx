@@ -1,7 +1,9 @@
+import MapPage from "../features/map-page/components/Map";
+
 function Map() {
   return (
     <div className='container'>
-      <h1>Map</h1>
+      <MapPage />
     </div>
   );
 }
