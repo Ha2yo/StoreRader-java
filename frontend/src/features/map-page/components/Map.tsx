@@ -26,7 +26,7 @@ function Map() {
                 style={{
                     position: "absolute",
                     bottom: "160px",
-                    right: "20px",
+                    right: "80px",
                     zIndex: 1000,
                     backgroundColor: "#fff",
                     border: "none",
