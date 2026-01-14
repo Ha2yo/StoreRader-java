@@ -5,7 +5,7 @@ function Home() {
   const [hello, setHello] = useState<string>("");
 
   useEffect(() => {
-    axios.get<string>("/api")
+    axios.get<string>("/api/")
       .then(res => setHello(res.data))
       .catch(console.error);
   }, []);
