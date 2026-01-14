@@ -101,7 +101,7 @@ jobs:
           sudo docker-compose pull
           sudo docker-compose up -d --remove-orphans
           
-          sudo docker image prune -f
+          sudo docker image prune -af --filter "until=240h"
         
     # (2-6) REMOVE Github IP FROM security group
     - name: Remove IP FROM security group
