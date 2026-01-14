@@ -8,7 +8,7 @@ function Home() {
   console.log("backend 주소: ",API_SERVER_URL);
 
   useEffect(() => {
-    axios.get<string>(API_SERVER_URL)
+    axios.get<string>("/api")
       .then(res => setHello(res.data))
       .catch(console.error);
   }, []);
