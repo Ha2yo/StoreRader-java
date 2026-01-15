@@ -7,14 +7,19 @@ import MaintenancePage from "../pages/Maintenance";
 import App from "./App";
 import Navigation from "./Navigation";
 import { AuthProvider } from "../contexts/AuthContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function Routing() {
+    const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+
     return (
-        <AuthProvider>
-            <BrowserRouter>
-                <RoutingContents />
-            </BrowserRouter>
-        </AuthProvider>
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <AuthProvider>
+                <BrowserRouter>
+                    <RoutingContents />
+                </BrowserRouter>
+            </AuthProvider>
+        </GoogleOAuthProvider>
     );
 }
 

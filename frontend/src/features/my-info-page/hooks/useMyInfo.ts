@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 // import { fetchUserHistory } from "../api/fetchUserHistory";
-import { requestGoogleLogin } from "../api/googleLogin";
+import { googleLogin, requestBackendLogin } from "../api/googleLogin";
 import { requestGoogleLogout } from "../api/googleLogout";
 import type { UserHistoryItem } from "../types/MyInfo.types";
 
@@ -11,12 +11,16 @@ export function useMyInfo() {
 
   // Google OAuth → 백엔드 인증 → JWT 발급
   async function handleLogin() {
-    requestGoogleLogin();
-    // const serverRes = await requestBackendLogin(google.idToken!);
+    try {
+      const googleRes = await googleLogin();
 
-    // if (serverRes.jwt) {
-    //   login(serverRes.user.name, serverRes.user.email, serverRes.user.picture, serverRes.jwt);
-    // }
+      // if (googleRes.idToken) {
+      //   const serverRes = await requestBackendLogin(googleRes.idToken);
+      //   console.log("로그인 성공", serverRes);
+      // }
+    } catch (error) {
+      console.error("로그인 중 오류 발생", error);
+    } 
   }
 
   async function handleLogout() {

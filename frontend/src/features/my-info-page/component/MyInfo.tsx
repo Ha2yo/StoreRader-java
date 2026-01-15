@@ -1,11 +1,10 @@
+import { GoogleLogin } from "@react-oauth/google";
 import { touchEffect } from "../../../utils/touchEffect";
-import { printGoogleIdTokenFromUrl } from "../api/googleLogin";
 import { useMyInfo } from "../hooks/useMyInfo";
 // import UserHistoryList from "./UseHistory";
 
 export default function MyInfo() {
-  const { user, handleLogin, handleLogout, loadHistory } = useMyInfo();
-  printGoogleIdTokenFromUrl();
+  const { user, handleLogout, loadHistory } = useMyInfo();
   if (user == null) {
     return (
       <div className="container" style={{
@@ -18,22 +17,14 @@ export default function MyInfo() {
         <br />
         <p style={{ color: "#666" }}>로그인이 필요합니다</p>
 
-        <button
-          {...touchEffect}
-          style={{
-            width: "30%",
-            padding: "12px",
-            background: "#007aff",
-            color: "#fff",
-            border: "none",
-            borderRadius: "10px",
-            fontSize: "16px",
-            marginTop: "20px",
-
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            console.log("로그인 성공! 생성된 토큰:", credentialResponse.credential);
           }}
-          onClick={handleLogin}>
-          로그인
-        </button>
+          onError={() => {
+            console.log('로그인 실패');
+          }}
+        />
       </div>
     );
   }
