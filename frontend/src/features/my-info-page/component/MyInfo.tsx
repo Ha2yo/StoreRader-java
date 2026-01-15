@@ -1,10 +1,11 @@
 import { touchEffect } from "../../../utils/touchEffect";
+import { printGoogleIdTokenFromUrl } from "../api/googleLogin";
 import { useMyInfo } from "../hooks/useMyInfo";
 // import UserHistoryList from "./UseHistory";
 
 export default function MyInfo() {
   const { user, handleLogin, handleLogout, loadHistory } = useMyInfo();
-
+  printGoogleIdTokenFromUrl();
   if (user == null) {
     return (
       <div className="container" style={{
