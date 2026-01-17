@@ -1,6 +1,7 @@
 import { GoogleLogin } from "@react-oauth/google";
 import { touchEffect } from "../../../utils/touchEffect";
 import { useMyInfo } from "../hooks/useMyInfo";
+import { requestBackendLogin } from "../api/googleLogin";
 // import UserHistoryList from "./UseHistory";
 
 export default function MyInfo() {
@@ -20,6 +21,7 @@ export default function MyInfo() {
         <GoogleLogin
           onSuccess={(credentialResponse) => {
             console.log("로그인 성공! 생성된 토큰:", credentialResponse.credential);
+            requestBackendLogin(credentialResponse.credential);
           }}
           onError={() => {
             console.log('로그인 실패');
