@@ -21,7 +21,7 @@ export default function MyInfo() {
         <GoogleLogin
           onSuccess={(credentialResponse) => {
             console.log("로그인 성공! 생성된 토큰:", credentialResponse.credential);
-            requestBackendLogin(credentialResponse.credential);
+            requestBackendLogin(credentialResponse.credential as string);
           }}
           onError={() => {
             console.log('로그인 실패');
