@@ -1,4 +1,4 @@
-package com.storerader.server.auth.controller;
+package com.storerader.server.auth;
 
 import com.storerader.server.auth.dto.GoogleLoginRequest;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     @PostMapping("/auth/google")
-    public boolean googleLogin(@RequestBody GoogleLoginRequest req) {
+    public String googleLogin(@RequestBody GoogleLoginRequest req) {
         return req.getIdToken() != null && !req.getIdToken().isEmpty();
     }
 }
