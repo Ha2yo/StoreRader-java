@@ -1,5 +1,6 @@
 import { GoogleLogin } from '@react-oauth/google';
 import axios from "axios";
+import type { GoogleLoginResponse } from '../types/MyInfo.types';
 
 export async function googleLogin() {
   return (
