@@ -8,7 +8,7 @@ export async function googleLogin() {
       <GoogleLogin
         onSuccess={(credentialResponse) => {
           console.log("로그인 성공! 생성된 토큰:", credentialResponse.credential);
-        
+
         }}
         onError={() => {
           console.log('로그인 실패');
@@ -18,11 +18,20 @@ export async function googleLogin() {
   );
 }
 
-export async function requestBackendLogin(idToken: string) {
-    const res = await axios.post<boolean>("/api/auth/google",
-      {idToken,}
+export async function requestBackendLogin(idToken: string, clientId: string) {
+  try {
+    const res = await axios.post<GoogleLoginResponse>("/api/auth/google",
+      {
+        idToken: idToken,
+        client_id: clientId,
+      }
     );
-  
-  console.log("백엔드 응답:", res.data);
+
+    console.log("백엔드 응답:", res.data);
+    return res.data;
+  } catch (error) {
+    console.error("백엔드 로그인 요청 실패: ", error);
+  }
+
 
 }
