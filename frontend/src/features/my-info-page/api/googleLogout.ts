@@ -1,1 +1,3 @@
-VITE
+export async function requestGoogleLogout() {
+
+}
