@@ -108,6 +108,8 @@ public class AuthService {
                     UserEntity newUser = new UserEntity();
                     newUser.setSub(claims.getSub());
                     newUser.setEmail(claims.getEmail());
+                    newUser.setName(claims.getName());
+                    newUser.setCreatedAt(OffsetDateTime.now());
                     return userRepository.save(newUser);
                 });
     }
