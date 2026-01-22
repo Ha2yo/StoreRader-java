@@ -16,19 +16,19 @@ public class GoogleLoginResponse {
     public GoogleClaims getClaims() { return claims; }
 
     public static class UserResponse {
-        private final int id;
+        private final long id;
         private final String name;
         private final String email;
         private final String picture;
 
-        public UserResponse(int id, String name, String email, String picture) {
+        public UserResponse(long id, String name, String email, String picture) {
             this.id = id;
             this.name = name;
             this.email = email;
             this.picture = picture;
         }
 
-        public int getId() { return id; }
+        public long getId() { return id; }
         public String getName() { return name; }
         public String getEmail() { return email; }
         public String getPicture() { return picture; }

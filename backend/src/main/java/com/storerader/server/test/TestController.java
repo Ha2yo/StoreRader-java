@@ -1,6 +1,6 @@
 package com.storerader.server.test;
 
-import com.storerader.server.common.entity.UsersEntity;
+import com.storerader.server.common.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +19,7 @@ public class TestController {
     }
 
     @GetMapping("/test")
-    public List<UsersEntity> getAllUsers() {
+    public List<UserEntity> getAllUsers() {
         return testService.findAll();
     }
 }

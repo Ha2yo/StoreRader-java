@@ -4,16 +4,18 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.OffsetDateTime;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class UsersEntity {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,7 +37,7 @@ public class UsersEntity {
     private OffsetDateTime lastLogin;
 
     @Builder
-    public UsersEntity(Long id, String sub, String email, String name, OffsetDateTime createdAt, OffsetDateTime lastLogin) {
+    public UserEntity(Long id, String sub, String email, String name, OffsetDateTime createdAt, OffsetDateTime lastLogin) {
         this.sub = sub;
         this.email = email;
         this.name = name;
