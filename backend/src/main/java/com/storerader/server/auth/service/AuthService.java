@@ -7,19 +7,21 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.storerader.server.auth.dto.GoogleClaims;
 import com.storerader.server.auth.dto.GoogleLoginRequest;
 import com.storerader.server.auth.dto.GoogleLoginResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
 @Service
 public class AuthService {
-
+    @Value("${GOOGLE_CLIENT_ID}")
+    private String googleClientId;
 
     // 함수 1
     public GoogleLoginResponse authGoogle(
             GoogleLoginRequest req
     ) {
-        GoogleClaims claims = verifyGoogleIdToken(req.getIdToken(), req.getClientId());
+        GoogleClaims claims = verifyGoogleIdToken(req.getIdToken(), googleClientId);
 
         GoogleLoginResponse.UserResponse userResponse = new GoogleLoginResponse.UserResponse(
                 1,

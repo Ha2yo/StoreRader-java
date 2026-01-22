@@ -5,7 +5,6 @@ import { requestBackendLogin } from "../api/googleLogin";
 // import UserHistoryList from "./UseHistory";
 
 export default function MyInfo() {
-  const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
   const { user, handleLogout, loadHistory } = useMyInfo();
   if (user == null) {
@@ -23,10 +22,8 @@ export default function MyInfo() {
         <GoogleLogin
           onSuccess={(credentialResponse) => {
             console.log("구글 로그인 성공");
-
-            requestBackendLogin(
-              credentialResponse.credential as string,
-              GOOGLE_CLIENT_ID);
+            console.log("ID Token: ", credentialResponse.credential);
+            requestBackendLogin(credentialResponse.credential as string);
           }}
           onError={() => {
             console.log('로그인 실패');

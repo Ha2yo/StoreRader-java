@@ -19,13 +19,10 @@ export async function googleLogin() {
   );
 }
 
-export async function requestBackendLogin(idToken: string, clientId: string) {
+export async function requestBackendLogin(idToken: string) {
   try {
     const res = await axios.post<GoogleLoginResponse>("/api/auth/google",
-      {
-        idToken: idToken,
-        client_id: clientId,
-      }
+      { idToken: idToken }
     );
 
     console.log("백엔드 응답:", res.data);
