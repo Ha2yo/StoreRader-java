@@ -22,11 +22,10 @@ export default function MyInfo() {
         <GoogleLogin
           onSuccess={(credentialResponse) => {
             console.log("구글 로그인 성공");
-            console.log("ID Token: ", credentialResponse.credential);
             requestBackendLogin(credentialResponse.credential as string);
           }}
           onError={() => {
-            console.log('로그인 실패');
+            console.log("구글 로그인 실패");
           }}
         />
       </div>
