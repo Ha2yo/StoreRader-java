@@ -6,7 +6,7 @@ export async function requestBackendLogin(idToken: string) {
   try {
 
     const res = await apiClient.post<GoogleLoginResponse>(
-      "/api/auth/google",
+      "/auth/google",
       { idToken }
     );
 
