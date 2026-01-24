@@ -12,19 +12,17 @@ import com.storerader.server.common.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -37,20 +35,23 @@ public class AuthService {
     @Value("${JWT_SECRET}")
     private String secretKey;
 
-    private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24시간
+    private static final long ACCESS_TOKEN_EXPIRATION = 30 * 60 * 1000; // 30분
+    private static final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7일
 
     // 함수 0
+    @Transactional
     public GoogleLoginResponse authGoogle(
             GoogleLoginRequest req
     ) {
-        // IDTOken 검증
+        // 구글 ID Token 검증
         GoogleClaims claims = verifyGoogleIdToken(req.getIdToken(), googleClientId);
 
-        // DB에 유저 정보 업데이트
+        // DB 유저 정보 업데이트
         UserEntity user = insertOrUpdateUser(claims);
 
-        // 유저 JWT 생성
-        String serverJwt = createJwt(user.getId(), user.getEmail());
+        // Dual Token 생성
+        String accessToken = createAccessToken(user.getId(), user.getEmail());
+        String refreshToken = createAndSaveRefreshToken(user);
 
         // 응답 DTO 생성
         GoogleLoginResponse.UserResponse userResponse = new GoogleLoginResponse.UserResponse(
@@ -60,7 +61,7 @@ public class AuthService {
                 claims.getPicture()
         );
 
-        return new GoogleLoginResponse(serverJwt, userResponse, claims);
+        return new GoogleLoginResponse(accessToken, refreshToken, userResponse, claims);
     }
 
 
@@ -96,7 +97,10 @@ public class AuthService {
     }
 
     // 함수 2
-    public UserEntity insertOrUpdateUser(GoogleClaims claims) {
+    @Transactional
+    public UserEntity insertOrUpdateUser(
+            GoogleClaims claims
+    ) {
         return userRepository.findBySub(claims.getSub())
                 .map(user -> {
                     // 유저가 있는 경우
@@ -115,13 +119,13 @@ public class AuthService {
     }
 
     // 함수 3
-    public String createJwt(
+    public String createToken(
             Long userId,
-            String email
+            String email,
+            long expiration
     ) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
-
+        Date expiryDate = new Date(now.getTime() + expiration);
         SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
         return Jwts.builder()
@@ -133,6 +137,52 @@ public class AuthService {
                 .compact();
     }
 
+    public String createAccessToken(
+            Long userId,
+            String email
+    ){
+        return createToken(userId, email, ACCESS_TOKEN_EXPIRATION);
+    }
+
+    @Transactional
+    public String createAndSaveRefreshToken(
+            UserEntity user
+    ) {
+        String token = createToken(user.getId(), user.getEmail(), REFRESH_TOKEN_EXPIRATION);
+
+        user.setRefreshToken(token);
+        user.setRefreshTokenExpiresAt(
+                OffsetDateTime.now().plus(Duration.ofMillis(REFRESH_TOKEN_EXPIRATION))
+        );
+        userRepository.save(user);
+
+        return token;
+    }
+
+    @Transactional
+    public String refreshAccessToken(
+            String refreshToken
+    ) {
+        // 토큰 복호화 및 검증
+        Claims claims = decodeJwt(refreshToken);
+        Long userId = Long.parseLong(claims.getSubject());
+
+        // DB에서 유저 조회 및 토큰 일치 여부 확인
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+        if(user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken)) {
+            throw new RuntimeException("유효하지 않은 Refresh Token입니다.");
+        }
+
+        // DB에 기록된 만료 시각 체크
+        if (user.getRefreshTokenExpiresAt().isBefore(OffsetDateTime.now())) {
+            throw new RuntimeException("Refresh Token이 만료되었습니다.");
+        }
+
+        // 새 Access Token 발급
+        return createAccessToken(user.getId(), user.getEmail());
+    }
 
     // 함수 4
     public Claims decodeJwt(

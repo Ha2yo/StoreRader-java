@@ -36,12 +36,29 @@ public class UserEntity {
     @Column(name = "last_login")
     private OffsetDateTime lastLogin;
 
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
+    @Column(name = "refresh_token_expires_at")
+    private OffsetDateTime refreshTokenExpiresAt;
+
     @Builder
-    public UserEntity(Long id, String sub, String email, String name, OffsetDateTime createdAt, OffsetDateTime lastLogin) {
+    public UserEntity(
+            Long id,
+            String sub,
+            String email,
+            String name,
+            OffsetDateTime createdAt,
+            OffsetDateTime lastLogin,
+            String refreshToken,
+            OffsetDateTime refreshTokenExpiresAt
+    ) {
         this.sub = sub;
         this.email = email;
         this.name = name;
         this.createdAt = createdAt;
         this.lastLogin = lastLogin;
+        this.refreshToken = refreshToken;
+        this.refreshTokenExpiresAt = refreshTokenExpiresAt;
     }
 }

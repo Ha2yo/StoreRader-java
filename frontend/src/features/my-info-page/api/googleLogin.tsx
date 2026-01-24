@@ -1,18 +1,21 @@
-import axios from "axios";
+import apiClient from "../../../contexts/apiClient";
 import type { GoogleLoginResponse } from '../types/MyInfo.types';
+
 
 export async function requestBackendLogin(idToken: string) {
   try {
-    const res = await axios.post<GoogleLoginResponse>(
+
+    const res = await apiClient.post<GoogleLoginResponse>(
       "/api/auth/google",
-      { idToken },
-      { withCredentials: true }
+      { idToken }
     );
 
-    console.log("백엔드 응답:", res.data);
+    console.log("백엔드 응답:", res.data.user);
     return res.data;
+
   } catch (error) {
     console.error("백엔드 로그인 요청 실패: ", error);
+    throw error;
   }
 
 
