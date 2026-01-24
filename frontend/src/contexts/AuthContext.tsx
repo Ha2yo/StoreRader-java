@@ -1,62 +1,53 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { fetchMe } from "../features/my-info-page/api/authMe";
+import type { UserResponse } from "../features/my-info-page/types/MyInfo.types";
 
-interface UserProfile {
-  name: string,
-  email: string,
-  picture: string;
-}
+type AuthContextValue = {
+  user: UserResponse | null;
+  isLoading: boolean;
+  refreshMe: () => Promise<void>;
+  setUser: (u: UserResponse | null) => void;
+  logoutLocal: () => void;
+};
 
-interface AuthContextType {
-  user: UserProfile | null;
-  login: (name: string, email: string, picture: string, jwt: string) => void;
-  logout: () => void;
-}
-
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<UserResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // const jwt = localStorage.getItem("jwt");
-    const name = localStorage.getItem("name");
-    const email = localStorage.getItem("email");
-    const picture = localStorage.getItem("picture");
-
-    if (name && email && picture) {
-      setUser({ name, email, picture });
+  async function refreshMe() {
+    try {
+      const me = await fetchMe();
+      setUser(me);
+    } catch {
+      setUser(null);
     }
-  }, []);
-
-  // 로그인 시
-  function login(name: string, email: string, picture: string) {
-    // localStorage.setItem("jwt", jwt);
-    localStorage.setItem("name", name);
-    localStorage.setItem("email", email);
-    localStorage.setItem("picture", picture);
-    setUser({ name, email, picture });
   }
 
-  // 로그아웃 시
-  function logout() {
-    // localStorage.removeItem("jwt");
-    localStorage.removeItem("name");
-    localStorage.removeItem("email");
-    localStorage.removeItem("picture");
+  function logoutLocal() {
     setUser(null);
   }
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      await refreshMe();
+      setIsLoading(false);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const value = useMemo(
+    () => ({ user, isLoading, refreshMe, setUser, logoutLocal }),
+    [user, isLoading]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth는 AuthProvider 안에서만 사용할 수 있습니다");
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  return ctx;
 }

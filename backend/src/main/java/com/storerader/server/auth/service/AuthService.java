@@ -12,6 +12,8 @@ import com.storerader.server.common.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -195,5 +197,52 @@ public class AuthService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public GoogleLoginResponse.UserResponse getCurrentUserInfo(
+            HttpServletRequest request
+    ) {
+        // 1. 쿠키에서 accessToken 추출
+        String accessToken = extractTokenFromCookie(request, "accessToken");
+
+        if (accessToken == null) {
+            throw new RuntimeException("인증 토큰이 없습니다.");
+        }
+
+        try {
+            // 2. 토큰 해독 및 유저 ID 추출
+            Claims claims = decodeJwt(accessToken);
+            Long userId = Long.parseLong(claims.getSubject());
+
+            // 3. DB에서 유저 조회
+            UserEntity user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+            // 4. DTO 반환
+            return new GoogleLoginResponse.UserResponse(
+                    user.getId(),
+                    user.getName(),
+                    user.getEmail(),
+                    null // 필요한 경우 프로필 이미지 URL 필드를 엔티티에 추가하여 전달
+            );
+        } catch (Exception e) {
+            // 토큰이 만료되었거나 변조된 경우
+            throw new RuntimeException("유효하지 않은 토큰입니다.", e);
+        }
+    }
+
+
+    private String extractTokenFromCookie(
+            HttpServletRequest request,
+            String name
+    ) {
+        if (request.getCookies() == null) return null;
+
+        for (Cookie cookie : request.getCookies()) {
+            if (name.equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 }

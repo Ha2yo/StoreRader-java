@@ -2,27 +2,45 @@ import { GoogleLogin } from "@react-oauth/google";
 import { touchEffect } from "../../../utils/touchEffect";
 import { useMyInfo } from "../hooks/useMyInfo";
 import { requestBackendLogin } from "../api/googleLogin";
-// import UserHistoryList from "./UseHistory";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export default function MyInfo() {
+  const { user, handleLogout, loadHistory, refreshMe } = useMyInfo();
+  const { isLoading } = useAuth();
 
-  const { user, handleLogout, loadHistory } = useMyInfo();
+  if (isLoading) {
+    return (
+      <div className="container" style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <p style={{ color: "#666" }}>불러오는 중...</p>
+      </div>
+    );
+  }
+
   if (user == null) {
     return (
-      <div className="container" style={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}>
+      <div
+        className="container"
+        style={{
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <br />
         <p style={{ color: "#666" }}>로그인이 필요합니다</p>
 
         <GoogleLogin
-          onSuccess={(credentialResponse) => {
-            console.log("구글 로그인 성공");
-            requestBackendLogin(credentialResponse.credential as string);
+          onSuccess={async (credentialResponse) => {
+            try {
+              const idToken = credentialResponse.credential as string;
+              await requestBackendLogin(idToken);
+
+              await refreshMe();
+            } catch (e) {
+              console.error("로그인 처리 실패:", e);
+            }
           }}
           onError={() => {
             console.log("구글 로그인 실패");
@@ -32,23 +50,15 @@ export default function MyInfo() {
     );
   }
 
-
   return (
     <div className="container" style={{ paddingTop: "100px" }}>
       <div>
-        <img
-          src={user.picture}
-          alt="profile"
-          className="profile"
-        />
+        <img src={user.picture ?? ""} alt="profile" className="profile" />
         <p style={{ marginTop: 16, fontSize: 20, fontWeight: "bold" }}>
           {user.name}님 환영합니다
         </p>
-        <p style={{ fontSize: 14, color: "#888", marginTop: 4 }}>
-          {user.email}
-        </p>
+        <p style={{ fontSize: 14, color: "#888", marginTop: 4 }}>{user.email}</p>
 
-        {/* 사용자 매장 선택 로그 조회 */}
         <button
           {...touchEffect}
           style={{
@@ -60,11 +70,11 @@ export default function MyInfo() {
             fontSize: "16px",
             marginTop: "20px",
           }}
-          onClick={loadHistory}>
+          onClick={loadHistory}
+        >
           기록 보기
         </button>
 
-        {/* 로그아웃 */}
         <button
           {...touchEffect}
           style={{
@@ -77,13 +87,11 @@ export default function MyInfo() {
             fontSize: "16px",
             marginTop: "12px",
           }}
-          onClick={handleLogout}>
+          onClick={handleLogout}
+        >
           로그아웃
         </button>
       </div>
-
-      {/* 기록이 있을 때만 리스트 표시 */}
-      {/* {history.length > 0 && <UserHistoryList history={history} />} */}
     </div>
   );
 }
