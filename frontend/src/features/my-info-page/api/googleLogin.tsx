@@ -11,6 +11,7 @@ export async function requestBackendLogin(idToken: string) {
     );
 
     console.log("백엔드 응답:", res.data.user);
+    localStorage.setItem("userPicture", res.data.user.picture);
     return res.data;
 
   } catch (error) {

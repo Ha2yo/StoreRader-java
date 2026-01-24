@@ -19,7 +19,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function refreshMe() {
     try {
       const me = await fetchMe();
-      setUser(me);
+      const picture = localStorage.getItem("userPicture");
+      setUser({
+        ...me,
+        picture: me.picture ?? picture,
+      });
     } catch {
       setUser(null);
     }
