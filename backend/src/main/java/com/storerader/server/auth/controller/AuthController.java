@@ -48,8 +48,6 @@ public class AuthController {
         response.addHeader("Set-Cookie", accessTokenCookie.toString());
 
         return loginResponse;
-
-        return authService.authGoogle(request);
     }
 
     @PostMapping("/refresh")
