@@ -8,6 +8,8 @@ export default function MyInfo() {
   const { user, handleLogout, loadHistory, refreshMe } = useMyInfo();
   const { isLoading } = useAuth();
 
+  console.log("role:", user?.role);
+
   if (isLoading) {
     return (
       <div className="container" style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -38,8 +40,6 @@ export default function MyInfo() {
               await requestBackendLogin(idToken);
 
               await refreshMe();
-              const { user } = useAuth();
-              console.log(user?.role);
 
             } catch (e) {
               console.error("로그인 처리 실패:", e);
@@ -61,7 +61,7 @@ export default function MyInfo() {
           {user.name}님 환영합니다
         </p>
         <p style={{ fontSize: 14, color: "#888", marginTop: 4 }}>{user.email}</p>
-
+        
         <button
           {...touchEffect}
           style={{
