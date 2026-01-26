@@ -16,6 +16,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,6 @@ public class AuthService {
 
     @Value("${GOOGLE_CLIENT_ID}")
     private String googleClientId;
-
     @Value("${JWT_SECRET}")
     private String secretKey;
 
@@ -41,18 +41,22 @@ public class AuthService {
 //    private static final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7일
     private static final long REFRESH_TOKEN_EXPIRATION = 24 * 60 * 60 * 1000; // 1일
 
-    // 함수 0
+    /**
+     * Google OAuth 로그인 전체 흐름을 관리한다.
+     * @param req Google에서 발급한 IDToken
+     * @return ㅇ
+     */
     @Transactional
     public GoogleLoginResponse authGoogle(
             GoogleLoginRequest req
     ) {
-        // 구글 ID Token 검증
-        GoogleClaims claims = verifyGoogleIdToken(req.getIdToken(), googleClientId);
+        // 1. 구글 ID Token 검증
+        GoogleClaims claims = verifyGoogleIdToken(req.idToken(), googleClientId);
 
-        // DB 유저 정보 업데이트
+        // 2. DB 유저 정보 업데이트
         UserEntity user = insertOrUpdateUser(claims);
 
-        // Dual Token 생성
+        // 3. 서버 자체 Token 생성
         String accessToken = createAccessToken(user);
         String refreshToken = createAndSaveRefreshToken(user);
 
@@ -61,19 +65,23 @@ public class AuthService {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                claims.getPicture()
+                claims.picture()
         );
 
         return new GoogleLoginResponse(accessToken, refreshToken, userResponse, claims);
     }
 
-
-    // 함수 1
+    /**
+     *  Google ID Token이 유효한지 검증한다 (RS256)
+     * @param idToken   Google에서 발급한 ID Token
+     * @param clientId  우리 사이트 전용 clientId
+     * @return Google ID Token으로부터 얻어낸 유저 정보 (sub, email, name..)
+     */
     public GoogleClaims verifyGoogleIdToken(
             String idToken,
             String clientId
     ) {
-        // 1. verifier 초기화
+        // verifier 초기화
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                 new NetHttpTransport(),
                 new GsonFactory()
@@ -82,14 +90,13 @@ public class AuthService {
                 .build();
 
         try {
-            // 2. 토큰 검증
+            // 토큰 검증
             GoogleIdToken token = verifier.verify(idToken);
 
             if (token != null) {
                 GoogleIdToken.Payload payload = token.getPayload();
 
-                // 3. 데이터를 DTO에 매핑
-
+                // 데이터를 DTO에 매핑
                 return GoogleClaims.from(token.getPayload());
             } else {
                 throw new IllegalArgumentException("유효하지 않은 ID Token입니다.");
@@ -99,29 +106,42 @@ public class AuthService {
         }
     }
 
-    // 함수 2
+    /**
+     * 유저 정보를 DB에 업데이트한다.
+     * @param claims Google ID Token으로부터 얻어낸 유저 정보 (sub, email, name..)
+     * @return 업데이트한 유저의 정보
+     */
     @Transactional
     public UserEntity insertOrUpdateUser(
             GoogleClaims claims
     ) {
-        return userRepository.findBySub(claims.getSub())
+        return userRepository.findBySub(claims.sub())
                 .map(user -> {
-                    // 유저가 있는 경우
+                    // 기존 유저 -> 마지막 로그인 시각만 업데이트
                     user.setLastLogin(OffsetDateTime.now());
+
                     return userRepository.save(user);
                 })
                 .orElseGet(() -> {
-                    // 유저가 없는 경우
+                    // 신규 유저 -> 회원가입 처리
                     UserEntity newUser = new UserEntity();
-                    newUser.setSub(claims.getSub());
-                    newUser.setEmail(claims.getEmail());
-                    newUser.setName(claims.getName());
+                    newUser.setSub(claims.sub());
+                    newUser.setEmail(claims.email());
+                    newUser.setName(claims.name());
                     newUser.setCreatedAt(OffsetDateTime.now());
+
                     return userRepository.save(newUser);
                 });
     }
 
-    // 함수 3
+    /**
+     * 유저의 정보를 바탕으로 토큰을 생성한다. (HS256)
+     * @param userId 유저 아이디
+     * @param email 유저 이메일
+     * @param role 유저 권한
+     * @param expiration 만료 시각
+     * @return 생성된 토큰
+     */
     public String createToken(
             Long userId,
             String email,
@@ -142,15 +162,25 @@ public class AuthService {
                 .compact();
     }
 
+    /**
+     * 액세스 토큰을 생성한다.
+     * @param user DB 상의 유저 정보
+     * @return 생성된 액세스 토큰
+     */
     public String createAccessToken(
-            UserEntity user
+            @NonNull UserEntity user
     ){
         return createToken(user.getId(), user.getEmail(), user.getRole(), ACCESS_TOKEN_EXPIRATION);
     }
 
+    /**
+     * 리프레시 토큰을 생성하고 DB에 저장한다.
+     * @param user DB 상의 유저 정보
+     * @return 생성된 리프레시 토큰
+     */
     @Transactional
     public String createAndSaveRefreshToken(
-            UserEntity user
+            @NonNull UserEntity user
     ) {
         String token = createToken(user.getId(), user.getEmail(), user.getRole(), REFRESH_TOKEN_EXPIRATION);
 
@@ -163,6 +193,11 @@ public class AuthService {
         return token;
     }
 
+    /**
+     * DB에 저장된 리프레시 토큰으로 새로운 액세스 토큰을 발급한다.
+     * @param refreshToken 클라이언트로부터 전달받은 리프레시 토큰
+     * @return 갱신된 새로운 리프레시 토큰
+     */
     @Transactional
     public String refreshAccessToken(
             String refreshToken
@@ -171,7 +206,7 @@ public class AuthService {
         Claims claims = decodeJwt(refreshToken);
         Long userId = Long.parseLong(claims.getSubject());
 
-        // DB에서 유저 조회 및 토큰 일치 여부 확인
+        // DB에서 해당 유저 및 저장된 토큰 정보 조회
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
 
@@ -184,11 +219,15 @@ public class AuthService {
             throw new RuntimeException("Refresh Token이 만료되었습니다.");
         }
 
-        // 새 Access Token 발급
+        // 새 Access Token 생성
         return createAccessToken(user);
     }
 
-    // 함수 4
+    /**
+     *  JWT 토큰의 서명을 확인하고 내부 페이로드를 해독한다.
+     * @param token 해독할 JWT 토큰 문자열
+     * @return 토큰에 담긴 페이로드 정보
+     */
     public Claims decodeJwt(
             String token
     ) {
@@ -201,6 +240,11 @@ public class AuthService {
                 .getPayload();
     }
 
+    /**
+     * HTTP 요청의 쿠키에서 Access Token을 추추하여 현재 로그인한 유저의 정보를 조회한다.
+     * @param request 쿠키가 포함된 HTTP 요청 객체
+     * @return 유저 정보
+     */
     public GoogleLoginResponse.UserResponse getCurrentUserInfo(
             HttpServletRequest request
     ) {
@@ -233,7 +277,12 @@ public class AuthService {
         }
     }
 
-
+    /**
+     * 요청 객체의 쿠키 목록에서 특정 이름을 가진 쿠키의 값을 찾는다
+     * @param request request HTTP 요청 객체
+     * @param name 찾고자 하는 쿠키의 이름
+     * @return 쿠키의 값
+     */
     private String extractTokenFromCookie(
             HttpServletRequest request,
             String name

@@ -1,9 +1,5 @@
 package com.storerader.server.auth.dto;
 
-public class GoogleLoginRequest {
-    private String idToken;
-
-    protected GoogleLoginRequest() {
-    }
-    public String getIdToken() { return idToken; }
-}
+public record GoogleLoginRequest (
+        String idToken  // Google이 발급한 IDToken
+) {}

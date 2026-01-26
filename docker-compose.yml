@@ -30,12 +30,9 @@ services:
       - "SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}"
       - "GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}"
       - "JWT_SECRET=${JWT_SECRET}"
-
-      - "SPRING_JPA_HIBERNATE_DDL_AUTO=none"
-      - "SPRING_FLYWAY_ENABLED=true"
-      - "SPRING_FLYWAY_BASELINE_ON_MIGRATE=true"
-
-      - "DEBUG=true"
+      - "APP_COOKIE_SAME_SITE=${APP_COOKIE_SAME_SITE}"
+      - "APP_COOKIE_SECURE=${APP_COOKIE_SECURE}"
+      -
     networks:
       - network
 
