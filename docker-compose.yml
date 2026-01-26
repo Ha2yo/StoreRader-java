@@ -32,7 +32,7 @@ services:
       - "JWT_SECRET=${JWT_SECRET}"
       - "APP_COOKIE_SAME_SITE=${APP_COOKIE_SAME_SITE}"
       - "APP_COOKIE_SECURE=${APP_COOKIE_SECURE}"
-      -
+      
     networks:
       - network
 
