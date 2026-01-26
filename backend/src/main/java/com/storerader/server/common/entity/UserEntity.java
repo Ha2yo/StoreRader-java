@@ -42,6 +42,8 @@ public class UserEntity {
     @Column(name = "refresh_token_expires_at")
     private OffsetDateTime refreshTokenExpiresAt;
 
+    private String role;
+
     @Builder
     public UserEntity(
             Long id,
@@ -51,7 +53,8 @@ public class UserEntity {
             OffsetDateTime createdAt,
             OffsetDateTime lastLogin,
             String refreshToken,
-            OffsetDateTime refreshTokenExpiresAt
+            OffsetDateTime refreshTokenExpiresAt,
+            String role
     ) {
         this.sub = sub;
         this.email = email;
@@ -60,5 +63,6 @@ public class UserEntity {
         this.lastLogin = lastLogin;
         this.refreshToken = refreshToken;
         this.refreshTokenExpiresAt = refreshTokenExpiresAt;
+        this.role = role;
     }
 }

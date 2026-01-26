@@ -53,7 +53,7 @@ public class AuthService {
         UserEntity user = insertOrUpdateUser(claims);
 
         // Dual Token 생성
-        String accessToken = createAccessToken(user.getId(), user.getEmail());
+        String accessToken = createAccessToken(user);
         String refreshToken = createAndSaveRefreshToken(user);
 
         // 응답 DTO 생성
@@ -125,6 +125,7 @@ public class AuthService {
     public String createToken(
             Long userId,
             String email,
+            String role,
             long expiration
     ) {
         Date now = new Date();
@@ -134,6 +135,7 @@ public class AuthService {
         return Jwts.builder()
                 .subject(String.valueOf(userId))
                 .claim("email", email)
+                .claim("role", role)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(key, Jwts.SIG.HS256)
@@ -141,17 +143,16 @@ public class AuthService {
     }
 
     public String createAccessToken(
-            Long userId,
-            String email
+            UserEntity user
     ){
-        return createToken(userId, email, ACCESS_TOKEN_EXPIRATION);
+        return createToken(user.getId(), user.getEmail(), user.getRole(), ACCESS_TOKEN_EXPIRATION);
     }
 
     @Transactional
     public String createAndSaveRefreshToken(
             UserEntity user
     ) {
-        String token = createToken(user.getId(), user.getEmail(), REFRESH_TOKEN_EXPIRATION);
+        String token = createToken(user.getId(), user.getEmail(), user.getRole(), REFRESH_TOKEN_EXPIRATION);
 
         user.setRefreshToken(token);
         user.setRefreshTokenExpiresAt(
@@ -184,7 +185,7 @@ public class AuthService {
         }
 
         // 새 Access Token 발급
-        return createAccessToken(user.getId(), user.getEmail());
+        return createAccessToken(user);
     }
 
     // 함수 4
