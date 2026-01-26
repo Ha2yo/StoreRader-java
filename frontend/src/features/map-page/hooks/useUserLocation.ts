@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import L from "leaflet";
-import { loadSavedPosition } from "../../../utils/loadSavedPos";
+import { loadSavedPosition } from "../../../common/utils/loadSavedPos";
 import { userIcon } from "../utils/userIcon";
 
 export function useUserLocation(

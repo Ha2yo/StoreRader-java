@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { fetchMe } from "../features/my-info-page/api/authMe";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { fetchMe } from "../common/api/authMe";
 import type { UserResponse } from "../features/my-info-page/types/MyInfo.types";
 
 type AuthContextValue = {
@@ -7,7 +7,6 @@ type AuthContextValue = {
   isLoading: boolean;
   refreshMe: () => Promise<void>;
   setUser: (u: UserResponse | null) => void;
-  logoutLocal: () => void;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -19,35 +18,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   async function refreshMe() {
     try {
       const me = await fetchMe();
-      const picture = localStorage.getItem("userPicture");
-      setUser({
-        ...me,
-        picture: me.picture ?? picture,
-      });
+      setUser(me);
     } catch {
       setUser(null);
     }
   }
 
-  function logoutLocal() {
-    setUser(null);
-  }
-
   useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-      await refreshMe();
-      setIsLoading(false);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setIsLoading(true);
+    refreshMe().finally(() => setIsLoading(false));
   }, []);
 
-  const value = useMemo(
-    () => ({ user, isLoading, refreshMe, setUser, logoutLocal }),
-    [user, isLoading]
-  );
+  const value: AuthContextValue = { user, isLoading, refreshMe, setUser };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

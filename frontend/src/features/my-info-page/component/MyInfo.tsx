@@ -1,5 +1,5 @@
 import { GoogleLogin } from "@react-oauth/google";
-import { touchEffect } from "../../../utils/touchEffect";
+import { touchEffect } from "../../../common/utils/touchEffect";
 import { useMyInfo } from "../hooks/useMyInfo";
 import { requestBackendLogin } from "../api/googleLogin";
 import { useAuth } from "../../../contexts/AuthContext";

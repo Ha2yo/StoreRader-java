@@ -1,5 +1,5 @@
 import L from "leaflet";
-import { loadSavedPosition } from "../../../utils/loadSavedPos";
+import { loadSavedPosition } from "../../../common/utils/loadSavedPos";
 
 export function recenterMap(leafletMap: React.RefObject<L.Map | null>) {
     return () => {

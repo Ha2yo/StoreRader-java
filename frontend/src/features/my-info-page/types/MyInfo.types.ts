@@ -4,6 +4,7 @@ export interface UserResponse {
   name: string;
   email: string;
   picture: string;
+  role: "USER" | "ADMIN";
 }
 
 // 최종 로그인 응답 타입
