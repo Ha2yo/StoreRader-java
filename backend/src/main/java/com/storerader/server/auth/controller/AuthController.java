@@ -35,7 +35,7 @@ public class AuthController {
 
     private static final long ACCESS_TOKEN_EXPIRATION = 30 * 60;           // 30분
 //    private static final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60; // 7일
-    private static final long REFRESH_TOKEN_EXPIRATION = 24 * 60 * 60; // 1일
+    private static final long REFRESH_TOKEN_EXPIRATION = 1 * 60 * 60; // 1시간
 
     /**
      * 구글 ID Token으로 로그인을 시도한다.
