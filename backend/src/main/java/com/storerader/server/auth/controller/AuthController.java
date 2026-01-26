@@ -27,7 +27,8 @@ public class AuthController {
     private String cookieSameSite;
 
     private static final long ACCESS_TOKEN_MAX_AGE_SEC = 30 * 60;           // 30분
-    private static final long REFRESH_TOKEN_MAX_AGE_SEC = 7 * 24 * 60 * 60; // 7일
+//    private static final long REFRESH_TOKEN_MAX_AGE_SEC = 7 * 24 * 60 * 60; // 7일
+    private static final long REFRESH_TOKEN_MAX_AGE_SEC = 24 * 60 * 60; // 1일
 
     @PostMapping("/google")
     public ResponseEntity<GoogleLoginResponse> googleLogin(

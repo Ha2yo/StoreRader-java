@@ -38,7 +38,8 @@ public class AuthService {
     private String secretKey;
 
     private static final long ACCESS_TOKEN_EXPIRATION = 30 * 60 * 1000; // 30분
-    private static final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7일
+//    private static final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7일
+    private static final long REFRESH_TOKEN_EXPIRATION = 24 * 60 * 60 * 1000; // 1일
 
     // 함수 0
     @Transactional
