@@ -38,6 +38,9 @@ export default function MyInfo() {
               await requestBackendLogin(idToken);
 
               await refreshMe();
+              const { user } = useAuth();
+              console.log(user?.role);
+
             } catch (e) {
               console.error("로그인 처리 실패:", e);
             }
