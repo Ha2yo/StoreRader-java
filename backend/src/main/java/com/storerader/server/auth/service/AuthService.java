@@ -117,8 +117,11 @@ public class AuthService {
     ) {
         return userRepository.findBySub(claims.sub())
                 .map(user -> {
-                    // 기존 유저 -> 마지막 로그인 시각만 업데이트
+                    // 기존 유저 -> 로그인 시각과 이름, 프로필사진 URL 업데이트
                     user.setLastLogin(OffsetDateTime.now());
+
+                    user.setName(claims.name());
+                    user.setPicture(claims.picture());
 
                     return userRepository.save(user);
                 })
@@ -128,6 +131,7 @@ public class AuthService {
                     newUser.setSub(claims.sub());
                     newUser.setEmail(claims.email());
                     newUser.setName(claims.name());
+                    newUser.setPicture(claims.picture());
                     newUser.setCreatedAt(OffsetDateTime.now());
 
                     return userRepository.save(newUser);
