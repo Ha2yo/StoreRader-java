@@ -11,14 +11,14 @@ public record FindAllUsersResponse(
         OffsetDateTime createdAt,
         OffsetDateTime lastLogin
 ) {
-    public static FindAllUsersResponse from(UserEntity entity) {
+    public static FindAllUsersResponse from(UserEntity userEntity) {
         return new FindAllUsersResponse(
-                entity.getId(),
-                entity.getName(),
-                entity.getEmail(),
-                entity.getRole(),
-                entity.getCreatedAt(),
-                entity.getLastLogin()
+                userEntity.getId(),
+                userEntity.getName(),
+                userEntity.getEmail(),
+                userEntity.getRole(),
+                userEntity.getCreatedAt(),
+                userEntity.getLastLogin()
         );
     }
 }
