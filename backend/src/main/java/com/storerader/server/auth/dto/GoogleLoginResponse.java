@@ -10,6 +10,7 @@ public record GoogleLoginResponse(
     public record UserResponse(
             String name,
             String email,
-            String picture
+            String picture,
+            String role
     ) {}
 }

@@ -64,7 +64,8 @@ public class AuthService {
         GoogleLoginResponse.UserResponse userResponse = new GoogleLoginResponse.UserResponse(
                 user.getName(),
                 user.getEmail(),
-                claims.picture()
+                claims.picture(),
+                user.getRole()
         );
 
         return new GoogleLoginResponse(accessToken, refreshToken, userResponse, claims);
@@ -267,6 +268,7 @@ public class AuthService {
             return new GoogleLoginResponse.UserResponse(
                     user.getName(),
                     user.getEmail(),
+                    user.getPicture(),
                     user.getRole()
             );
         } catch (Exception e) {

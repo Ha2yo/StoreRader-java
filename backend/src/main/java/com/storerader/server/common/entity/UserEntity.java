@@ -44,6 +44,8 @@ public class UserEntity {
 
     private String role;
 
+    private String picture;
+
     @Builder
     public UserEntity(
             Long id,
@@ -54,7 +56,8 @@ public class UserEntity {
             OffsetDateTime lastLogin,
             String refreshToken,
             OffsetDateTime refreshTokenExpiresAt,
-            String role
+            String role,
+            String picture
     ) {
         this.sub = sub;
         this.email = email;
@@ -64,5 +67,6 @@ public class UserEntity {
         this.refreshToken = refreshToken;
         this.refreshTokenExpiresAt = refreshTokenExpiresAt;
         this.role = role;
+        this.picture = picture;
     }
 }
