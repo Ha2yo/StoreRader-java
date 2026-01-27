@@ -8,6 +8,8 @@ export default function MyInfo() {
   const { user, handleLogout, loadHistory, refreshMe } = useMyInfo();
   const { isLoading } = useAuth();
 
+  const isAdmin = user?.role === "ADMIN";
+
   console.log("role:", user?.role);
 
   if (isLoading) {
@@ -77,6 +79,20 @@ export default function MyInfo() {
         >
           기록 보기
         </button>
+
+
+        {isAdmin && (
+          <button
+            {...touchEffect}
+            style={{
+              background: "#1890FF",
+              color: "#fff",
+              marginTop: "12px",
+            }}
+          >
+            관리자 페이지
+          </button>
+        )}
 
         <button
           {...touchEffect}
