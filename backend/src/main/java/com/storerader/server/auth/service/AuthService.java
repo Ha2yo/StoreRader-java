@@ -39,7 +39,7 @@ public class AuthService {
 
     private static final long ACCESS_TOKEN_EXPIRATION = 30 * 60 * 1000; // 30분
 //    private static final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7일
-    private static final long REFRESH_TOKEN_EXPIRATION = 1 * 60 * 60 * 1000; // 1시간
+    private static final long REFRESH_TOKEN_EXPIRATION = 24 * 60 * 60 * 1000; // 24시간
 
     /**
      * Google OAuth 로그인 전체 흐름을 관리한다.
@@ -269,7 +269,7 @@ public class AuthService {
                     user.getId(),
                     user.getName(),
                     user.getEmail(),
-                    null // 필요한 경우 프로필 이미지 URL 필드를 엔티티에 추가하여 전달
+                    user.getRole()
             );
         } catch (Exception e) {
             // 토큰이 만료되었거나 변조된 경우

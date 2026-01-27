@@ -56,7 +56,7 @@ export default function MyInfo() {
   return (
     <div className="container" style={{ paddingTop: "100px" }}>
       <div>
-        <img src={user.picture ?? ""} alt="profile" className="profile" />
+        <img src={user.picture} alt="profile" className="profile" />
         <p style={{ marginTop: 16, fontSize: 20, fontWeight: "bold" }}>
           {user.name}님 환영합니다
         </p>

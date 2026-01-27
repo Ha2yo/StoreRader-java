@@ -11,6 +11,6 @@ public record GoogleLoginResponse(
             long id,
             String name,
             String email,
-            String picture
+            String role
     ) {}
 }
