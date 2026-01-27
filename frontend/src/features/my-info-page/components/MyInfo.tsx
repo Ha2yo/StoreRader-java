@@ -3,12 +3,15 @@ import { touchEffect } from "../../../common/utils/touchEffect";
 import { useMyInfo } from "../hooks/useMyInfo";
 import { useAuth } from "../../../contexts/AuthContext";
 import { requestBackendLogin } from "../apis/googleLogin";
+import { useNavigate } from "react-router-dom";
 
 export default function MyInfo() {
   const { user, handleLogout, loadHistory, refreshMe } = useMyInfo();
   const { isLoading } = useAuth();
 
   const isAdmin = user?.role === "ADMIN";
+
+  const navigate = useNavigate();
 
   console.log("role:", user?.role);
 
@@ -68,14 +71,16 @@ export default function MyInfo() {
           <button
             {...touchEffect}
             style={{
-              width: "80%",
+              width: "30%",
               padding: "12px",
               background: "#1890FF",
-              border: "1px solid #ddd",
               borderRadius: "10px",
+              color: "#FFFFFF",
               fontSize: "16px",
+              fontWeight: "bold",
               marginTop: "20px",
             }}
+            onClick={() => navigate('/admin')}
           >
             관리자 페이지
           </button>

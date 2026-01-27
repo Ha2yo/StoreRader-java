@@ -1,13 +1,14 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "../pages/Home";
-import MyPage from "../pages/MyInfo";
-import MapPage from "../pages/Map";
-import SearchPage from "../pages/Search";
-import MaintenancePage from "../pages/Maintenance";
+import HomePage from "../pages/HomePage";
+import MyPage from "../pages/MyInfoPage";
+import MapPage from "../pages/MapPage";
+import SearchPage from "../pages/SearchPage";
+import MaintenancePage from "../pages/MaintenancePage";
 import App from "./App";
 import Navigation from "./Navigation";
 import { AuthProvider } from "../contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Admin from "../pages/Adminpage";
 
 function Routing() {
     const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
@@ -39,6 +40,7 @@ function RoutingContents() {
                 <Route path='/my-info' element={<MyPage />} />
                 <Route path='/search' element={<SearchPage />} />
                 <Route path='/maintenance' element={<MaintenancePage />} />
+                <Route path='/admin' element={<Admin />} />
             </Routes>
         </>
     );

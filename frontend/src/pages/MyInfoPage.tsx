@@ -1,6 +1,6 @@
 import MyInfo from "../features/my-info-page/components/MyInfo";
 
-function Mypage() {
+function MyInfoPage() {
   return (
     <div>
       <MyInfo />
@@ -8,4 +8,4 @@ function Mypage() {
   );
 }
 
-export default Mypage;
+export default MyInfoPage;

@@ -1,4 +1,4 @@
-function Maintenance() {
+function MaintenancePage() {
   return (
     <div className='container'>
       <h1>Maintenance</h1>
@@ -6,4 +6,4 @@ function Maintenance() {
   );
 }
 
-export default Maintenance;
+export default MaintenancePage;

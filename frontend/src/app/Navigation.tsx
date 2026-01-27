@@ -32,7 +32,8 @@ function Navigation() {
   const hideNav =
 
     location.pathname === "/search" ||
-    location.pathname === "/maintenance";
+    location.pathname === "/maintenance" ||
+    location.pathname === "/admin";
   if (hideNav) return null;
 
   return (

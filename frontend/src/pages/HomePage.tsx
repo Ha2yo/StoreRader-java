@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-function Home() {
+function HomePage() {
   const [hello, setHello] = useState<string>("");
 
   useEffect(() => {
@@ -18,4 +18,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default HomePage;
