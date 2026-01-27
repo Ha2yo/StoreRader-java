@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import type { UserHistoryItem } from "../types/MyInfo.types";
-import { requestGoogleLogout } from "../api/googleLogout";
+import { requestGoogleLogout } from "../apis/googleLogout";
 
 export function useMyInfo() {
   const { user, refreshMe, setUser } = useAuth();

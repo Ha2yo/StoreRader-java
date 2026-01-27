@@ -1,8 +1,8 @@
 import { GoogleLogin } from "@react-oauth/google";
 import { touchEffect } from "../../../common/utils/touchEffect";
 import { useMyInfo } from "../hooks/useMyInfo";
-import { requestBackendLogin } from "../api/googleLogin";
 import { useAuth } from "../../../contexts/AuthContext";
+import { requestBackendLogin } from "../apis/googleLogin";
 
 export default function MyInfo() {
   const { user, handleLogout, loadHistory, refreshMe } = useMyInfo();
@@ -64,6 +64,23 @@ export default function MyInfo() {
         </p>
         <p style={{ fontSize: 14, color: "#888", marginTop: 4 }}>{user.email}</p>
 
+        {isAdmin && (
+          <button
+            {...touchEffect}
+            style={{
+              width: "80%",
+              padding: "12px",
+              background: "#1890FF",
+              border: "1px solid #ddd",
+              borderRadius: "10px",
+              fontSize: "16px",
+              marginTop: "20px",
+            }}
+          >
+            관리자 페이지
+          </button>
+        )}
+
         <button
           {...touchEffect}
           style={{
@@ -79,20 +96,6 @@ export default function MyInfo() {
         >
           기록 보기
         </button>
-
-
-        {isAdmin && (
-          <button
-            {...touchEffect}
-            style={{
-              background: "#1890FF",
-              color: "#fff",
-              marginTop: "12px",
-            }}
-          >
-            관리자 페이지
-          </button>
-        )}
 
         <button
           {...touchEffect}
