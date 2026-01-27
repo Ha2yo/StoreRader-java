@@ -8,9 +8,8 @@ public record GoogleLoginResponse(
 ) {
 
     public record UserResponse(
-            long id,
             String name,
             String email,
-            String role
+            String picture
     ) {}
 }

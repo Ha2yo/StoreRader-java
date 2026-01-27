@@ -62,7 +62,6 @@ public class AuthService {
 
         // 응답 DTO 생성
         GoogleLoginResponse.UserResponse userResponse = new GoogleLoginResponse.UserResponse(
-                user.getId(),
                 user.getName(),
                 user.getEmail(),
                 claims.picture()
@@ -266,7 +265,6 @@ public class AuthService {
 
             // 4. DTO 반환
             return new GoogleLoginResponse.UserResponse(
-                    user.getId(),
                     user.getName(),
                     user.getEmail(),
                     user.getRole()
