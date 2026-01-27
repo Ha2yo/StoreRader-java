@@ -6,10 +6,8 @@ import { requestBackendLogin } from "../apis/googleLogin";
 import { useNavigate } from "react-router-dom";
 
 export default function MyInfo() {
-  const { user, handleLogout, loadHistory, refreshMe } = useMyInfo();
+  const { user, isAdmin, handleLogout, loadHistory, refreshMe } = useMyInfo();
   const { isLoading } = useAuth();
-
-  const isAdmin = user?.role === "ADMIN";
 
   const navigate = useNavigate();
 

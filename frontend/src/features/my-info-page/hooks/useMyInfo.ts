@@ -4,7 +4,7 @@ import type { UserHistoryItem } from "../types/MyInfo.types";
 import { requestGoogleLogout } from "../apis/googleLogout";
 
 export function useMyInfo() {
-  const { user, refreshMe, setUser } = useAuth();
+  const { user, isAdmin, refreshMe, setUser } = useAuth();
   const [history, setHistory] = useState<UserHistoryItem[]>([]);
 
   async function handleLogout() {
@@ -20,5 +20,5 @@ export function useMyInfo() {
   
   }
 
-  return { user, history, refreshMe, handleLogout, loadHistory };
+  return { user, isAdmin, history, refreshMe, handleLogout, loadHistory };
 }

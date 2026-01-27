@@ -9,6 +9,7 @@ import Navigation from "./Navigation";
 import { AuthProvider } from "../contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Admin from "../pages/Adminpage";
+import ProtectedRoute from "./ProtectedRoute";
 
 function Routing() {
     const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
@@ -25,22 +26,26 @@ function Routing() {
 }
 
 /**
- * 라우팅 처리 + 네트워크 상태 감지 + 페이지별 네비게이션 표시 제어 담당
+ * 라우팅 처리 + 페이지별 네비게이션 표시 제어 담당
  */
 function RoutingContents() {
     return (
         <>
             <Navigation />
 
-            {/* 애플리케이션 라우트 구성 */}
             <Routes>
+                {/* 누구나 접속 가능한 페이지 */}
                 <Route path='/' element={<App />} />
                 <Route path='/home' element={<HomePage />} />
                 <Route path='/map' element={<MapPage />} />
                 <Route path='/my-info' element={<MyPage />} />
                 <Route path='/search' element={<SearchPage />} />
                 <Route path='/maintenance' element={<MaintenancePage />} />
-                <Route path='/admin' element={<Admin />} />
+                
+                {/* 관리자만 접속 가능한 페이지 */}
+                <Route element={<ProtectedRoute />}>
+                    <Route path='/admin' element={<Admin />} />
+                </Route>
             </Routes>
         </>
     );
