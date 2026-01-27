@@ -56,12 +56,14 @@ export default function MyInfo() {
   return (
     <div className="container" style={{ paddingTop: "100px" }}>
       <div>
-        <img src={user.picture} alt="profile" className="profile" />
+        {user?.picture && (
+          <img src={user.picture} alt="profile" className="profile" />
+        )}
         <p style={{ marginTop: 16, fontSize: 20, fontWeight: "bold" }}>
           {user.name}님 환영합니다
         </p>
         <p style={{ fontSize: 14, color: "#888", marginTop: 4 }}>{user.email}</p>
-        
+
         <button
           {...touchEffect}
           style={{
