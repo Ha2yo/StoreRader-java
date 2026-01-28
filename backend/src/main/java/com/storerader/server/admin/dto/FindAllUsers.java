@@ -3,7 +3,7 @@ import com.storerader.server.common.entity.UserEntity;
 
 import java.time.OffsetDateTime;
 
-public record FindAllUsersResponse(
+public record FindAllUsers(
         Long id,
         String name,
         String email,
@@ -11,8 +11,8 @@ public record FindAllUsersResponse(
         OffsetDateTime createdAt,
         OffsetDateTime lastLogin
 ) {
-    public static FindAllUsersResponse from(UserEntity userEntity) {
-        return new FindAllUsersResponse(
+    public static FindAllUsers from(UserEntity userEntity) {
+        return new FindAllUsers(
                 userEntity.getId(),
                 userEntity.getName(),
                 userEntity.getEmail(),
