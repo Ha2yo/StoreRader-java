@@ -1,12 +1,20 @@
 import axios from "axios";
 
+const getBaseURL = () => {
+  const { hostname } = window.location;
+
+  if(hostname === "localhost") {
+    return import.meta.env.VITE_API_SERVER_URL;
+  }
+  return "/api";
+}
+
 const apiClient = axios.create({
-  baseURL: "/api",
+  baseURL: getBaseURL(),
   withCredentials: true,
 });
 
 let refreshPromise: Promise<void> | null = null;
-
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
