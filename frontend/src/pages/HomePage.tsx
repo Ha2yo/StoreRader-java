@@ -1,11 +1,11 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import apiClient from "../contexts/apiClient";
 
 function HomePage() {
   const [hello, setHello] = useState<string>("");
 
   useEffect(() => {
-    axios.get<string>("/api/")
+    apiClient.get<string>("/")
       .then(res => setHello(res.data))
       .catch(console.error);
   }, []);
