@@ -73,7 +73,7 @@ public class AuthController {
      */
     @PostMapping("/refresh")
     public ResponseEntity<TokenRefreshResponse> refresh(
-            TokenRefreshRequest tokenRefreshRequest, // 쿠키에서 직접 읽기
+            @RequestBody TokenRefreshRequest tokenRefreshRequest, // 쿠키에서 직접 읽기
             HttpServletResponse response
     ) {
         if (tokenRefreshRequest == null) {
