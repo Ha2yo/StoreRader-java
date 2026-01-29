@@ -2,6 +2,7 @@ package com.storerader.server.admin.controller;
 
 import com.storerader.server.admin.dto.FindAllUsersListResponse;
 import com.storerader.server.admin.service.AdminService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/select/users")
-    public ResponseEntity<FindAllUsersListResponse> getAllUsers() {
+    public ResponseEntity<FindAllUsersListResponse> getAllUsers(HttpServletRequest request) {
         return ResponseEntity.ok(adminService.findAllUsers());
     }
 }

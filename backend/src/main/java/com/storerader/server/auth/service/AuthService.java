@@ -287,7 +287,7 @@ public class AuthService {
      * @param name 찾고자 하는 쿠키의 이름
      * @return 쿠키의 값
      */
-    private String extractTokenFromCookie(
+    public String extractTokenFromCookie(
             HttpServletRequest request,
             String name
     ) {
