@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+@Component
 @RequiredArgsConstructor
 public class AdminAuthInterceptor implements HandlerInterceptor {
     private final AdminService adminService;
