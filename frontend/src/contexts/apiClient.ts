@@ -1,14 +1,16 @@
 import axios from "axios";
 
+// 실행 환경에 따라 서버 주소 결정
 const getBaseURL = () => {
   const { hostname } = window.location;
 
-  if(hostname === "localhost") {
+  if (hostname === "localhost") {
     return import.meta.env.VITE_API_SERVER_URL;
   }
   return "/api";
 }
 
+// 공통 axios 인스턴스
 const apiClient = axios.create({
   baseURL: getBaseURL(),
   withCredentials: true,
@@ -26,16 +28,18 @@ apiClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // Access Topken 만료 감지
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
         console.log("Access token 만료. 갱신 시도 중...");
 
+        // 토큰 갱신 수행
         if (!refreshPromise) {
           refreshPromise = apiClient
             .post("/auth/refresh")
-            .then(() => {})
+            .then(() => { })
             .finally(() => {
               refreshPromise = null;
             });
@@ -54,5 +58,5 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
+``
 export default apiClient;

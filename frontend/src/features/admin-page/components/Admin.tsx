@@ -5,25 +5,24 @@ function Admin() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
 
   return (
-    <div className="container">
-      <nav>
-        <h1>StoreRader Admin</h1>
-        <ul>
-          <li
+    <div>
+      <nav className="header">
+        <h1
+          style={{ cursor: "pointer" }}
           onClick={() => setActiveMenu("dashboard")}>
-            대시보드
-          </li>
+          StoreRader Admin
+        </h1>
+        <ul className="menu">
           <li
-          onClick={() => setActiveMenu("users")}>
+            style={{ cursor: "pointer" }}
+            onClick={() => setActiveMenu("users")}>
             DB 조회 (users)
           </li>
         </ul>
       </nav>
 
-      <main>
-        {activeMenu === "dashboard" &&
-          <div>관리자 대시보드입니다.</div>
-        }
+      <main className="container">
+        {activeMenu === "dashboard" && <div>관리자 대시보드입니다.</div>}
         {activeMenu === "users" && <UserTable />}
       </main>
     </div>
