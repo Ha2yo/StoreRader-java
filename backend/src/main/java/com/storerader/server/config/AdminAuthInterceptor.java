@@ -1,4 +1,4 @@
-package com.storerader.server.admin.interceptor;
+package com.storerader.server.config;
 
 import com.storerader.server.admin.service.AdminService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +14,10 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        System.out.println("[ADMIN-INTERCEPTOR] uri=" + request.getRequestURI()
+                + " servletPath=" + request.getServletPath()
+                + " contextPath=" + request.getContextPath()
+                + " method=" + request.getMethod());
         adminService.requireAdminFromDb(request);
         return true;
     }
