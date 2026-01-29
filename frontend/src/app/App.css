@@ -321,6 +321,17 @@ body,
 .header {
   display: flex;
   justify-content: space-between;
+  background-color: #2f669c;
+  color: #f1f5f9;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.05);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1;
 }
 
 .menu {
@@ -377,4 +388,53 @@ table tbody tr:hover {
 
 table tbody tr:nth-child(even) {
   background: #fcfcfd;
+}
+
+.menu {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  display: none;
+  flex-direction: column;
+
+  margin-top: 8px;
+  padding: 8px 0;
+
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+
+  min-width: 120px;
+  z-index: 100;
+}
+
+.dropdown-menu li {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: flex;
+}
+
+.table-card {
+  background-color: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }

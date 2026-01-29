@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { User } from "../types/fetchUsers";
 import { fetchUsersTable } from "../apis/fetchUsersTable";
 
-function UserTable() {
+function SelectUsers() {
     const [users, SetUsers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -103,4 +103,4 @@ function UserTable() {
     );
 }
 
-export default UserTable;
+export default SelectUsers;

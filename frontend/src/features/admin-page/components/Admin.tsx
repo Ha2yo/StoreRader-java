@@ -1,5 +1,7 @@
 import { useState } from "react";
-import UserTable from "./UserTable";
+import SelectUsers from "./SelectUsers";
+import AddGoods from "./AddGoods";
+
 
 function Admin() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
@@ -14,16 +16,30 @@ function Admin() {
         </h1>
         <ul className="menu">
           <li
-            style={{ cursor: "pointer" }}
-            onClick={() => setActiveMenu("users")}>
-            DB 조회 (users)
+            className="dropdown">
+            <span style={{ cursor: "pointer" }}>데이터 추가</span>
+
+            <ul className="dropdown-menu">
+              <li onClick={() => setActiveMenu("add_goods")}>goods</li>
+            </ul>
+          </li>
+
+          <li
+            className="dropdown">
+            <span style={{ cursor: "pointer" }}>DB 조회</span>
+
+            <ul className="dropdown-menu">
+              <li onClick={() => setActiveMenu("select_users")}>users</li>
+              <li onClick={() => setActiveMenu("select_goods")}>goods</li>
+            </ul>
           </li>
         </ul>
       </nav>
 
       <main className="container">
-        {activeMenu === "dashboard" && <div>관리자 대시보드입니다.</div>}
-        {activeMenu === "users" && <UserTable />}
+        {activeMenu === "dashboard" && <div>관리자 홈입니다.</div>}
+        {activeMenu === "select_users" && <SelectUsers />}
+        {activeMenu === "add_goods" && <AddGoods />}
       </main>
     </div>
   );
