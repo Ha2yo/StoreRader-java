@@ -30,7 +30,8 @@ public class AdminService {
     private final AuthService authService;
     private final RestClient restClient;
 
-    @Value("${PUBLIC_API_KEY}") String serviceKey;
+    @Value("${PUBLIC_API_KEY}")
+    private String serviceKey;
 
     private static final String BASE_URL =
             "http://openapi.price.go.kr/openApiImpl/ProductPriceInfoService";
