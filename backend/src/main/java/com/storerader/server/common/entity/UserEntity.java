@@ -20,12 +20,13 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "sub", unique = true, nullable = false)
     private String sub;
 
-    @Column(nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "name")
     private String name;
 
     @CreatedDate
@@ -42,8 +43,10 @@ public class UserEntity {
     @Column(name = "refresh_token_expires_at")
     private OffsetDateTime refreshTokenExpiresAt;
 
+    @Column(name = "role")
     private String role;
 
+    @Column(name = "picture")
     private String picture;
 
     @Builder

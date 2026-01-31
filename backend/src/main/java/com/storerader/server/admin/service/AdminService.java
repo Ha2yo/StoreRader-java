@@ -1,9 +1,14 @@
 package com.storerader.server.admin.service;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.storerader.server.admin.dto.FindAllUsers;
 import com.storerader.server.admin.dto.FindAllUsersListResponse;
+import com.storerader.server.admin.dto.GoodApiItem;
+import com.storerader.server.admin.dto.GoodApiResponse;
 import com.storerader.server.auth.service.AuthService;
+import com.storerader.server.common.entity.GoodEntity;
 import com.storerader.server.common.entity.UserEntity;
+import com.storerader.server.common.repository.GoodRepository;
 import com.storerader.server.common.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,8 +23,17 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
+import javax.swing.text.Document;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.IOException;
+import java.io.StringReader;
 import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -27,8 +41,10 @@ import java.util.function.Function;
 @Service
 public class AdminService {
     private final UserRepository userRepository;
+    private final XmlMapper xmlMapper;
     private final AuthService authService;
     private final RestClient restClient;
+    private final GoodRepository goodRepository;
 
     @Value("${PUBLIC_API_KEY}")
     private String serviceKey;
@@ -71,21 +87,46 @@ public class AdminService {
         return new FindAllUsersListResponse(userDtos);
     }
 
+    @Transactional
     public String fetchGoodApi(){
-        return fetchString(
+        String xml = fetchString(
                 "/getProductInfoSvc.do",
-                builder -> builder.queryParam("serviceKey", serviceKey),
                 "상품"
         );
+
+        GoodApiResponse response = parseGoodsResponse(xml);
+
+        if(response == null || response.getResult() == null)
+            return xml;
+
+        for (GoodApiItem item: response.getResult().getItems()) {
+            Integer goodId = parseInteger(item.getGoodId());
+            GoodEntity good = goodId == null
+                    ?new GoodEntity()
+                    :goodRepository.findByGoodId(goodId).orElseGet(GoodEntity::new);
+
+            if(good.getCreatedAt() == null)
+                good.setCreatedAt(OffsetDateTime.now());
+
+            good.setGoodId(goodId);
+            good.setGoodName(item.getGoodName());
+            good.setTotalCnt(parseInteger(item.getGoodTotalCnt()));
+
+            good.setTotalDivCode(item.getGoodTotalDivCode());
+            good.setUpdatedAt(OffsetDateTime.now());
+            goodRepository.save(good);
+        }
+
+        return xml;
     }
 
     private String fetchString(
             String path,
-            Function<UriComponentsBuilder, UriComponentsBuilder> queryCustomizer,
             String label
     ) {
-        URI uri = queryCustomizer
-                .apply(UriComponentsBuilder.fromHttpUrl(BASE_URL).path(path))
+        URI uri = UriComponentsBuilder.fromHttpUrl(BASE_URL)
+                .path(path)
+                .queryParam("servicekey", serviceKey)
                 .build(true)
                 .toUri();
 
@@ -105,6 +146,24 @@ public class AdminService {
             throw new IllegalStateException(label + " API 오류 상태: " + status, ex);
         } catch (RestClientException ex) {
             throw new IllegalStateException(label + " API 요청 실패: " + ex.getMessage(), ex);
+        }
+    }
+
+    private GoodApiResponse parseGoodsResponse(String xml) {
+        try {
+            return xmlMapper.readValue(xml, GoodApiResponse.class);
+        } catch (IOException ex) {
+            throw new IllegalStateException("상품 응답 파싱 실패: " + ex.getMessage(), ex);
+        }
+    }
+
+    private Integer parseInteger(String value) {
+        if (value == null || value.isBlank())
+            return null;
+        try {
+            return Integer.valueOf(value.trim());
+        } catch(NumberFormatException ex) {
+            return null;
         }
     }
 }
