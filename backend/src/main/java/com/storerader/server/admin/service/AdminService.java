@@ -127,7 +127,7 @@ public class AdminService {
     ) {
         URI uri = UriComponentsBuilder.fromHttpUrl(BASE_URL)
                 .path(path)
-                .queryParam("servicekey", serviceKey)
+                .queryParam("ServiceKey", serviceKey)
                 .build(true)
                 .toUri();
 
