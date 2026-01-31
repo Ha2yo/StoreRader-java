@@ -20,4 +20,9 @@ public class AdminController {
     public ResponseEntity<FindAllUsersListResponse> getAllUsers(HttpServletRequest request) {
         return ResponseEntity.ok(adminService.findAllUsers());
     }
+
+    @GetMapping("/get/public-data/goods")
+    public String fetchGoodsApi() {
+        return adminService.fetchGoodApi();
+    }
 }

@@ -102,6 +102,7 @@ jobs:
           echo "API_SERVER_URL=${{ secrets.API_SERVER_URL }}" >> .env 
           echo "APP_COOKIE_SAME_SITE=${{ secrets.APP_COOKIE_SAME_SITE }}" >> .env
           echo "APP_COOKIE_SECURE=${{ secrets.APP_COOKIE_SECURE }}" >> .env
+          echo "PUBLIC_API_KEY=${{ secrets.PUBLIC_API_KEY }}" >> .env
 
           sudo docker-compose pull
           sudo docker-compose up -d --remove-orphans
