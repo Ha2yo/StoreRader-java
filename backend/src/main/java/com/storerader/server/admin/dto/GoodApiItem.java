@@ -4,7 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-record GoodApiItem(
+public record GoodApiItem(
         @JacksonXmlProperty(localName = "goodId") String goodId,
         @JacksonXmlProperty(localName = "goodName") String goodName,
         @JacksonXmlProperty(localName = "goodTotalCnt") String goodTotalCnt,

@@ -97,11 +97,11 @@ public class AdminService {
 
         GoodApiResponse response = parseGoodsResponse(xml);
 
-        if(response == null || response.getResult() == null)
+        if(response == null || response.result() == null)
             return xml;
 
-        for (GoodApiItem item: response.getResult().getItems()) {
-            Integer goodId = parseInteger(item.getGoodId());
+        for (GoodApiItem item: response.result().item()) {
+            Integer goodId = parseInteger(item.goodId());
             GoodEntity good = goodId == null
                     ?new GoodEntity()
                     :goodRepository.findByGoodId(goodId).orElseGet(GoodEntity::new);
@@ -110,10 +110,10 @@ public class AdminService {
                 good.setCreatedAt(OffsetDateTime.now());
 
             good.setGoodId(goodId);
-            good.setGoodName(item.getGoodName());
-            good.setTotalCnt(parseInteger(item.getGoodTotalCnt()));
+            good.setGoodName(item.goodName());
+            good.setTotalCnt(parseInteger(item.goodTotalCnt()));
 
-            good.setTotalDivCode(item.getGoodTotalDivCode());
+            good.setTotalDivCode(item.goodTotalDivCode());
             good.setUpdatedAt(OffsetDateTime.now());
             goodRepository.save(good);
         }
