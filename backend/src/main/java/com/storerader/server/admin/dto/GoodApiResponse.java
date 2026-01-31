@@ -6,5 +6,5 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @JacksonXmlRootElement(localName = "response")
 public record GoodApiResponse(
         @JacksonXmlProperty(localName = "result")
-        GoodApiResult Apiresult
+        GoodApiResult result
 ) {}
