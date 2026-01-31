@@ -38,7 +38,7 @@ apiClient.interceptors.response.use(
         // 토큰 갱신 수행
         if (!refreshPromise) {
           refreshPromise = apiClient
-            .post("/auth/refresh")
+            .post("/auth/refresh", {})
             .then(() => { })
             .finally(() => {
               refreshPromise = null;
@@ -58,5 +58,5 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-``
+
 export default apiClient;

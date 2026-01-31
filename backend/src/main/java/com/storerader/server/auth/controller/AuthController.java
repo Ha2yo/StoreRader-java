@@ -74,11 +74,25 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<TokenRefreshResponse> refresh(
             @RequestBody TokenRefreshRequest tokenRefreshRequest, // 쿠키에서 직접 읽기
+            HttpServletRequest request,
             HttpServletResponse response
     ) {
-        if (tokenRefreshRequest == null) {
+        if (tokenRefreshRequest == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+
+        String refreshToken = null;
+
+        if(tokenRefreshRequest != null)
+            refreshToken = tokenRefreshRequest.refreshToken();
+
+        if(refreshToken == null || refreshToken.isBlank())
+            refreshToken = authService.extractTokenFromCookie(
+                    request, "refreshToken"
+            );
+
+        if(refreshToken == null || refreshToken.isBlank())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .build();
 
         // 서비스에서 새 토큰 생성
         String newAccessToken = authService.refreshAccessToken(tokenRefreshRequest.toString());
