@@ -97,10 +97,10 @@ public class AdminService {
 
         GoodApiResponse response = parseGoodsResponse(xml);
 
-        if(response == null || response.result() == null)
+        if(response == null || response.Apiresult() == null)
             return xml;
 
-        for (GoodApiItem item: response.result().item()) {
+        for (GoodApiItem item: response.Apiresult().item()) {
             Integer goodId = parseInteger(item.goodId());
             GoodEntity good = goodId == null
                     ?new GoodEntity()
