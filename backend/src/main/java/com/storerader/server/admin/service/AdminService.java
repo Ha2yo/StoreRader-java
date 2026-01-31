@@ -41,10 +41,11 @@ import java.util.function.Function;
 @Service
 public class AdminService {
     private final UserRepository userRepository;
-    private final XmlMapper xmlMapper;
     private final AuthService authService;
     private final RestClient restClient;
     private final GoodRepository goodRepository;
+
+    private final XmlMapper xmlMapper = new XmlMapper();
 
     @Value("${PUBLIC_API_KEY}")
     private String serviceKey;
