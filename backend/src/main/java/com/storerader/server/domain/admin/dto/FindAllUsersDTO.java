@@ -1,4 +1,4 @@
-package com.storerader.server.admin.dto;
+package com.storerader.server.domain.admin.dto;
 import com.storerader.server.common.entity.UserEntity;
 
 import java.time.OffsetDateTime;

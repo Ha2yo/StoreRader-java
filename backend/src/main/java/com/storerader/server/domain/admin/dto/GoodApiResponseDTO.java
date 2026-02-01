@@ -1,4 +1,4 @@
-package com.storerader.server.admin.dto;
+package com.storerader.server.domain.admin.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;

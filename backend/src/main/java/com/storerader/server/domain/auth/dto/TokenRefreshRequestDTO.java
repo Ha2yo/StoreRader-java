@@ -1,4 +1,4 @@
-package com.storerader.server.auth.dto;
+package com.storerader.server.domain.auth.dto;
 
 public record TokenRefreshRequest(
         String refreshToken

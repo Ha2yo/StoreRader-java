@@ -1,3 +1,18 @@
+/************************************************************************
+ * File: domain/admin/controller/AdminController.java
+ * Description:
+ *     관리자(admin) 도메인의 컨트롤러 계층으로,
+ *     관리자 전용 API 요청을 받아 서비스 계층으로 위임하고
+ *     그 결과를 HTTP 응답 형태로 반환한다.
+ *
+ * Responsibilities:
+ *     1) getAllUsers()
+ *         - 전체 유저 목록 조회 (관리자 전용)
+ *
+ *     2) fetchGoodsApi()
+ *         - 외부 공공 API를 통해 상품(goods) 데이터 조회
+ ************************************************************************/
+
 package com.storerader.server.auth.controller;
 
 import com.storerader.server.auth.dto.GoogleLoginRequest;
