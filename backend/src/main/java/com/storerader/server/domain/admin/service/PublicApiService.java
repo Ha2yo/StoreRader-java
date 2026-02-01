@@ -40,7 +40,7 @@ import java.time.OffsetDateTime;
 public class PublicApiService {
     private GoodRepository goodRepository;
     private final RestClient restClient;
-    private final XmlMapper xmlMapper;
+    private final XmlMapper xmlMapper = new XmlMapper();
 
     @Value("${PUBLIC_API_KEY}")
     private String serviceKey;
