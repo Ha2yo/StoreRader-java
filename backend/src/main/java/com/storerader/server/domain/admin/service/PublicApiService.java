@@ -38,7 +38,7 @@ import java.time.OffsetDateTime;
 @Service
 @RequiredArgsConstructor
 public class PublicApiService {
-    private GoodRepository goodRepository;
+    private final GoodRepository goodRepository;
     private final RestClient restClient;
     private final XmlMapper xmlMapper = new XmlMapper();
 
@@ -49,7 +49,7 @@ public class PublicApiService {
             "http://openapi.price.go.kr/openApiImpl/ProductPriceInfoService";
 
     @Transactional
-    void saveGoods(GoodApiResponseDTO response) {
+    public void saveGoods(GoodApiResponseDTO response) {
         for (GoodApiItemDTO item : response.result().item()) {
             Integer goodId = parseInteger(item.goodId());
             if (goodId == null) continue;
