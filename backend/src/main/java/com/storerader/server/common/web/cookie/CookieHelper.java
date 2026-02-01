@@ -25,7 +25,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CookieHelper {
     // 쿠키 보안 설정
     @Value("${APP_COOKIE_SECURE}")
