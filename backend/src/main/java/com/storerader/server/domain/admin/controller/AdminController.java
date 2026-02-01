@@ -16,7 +16,6 @@ package com.storerader.server.domain.admin.controller;
 
 import com.storerader.server.domain.admin.dto.FindAllUsersListResponseDTO;
 import com.storerader.server.domain.admin.service.AdminService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
