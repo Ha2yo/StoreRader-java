@@ -1,7 +1,13 @@
+/**
+ * File: features/my-info-page/api/requestGoogleLogin.tsx
+ * Description:
+ *   Google ID Token을 이용해 백엔드에 로그인을 요청한다
+ */
+
 import apiClient from "../../../contexts/apiClient";
 import type { GoogleLoginResponse } from '../types/MyInfo.types';
 
-export async function requestBackendLogin(idToken: string) {
+export async function requestGoogleLogin(idToken: string) {
   try {
     const res = await apiClient.post<GoogleLoginResponse>(
       "/auth/google",

@@ -1,3 +1,8 @@
+/**
+ * File: features/admin-page/components/Admin.tsx
+ * Description:
+ *   관리자 페이지의 메인 레이아웃 및 메뉴 제어를 담당하는 UI 컴포넌트
+ */
 import { useState } from "react";
 import SelectUsers from "./SelectUsers";
 import AddGoods from "./AddGoods";

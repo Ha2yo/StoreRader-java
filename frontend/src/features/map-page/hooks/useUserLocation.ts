@@ -1,3 +1,10 @@
+/**
+ * File: features/admin-page/hooks/useUserLocation.tsx
+ * Description:
+ *   저장된 사용자 위치 정보를 기반으로
+ *   지도 위 사용자 위치 마커를 주기적으로 갱신한다
+ */
+
 import { useEffect } from "react";
 import L from "leaflet";
 import { loadSavedPosition } from "../../../common/utils/loadSavedPos";

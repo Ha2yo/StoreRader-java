@@ -1,3 +1,9 @@
+/**
+ * File: features/admin-page/components/Map.tsx
+ * Description:
+ *   Leaflet 지도를 렌더링하고 사용자 위치를 표시하는 UI 컴포넌트
+ */
+
 import { useRef } from "react";
 import { useMapInit } from "../hooks/useMapInit";
 import { useUserLocation } from "../hooks/useUserLocation";
@@ -7,12 +13,12 @@ import "leaflet/dist/leaflet.css";
 function Map() {
     const mapRef = useRef<HTMLDivElement>(null);
     const leafletMap = useRef<L.Map | null>(null);
-    const markerRef = useRef<L.Layer | null>(null);             // 사용자 위치 아이콘
+    const markerRef = useRef<L.Layer | null>(null);
 
     // 지도 초기화
     useMapInit(mapRef, leafletMap);
-  
-    // 사용자 현재 위치 아이콘 갱신
+
+    // 사용자 현재 위치 주기적으로 갱신
     useUserLocation(leafletMap, markerRef);
 
     return (

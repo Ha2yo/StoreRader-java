@@ -1,3 +1,9 @@
+/**
+ * File: features/admin-page/hooks/useMapInit.tsx
+ * Description:
+ *   Leaflet 지도를 초기화한다
+ */
+
 import { useEffect } from "react";
 import L from "leaflet";
 import { loadSavedPosition } from "../../../common/utils/loadSavedPos";

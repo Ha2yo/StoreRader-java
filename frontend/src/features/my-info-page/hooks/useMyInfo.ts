@@ -1,3 +1,9 @@
+/**
+ * File: features/my-info-page/hooks/useMyInfo.tsx
+ * Description:
+ *   마이페이지에서 사용하는 유저 정보를 관리한다
+ */
+
 import { useState } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import type { UserHistoryItem } from "../types/MyInfo.types";
@@ -17,7 +23,7 @@ export function useMyInfo() {
   }
 
   async function loadHistory() {
-  
+
   }
 
   return { user, isAdmin, history, refreshMe, handleLogout, loadHistory };

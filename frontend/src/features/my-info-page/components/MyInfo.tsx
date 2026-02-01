@@ -1,8 +1,14 @@
+/**
+ * File: features/my-info-page/components/MyInfo.tsx
+ * Description:
+ *   사용자 로그인 상태에 따라 로그인 UI 또는 유저 정보 화면을 렌더링하는 컴포넌트
+ */
+
 import { GoogleLogin } from "@react-oauth/google";
 import { touchEffect } from "../../../common/utils/touchEffect";
 import { useMyInfo } from "../hooks/useMyInfo";
 import { useAuth } from "../../../contexts/AuthContext";
-import { requestBackendLogin } from "../apis/googleLogin";
+import { requestGoogleLogin } from "../apis/googleLogin";
 import { useNavigate } from "react-router-dom";
 
 export default function MyInfo() {
@@ -21,6 +27,7 @@ export default function MyInfo() {
     );
   }
 
+  // 비로그인 상태
   if (user == null) {
     return (
       <div
@@ -40,7 +47,7 @@ export default function MyInfo() {
           onSuccess={async (credentialResponse) => {
             try {
               const idToken = credentialResponse.credential as string;
-              await requestBackendLogin(idToken);
+              await requestGoogleLogin(idToken);
 
               await refreshMe();
 
@@ -55,7 +62,8 @@ export default function MyInfo() {
       </div>
     );
   }
-  console.log("picture:", user?.picture);
+
+  // 로그인 상태
   return (
     <div className="container" style={{ paddingTop: "100px" }}>
       <div>
@@ -65,6 +73,7 @@ export default function MyInfo() {
         </p>
         <p style={{ fontSize: 14, color: "#888", marginTop: 4 }}>{user.email}</p>
 
+        {/* 관리자에게만 표시 */}
         {isAdmin && (
           <button
             {...touchEffect}
@@ -84,6 +93,7 @@ export default function MyInfo() {
           </button>
         )}
 
+        {/* 사용자 기록 조회 */}
         <button
           {...touchEffect}
           style={{
@@ -100,6 +110,7 @@ export default function MyInfo() {
           기록 보기
         </button>
 
+        {/* 로그아웃 */}
         <button
           {...touchEffect}
           style={{

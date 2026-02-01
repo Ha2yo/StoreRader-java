@@ -1,11 +1,11 @@
 /**
  * File: app/Navigation.tsx
  * Description:
- *   StoreRader 앱의 하단 내비게이션 바를 구성하는 공통 UI 컴포넌트.
+ *   StoreRader 웹 애플리케이션의 하단 내비게이션 바 컴포넌트
  *
  * Responsibilities:
  *   1. 하단 고정 네비게이션 UI 렌더링
- *   2. 현재 URL 경로(pathname)에 따른 아이콘 활성화 처리
+ *   2. 현재 URL 경로(pathname)에 따라 활성 아이콘 스타일 적용
  *   3. 특정 페이지에서는 네비게이션 바를 숨김
  */
 
@@ -21,19 +21,19 @@ function Navigation() {
   const inactiveColor = "#000";
 
 
-  // 현재 페이지가 활성 상태일 때 아이콘을 확대하고 색상을 변경한다.
+  // 아이콘 활성 상태에 따른 스타일 반환
   const iconStyle = (isActive: boolean) => ({
     transition: "transform 0.3s ease, stroke 0.3s ease",
     transform: isActive ? "scale(1.25)" : "scale(1)",
     transformOrigin: "center center",
   });
 
-  // 특정 페이지에서 네비게이션 바를 숨긴다
+  // 네비게이션 바를 숨겨야 하는 페이지 여부 판단
   const hideNav =
-
     location.pathname === "/search" ||
     location.pathname === "/maintenance" ||
     location.pathname === "/admin";
+    
   if (hideNav) return null;
 
   return (

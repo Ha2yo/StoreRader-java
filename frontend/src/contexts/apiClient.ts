@@ -1,6 +1,16 @@
+/**
+ * File: contexts/apiClient.tsx
+ * Description:
+ *   StoreRader 웹 에플리케이션에서 사용하는 공통 Axios 클라이언트
+ *
+ * Responsibilities:
+ *   1. 실행 환경(개발/운영)에 따라 baseURL을 결정
+ *   2. 쿠키 기반 인증을 위해 withCredentials 적용
+ *   3. 401(Access Token 만료) 발생 시 /auth/refresh 호출 후 원 요청 1회 재시도
+ */
+
 import axios from "axios";
 
-// 실행 환경에 따라 서버 주소 결정
 const getBaseURL = () => {
   const { hostname } = window.location;
 
@@ -10,7 +20,6 @@ const getBaseURL = () => {
   return "/api";
 }
 
-// 공통 axios 인스턴스
 const apiClient = axios.create({
   baseURL: getBaseURL(),
   withCredentials: true,

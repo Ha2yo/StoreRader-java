@@ -1,9 +1,19 @@
+/**
+ * File: app/Routing.tsx
+ * Description:
+ *   StoreRader 웹 에플리케이션의 라우팅 엔트리
+ *
+ * Responsibilities:
+ *   1. GoogleOAuthProvider, AuthProvider로 전역 컨텍스트 주입
+ *   2. Routes 구성
+ *   3. 관리자 전용 라우트에 ProtectedRoute 적용
+ */
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import MyPage from "../pages/MyInfoPage";
 import MapPage from "../pages/MapPage";
 import SearchPage from "../pages/SearchPage";
-import MaintenancePage from "../pages/MaintenancePage";
 import App from "./App";
 import Navigation from "./Navigation";
 import { AuthProvider } from "../contexts/AuthContext";
@@ -25,24 +35,20 @@ function Routing() {
     );
 }
 
-/**
- * 라우팅 처리 + 페이지별 네비게이션 표시 제어 담당
- */
 function RoutingContents() {
     return (
         <>
             <Navigation />
 
             <Routes>
-                {/* 누구나 접속 가능한 페이지 */}
+                {/* 공개 페이지 */}
                 <Route path='/' element={<App />} />
                 <Route path='/home' element={<HomePage />} />
                 <Route path='/map' element={<MapPage />} />
                 <Route path='/my-info' element={<MyPage />} />
                 <Route path='/search' element={<SearchPage />} />
-                <Route path='/maintenance' element={<MaintenancePage />} />
-                
-                {/* 관리자만 접속 가능한 페이지 */}
+
+                {/* 관리자 전용 페이지 */}
                 <Route element={<ProtectedRoute />}>
                     <Route path='/admin' element={<Admin />} />
                 </Route>

@@ -1,3 +1,15 @@
+/**
+ * File: contexts/LocationContext.tsx
+ * Description:
+ *   사용자의 현재 위치 정보를 추적하고 저장하기 위한 컨텍스트
+ *
+ * Responsibilities:
+ *   1. 사용자 위치 조회
+ *   2. 일정 주기로 위치 정보 갱신
+ *   3. 마지막 위치 정보를 로컬 스토리지에 저장
+ */
+
+
 import { createContext, useEffect, useState } from "react";
 
 export const LocationContext = createContext<GeolocationPosition | null>(null);
@@ -14,7 +26,7 @@ function LocationProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // 사용자 좌표 기록
+    // 위치 정보 기록
     function updatePosition(position: GeolocationPosition) {
       var lat = position.coords.latitude
       var lng = position.coords.longitude
@@ -34,7 +46,7 @@ function LocationProvider({ children }: { children: React.ReactNode }) {
       { enableHighAccuracy: true }
     );
 
-    // 5초 주기로 위치 갱신
+    // 5초 주기로 위치 정보 갱신
     const id = setInterval(() => {
       navigator.geolocation.getCurrentPosition(
         updatePosition,

@@ -1,3 +1,9 @@
+/**
+ * File: common/utils/touchEffect.ts
+ * Description:
+ *   버튼 클릭 시 눌림 효과를 제공한다
+ */
+
 export const touchEffect = {
     onTouchStart: (e: React.TouchEvent<HTMLButtonElement>) => {
         e.currentTarget.style.transform = "scale(0.97)";
