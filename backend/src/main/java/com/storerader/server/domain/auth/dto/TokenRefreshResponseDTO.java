@@ -1,5 +1,5 @@
 package com.storerader.server.domain.auth.dto;
 
-public record TokenRefreshResponse(
+public record TokenRefreshResponseDTO(
         String accessToken
 ) {}

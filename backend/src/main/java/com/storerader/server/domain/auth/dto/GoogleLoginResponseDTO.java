@@ -1,10 +1,10 @@
 package com.storerader.server.domain.auth.dto;
 
-public record GoogleLoginResponse(
+public record GoogleLoginResponseDTO(
         String accessToken,
         String refreshToken,
         UserResponse user,
-        GoogleClaims claims
+        GoogleClaimsDTO claims
 ) {
 
     public record UserResponse(

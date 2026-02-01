@@ -2,7 +2,7 @@ package com.storerader.server.domain.auth.dto;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 
-public record GoogleClaims(
+public record GoogleClaimsDTO(
         String iss,             // 토큰 발급자
         String sub,             // Google 유저 고유 ID
         String aud,             // 토큰 수신자
@@ -14,8 +14,8 @@ public record GoogleClaims(
         String picture          // 유저 프로필 이미지 URL
 ) {
 
-    public static GoogleClaims from(GoogleIdToken.Payload payload) {
-        return new GoogleClaims(
+    public static GoogleClaimsDTO from(GoogleIdToken.Payload payload) {
+        return new GoogleClaimsDTO(
                 payload.getIssuer(),
                 payload.getSubject(),
                 payload.getAudience().toString(),

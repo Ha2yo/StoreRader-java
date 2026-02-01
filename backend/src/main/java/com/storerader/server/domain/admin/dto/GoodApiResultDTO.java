@@ -7,8 +7,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record GoodApiResult(
+public record GoodApiResultDTO(
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "item")
-        List<GoodApiItem> item
+        List<GoodApiItemDTO> item
 ) {}

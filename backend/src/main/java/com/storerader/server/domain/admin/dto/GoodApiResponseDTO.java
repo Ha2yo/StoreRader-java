@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JacksonXmlRootElement(localName = "response")
-public record GoodApiResponse(
+public record GoodApiResponseDTO(
         @JacksonXmlProperty(localName = "result")
-        GoodApiResult result
+        GoodApiResultDTO result
 ) {}

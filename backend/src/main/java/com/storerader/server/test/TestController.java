@@ -14,7 +14,7 @@ public class TestController {
     private final TestService testService;
 
     @RequestMapping("/")
-    public String index(){
+    public String index() {
         return "index";
     }
 
@@ -23,19 +23,3 @@ public class TestController {
         return testService.findAll();
     }
 }
-
-//@RequestMapping("/auth")
-//public class AuthController {
-//
-//    private final AuthService authService;
-//
-//    public AuthController(AuthService authService) {
-//        this.authService = authService;
-//    }
-//
-//    @PostMapping("/google")
-//    public String googleLogin(@RequestBody GoogleLoginRequest req) {
-//        authService.insertUserFromIdTokenForTest(req.getIdToken());
-//        return "ok";
-//    }
-//}

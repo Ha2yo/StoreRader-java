@@ -2,11 +2,9 @@ package com.storerader.server.domain.admin.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record GoodApiItem(
+public record GoodApiItemDTO(
         @JacksonXmlProperty(localName = "goodId")
         String goodId,
         @JacksonXmlProperty(localName = "goodName")
