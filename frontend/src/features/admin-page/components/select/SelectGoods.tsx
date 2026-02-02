@@ -1,9 +1,8 @@
+import useGoodsTable from "../../hooks/useGoodsTable";
 
-import useUsersTable from "../../hooks/useUserTable";
-
-function SelectUsers() {
-    const { users, sortedUsers, isLoading, sortKey, sortOrder, handleSort } =
-        useUsersTable();
+function SelectGoods() {
+    const { goods, sortedGoods, isLoading, sortKey, sortOrder, handleSort } =
+        useGoodsTable();
 
     if (isLoading)
         return <div>데이터를 불러오는 중입니다...</div>
@@ -12,7 +11,7 @@ function SelectUsers() {
         <div className="container">
             <div className="headerRow">
                 <h1>Goods Table</h1>
-                <span>총 {users.length}개</span>
+                <span>총 {goods.length}개</span>
             </div>
 
             <div className="tableWrap">
@@ -23,37 +22,37 @@ function SelectUsers() {
                             <th onClick={() => handleSort("id")} className="sortable">
                                 ID {sortKey === "id" && (sortOrder === "asc" ? "▲" : "▼")}
                             </th>
-                            <th>이름</th>
-                            <th>이메일</th>
-                            <th>권한</th>
+                            <th onClick={() => handleSort("goodId")} className="sortable">
+                                상품 ID {sortKey === "goodId" && (sortOrder === "asc" ? "▲" : "▼")}
+                            </th>
+                            <th>상품명</th>
+                            <th>총 용량</th>
+                            <th>분류 코드</th>
 
                             {/* 가입일 정렬 */}
                             <th onClick={() => handleSort("createdAt")} className="sortable">
-                                가입일 {sortKey === "createdAt" && (sortOrder === "asc" ? "▲" : "▼")}
+                                생성일자 {sortKey === "createdAt" && (sortOrder === "asc" ? "▲" : "▼")}
                             </th>
-                            
+
                             {/* 최근 로그인 정렬 */}
-                            <th onClick={() => handleSort("lastLogin")} className="sortable">
-                                최근 로그인 {sortKey === "lastLogin" && (sortOrder === "asc" ? "▲" : "▼")}
+                            <th onClick={() => handleSort("updatedAt")} className="sortable">
+                                수정일자 {sortKey === "updatedAt" && (sortOrder === "asc" ? "▲" : "▼")}
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedUsers.map((user) => (
-                            <tr key={user.id}>
-                                <td>{user.id}</td>
-                                <td>{user.name}</td>
-                                <td>{user.email}</td>
+                        {sortedGoods.map((good) => (
+                            <tr key={good.id}>
+                                <td>{good.id}</td>
+                                <td>{good.goodId}</td>
+                                <td>{good.goodName}</td>
+                                <td>{good.totalCnt}</td>
+                                <td>{good.totalDivCode}</td>
                                 <td>
-                                    <span >
-                                        {user.role}
-                                    </span>
+                                    {new Date(good.createdAt).toLocaleDateString()}
                                 </td>
                                 <td>
-                                    {new Date(user.createdAt).toLocaleDateString()}
-                                </td>
-                                <td>
-                                    {user.lastLogin ? new Date(user.lastLogin).toLocaleString() : "기록 없음"}
+                                    {good.updatedAt ? new Date(good.updatedAt).toLocaleString() : "기록 없음"}
                                 </td>
                             </tr>
                         ))}
@@ -64,4 +63,4 @@ function SelectUsers() {
     );
 }
 
-export default SelectUsers;
+export default SelectGoods;

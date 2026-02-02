@@ -1,11 +1,4 @@
-/**
- * File: features/admin-page/api/syncGoodsTable.tsx
- * Description:
- *   공공 API로부터 상품 데이터를 가져와
- *   서버의 상품 데이블을 동기화한다
- */
-
-import apiClient from "../../../contexts/apiClient";
+import apiClient from "../../../../contexts/apiClient";
 
 export async function syncGoodsTable() {
   try {

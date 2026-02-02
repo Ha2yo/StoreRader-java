@@ -4,10 +4,9 @@
  *   서버로부터 사용자 목록을 조회한다
  */
 
-import apiClient from "../../../contexts/apiClient";
-import type { User } from "../types/fetchUsers";
+import apiClient from "../../../../contexts/apiClient";
 
-export async function fetchUsersTable(): Promise<User[]> {
+export async function selectUsersTable() {
   try {
     const res = await apiClient.get(
       "/admin/select/users"

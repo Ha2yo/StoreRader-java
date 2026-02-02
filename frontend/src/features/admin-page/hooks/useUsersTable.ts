@@ -5,8 +5,8 @@
  */
 
 import { useEffect, useState } from "react";
-import type { User } from "../types/fetchUsers";
-import { fetchUsersTable } from "../apis/fetchUsersTable";
+import type { User } from "../types/selectUsers";
+import { selectUsersTable } from "../apis/select/selectUsersTable";
 
 type SortKey = "id" | "createdAt" | "lastLogin";
 type SortOrder = "asc" | "desc";
@@ -46,7 +46,7 @@ function useUsersTable() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const data = await fetchUsersTable();
+                const data = await selectUsersTable();
                 SetUsers(data);
             } catch (err) {
                 console.error("데이터 로딩 실패: ", err);

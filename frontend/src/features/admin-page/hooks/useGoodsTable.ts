@@ -1,29 +1,24 @@
-/**
- * File: features/admin-page/hooks/useUserTable.tsx
- * Description:
- *   관리자 페이지에서 유저 목록을 조회하고 정렬 상태를 관리한다
- */
-
 import { useEffect, useState } from "react";
-import type { User } from "../types/fetchUsers";
-import { fetchUsersTable } from "../apis/fetchUsersTable";
+import type { Good } from "../types/selectGoods";
+import { selectGoodsTable } from "../apis/select/selectGoodsTable";
 
-type SortKey = "id" | "createdAt" | "lastLogin";
+type SortKey = "id" | "goodId" | "createdAt" | "updatedAt";
 type SortOrder = "asc" | "desc";
 
 function useGoodsTable() {
-    const [users, SetUsers] = useState<User[]>([]);
+    const [goods, setGoods] = useState<Good[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [sortKey, setSortKey] = useState<SortKey>("id");
     const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
 
-    // 정렬을 반영한 유저 리스트
-    const sortedUsers = [...users].sort((a, b) => {
-        const getValue = (user: any) => {
-            if (sortKey === "id") return user.id;
-            if (sortKey === "createdAt") return new Date(user.createdAt).getTime();
-            if (sortKey === "lastLogin")
-                return user.lastLogin ? new Date(user.lastLogin).getTime() : 0;
+    // 정렬을 반영한 상품 리스트
+    const sortedGoods = [...goods].sort((a, b) => {
+        const getValue = (good: any) => {
+            if (sortKey === "id") return good.id;
+            if (sortKey === "goodId") return good.goodId;
+            if (sortKey === "createdAt") return new Date(good.createdAt).getTime();
+            if (sortKey === "updatedAt")
+                return good.updatedAt ? new Date(good.updatedAt).getTime() : 0;
         };
 
         const aVal = getValue(a);
@@ -42,12 +37,12 @@ function useGoodsTable() {
         }
     };
 
-    // 최초 마운트 시 유저 리스트 조회
+    // 최초 마운트 시 상품 리스트 조회
     useEffect(() => {
         const loadData = async () => {
             try {
-                const data = await fetchUsersTable();
-                SetUsers(data);
+                const data = await selectGoodsTable();
+                setGoods(data);
             } catch (err) {
                 console.error("데이터 로딩 실패: ", err);
             } finally {
@@ -57,7 +52,7 @@ function useGoodsTable() {
         loadData();
     }, []);
 
-    return { users, sortedUsers, isLoading, sortKey, sortOrder, handleSort };
+    return { goods, sortedGoods, isLoading, sortKey, sortOrder, handleSort };
 }
 
 export default useGoodsTable;
