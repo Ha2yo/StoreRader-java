@@ -75,7 +75,7 @@ public class AdminService {
                 log.accept("XML 파싱 완료 (items = " + count + ")");
 
                 int saved = publicApiService.saveGoods(parsed, log);
-                log.accept("DB 반영 완료 (saved = " + saved + ")");
+                log.accept("DB 반영 완료 (applied = " + saved + ")");
 
                 log.accept("상품 데이터 추가 완료");
                 emitter.complete();

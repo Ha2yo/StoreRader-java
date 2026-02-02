@@ -26,6 +26,10 @@ public class GoodRepositorySQL {
                         total_cnt = EXCLUDED.total_cnt,
                         total_div_code = EXCLUDED.total_div_code,
                         updated_at = NOW()
+                    WHERE
+                        goods.good_name IS DISTINCT FROM EXCLUDED.good_name
+                        OR goods.total_cnt IS DISTINCT FROM EXCLUDED.total_cnt
+                        OR goods.total_div_code IS DISTINCT FROM EXCLUDED.total_div_code
             """,
                 good.getGoodId(),
                 good.getGoodName(),

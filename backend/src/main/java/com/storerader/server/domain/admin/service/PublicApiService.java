@@ -85,8 +85,6 @@ public class PublicApiService {
             if (affected > 0)
                 applied += affected;
 
-            goodRepository.save(good);
-
             if (applied % 200 == 0) {
                 log.accept("DB 반영 진행 중.. (applied = " + applied + ")");
             }
