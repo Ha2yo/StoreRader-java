@@ -4,8 +4,9 @@
  *   관리자 페이지의 메인 레이아웃 및 메뉴 제어를 담당하는 UI 컴포넌트
  */
 import { useState } from "react";
-import SelectUsers from "./SelectUsers";
-import AddGoods from "./AddGoods";
+import SelectUsers from "./select/SelectUsers";
+import SelectGoods from "./select/SelectGoods";
+import AddGoods from "./add/AddGoods";
 
 
 function Admin() {
@@ -44,6 +45,7 @@ function Admin() {
       <main className="container">
         {activeMenu === "dashboard" && <div>관리자 홈입니다.</div>}
         {activeMenu === "select_users" && <SelectUsers />}
+        {activeMenu === "select_goods" && <SelectGoods />}
         {activeMenu === "add_goods" && <AddGoods />}
       </main>
     </div>

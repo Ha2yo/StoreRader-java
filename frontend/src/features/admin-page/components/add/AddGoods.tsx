@@ -4,8 +4,8 @@
  *   관리자 페이지에서 상품 데이털르 동기화하기 위한 UI 컴포넌트
  */
 
-import { touchEffect } from "../../../common/utils/touchEffect";
-import { useSseLogStream } from "../hooks/useSseLogStream";
+import { touchEffect } from "../../../../common/utils/touchEffect";
+import { useSseLogStream } from "../../hooks/useSseLogStream";
 
 function AddGoods() {
   const { logs, running, start } = useSseLogStream();

@@ -14,9 +14,9 @@
 
 package com.storerader.server.domain.admin.service;
 
-import com.storerader.server.domain.admin.dto.FindAllUsersDTO;
-import com.storerader.server.domain.admin.dto.FindAllUsersListResponseDTO;
-import com.storerader.server.domain.admin.dto.GoodApiResponseDTO;
+import com.storerader.server.common.entity.GoodEntity;
+import com.storerader.server.common.repository.GoodRepository;
+import com.storerader.server.domain.admin.dto.*;
 import com.storerader.server.common.entity.UserEntity;
 import com.storerader.server.common.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -32,6 +32,7 @@ import java.util.function.Consumer;
 @Service
 public class AdminService {
     private final UserRepository userRepository;
+    private final GoodRepository goodRepository;
     private final PublicApiService publicApiService;
 
     /**
@@ -48,6 +49,17 @@ public class AdminService {
                 .toList();
 
         return new FindAllUsersListResponseDTO(userDtos);
+    }
+
+    @Transactional
+    public FindAllGoodsListResponseDTO findAllGoods() {
+        List<GoodEntity> goodEntities = goodRepository.findAll();
+
+        List<FindAllGoodsDTO> goodDtos = goodEntities.stream()
+                .map(FindAllGoodsDTO::from)
+                .toList();
+
+        return new FindAllGoodsListResponseDTO(goodDtos);
     }
 
     /**

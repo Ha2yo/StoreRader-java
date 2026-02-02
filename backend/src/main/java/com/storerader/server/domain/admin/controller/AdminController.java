@@ -14,6 +14,7 @@
 
 package com.storerader.server.domain.admin.controller;
 
+import com.storerader.server.domain.admin.dto.FindAllGoodsListResponseDTO;
 import com.storerader.server.domain.admin.dto.FindAllUsersListResponseDTO;
 import com.storerader.server.domain.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,11 @@ public class AdminController {
     @GetMapping("/select/users")
     public ResponseEntity<FindAllUsersListResponseDTO> getAllUsers() {
         return ResponseEntity.ok(adminService.findAllUsers());
+    }
+
+    @GetMapping("/select/goods")
+    public ResponseEntity<FindAllGoodsListResponseDTO> getAllGoods() {
+        return ResponseEntity.ok(adminService.findAllGoods());
     }
 
     @GetMapping(value = "/get/public-data/goods", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
