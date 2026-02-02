@@ -88,7 +88,7 @@ public class PublicApiService {
                 applied += affected;
 
             if (processed % 200 == 0) {
-                log.accept("DB 반영 진행 중.. (processed = " + processed + ", applied = " + ")");
+                log.accept("DB 반영 진행 중.. (processed = " + processed + ", applied = " + applied + ")");
             }
         }
 
