@@ -5,15 +5,17 @@
  */
 
 import { touchEffect } from "../../../common/utils/touchEffect";
-import { syncGoodsTable } from "../apis/syncGoodsTable";
+import { useSseLogStream } from "../hooks/useSseLogStream";
 
 function AddGoods() {
+  const { logs, running, start } = useSseLogStream();
+
   return (
     <div className="container">
       <button
         {...touchEffect}
         style={{
-          width: "30%",
+          width: "20%",
           padding: "12px",
           background: "#1890FF",
           borderRadius: "10px",
@@ -22,10 +24,35 @@ function AddGoods() {
           fontWeight: "bold",
           marginTop: "20px",
         }}
-        onClick={() => syncGoodsTable()}
+        onClick={() => start("/admin/get/public-data/goods")}
       >
-        데이터 추가
+        {running ? "동기화 중..." : "데이터 추가"}
       </button>
+      <div
+        style={{
+          marginTop: "16px",
+          width: "70%",
+          maxWidth: "900px",
+          background: "#111",
+          color: "#0f0",
+          padding: "12px",
+          borderRadius: "10px",
+          fontFamily: "monospace",
+          fontSize: "14px",
+          maxHeight: "260px",
+          overflowY: "auto",
+          whiteSpace: "pre-wrap",
+          textAlign: "left",
+        }}
+      >
+        {logs.length === 0 ? (
+          <div style={{ color: "#aaa" }}>
+            {running ? "로그 수신 대기 중..." : "아직 로그가 없습니다."}
+          </div>
+        ) : (
+          logs.map((line, i) => <div key={i}>{line}</div>)
+        )}
+      </div>
     </div>
   );
 }

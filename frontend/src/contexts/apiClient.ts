@@ -10,18 +10,10 @@
  */
 
 import axios from "axios";
-
-const getBaseURL = () => {
-  const { hostname } = window.location;
-
-  if (hostname === "localhost") {
-    return import.meta.env.VITE_API_SERVER_URL;
-  }
-  return "/api";
-}
+import { getApiBaseURL } from "../common/utils/getApiBaseURL";
 
 const apiClient = axios.create({
-  baseURL: getBaseURL(),
+  baseURL: getApiBaseURL(),
   withCredentials: true,
 });
 

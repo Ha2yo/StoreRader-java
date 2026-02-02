@@ -19,6 +19,7 @@ package com.storerader.server.domain.admin.service;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.storerader.server.common.entity.GoodEntity;
 import com.storerader.server.common.repository.GoodRepository;
+import com.storerader.server.common.repository.GoodRepositorySQL;
 import com.storerader.server.domain.admin.dto.GoodApiItemDTO;
 import com.storerader.server.domain.admin.dto.GoodApiResponseDTO;
 import jakarta.transaction.Transactional;
@@ -40,6 +41,7 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class PublicApiService {
     private final GoodRepository goodRepository;
+    private final GoodRepositorySQL goodRepositorySQL;
     private final RestClient restClient;
     private final XmlMapper xmlMapper = new XmlMapper();
 
@@ -59,9 +61,10 @@ public class PublicApiService {
             return 0;
         }
 
-        int saved = 0;
+        int applied = 0;
 
         for (GoodApiItemDTO item : response.result().item()) {
+
             Integer goodId = parseInteger(item.goodId());
             if (goodId == null) continue;
 
@@ -78,15 +81,18 @@ public class PublicApiService {
             good.setTotalDivCode(item.goodTotalDivCode());
             good.setUpdatedAt(OffsetDateTime.now());
 
-            goodRepository.save(good);
-            saved++;
+            int affected = goodRepositorySQL.upsertGoods(good);
+            if (affected > 0)
+                applied += affected;
 
-            if ( saved % 200 == 0) {
-                log.accept("DB 반영 진행 중.. (saved =" + saved + ")");
+            goodRepository.save(good);
+
+            if (applied % 200 == 0) {
+                log.accept("DB 반영 진행 중.. (applied = " + applied + ")");
             }
         }
 
-        return saved;
+        return applied;
     }
 
     public String fetchString(
