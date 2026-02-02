@@ -17,10 +17,12 @@ package com.storerader.server.domain.admin.controller;
 import com.storerader.server.domain.admin.dto.FindAllUsersListResponseDTO;
 import com.storerader.server.domain.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 
 @RestController
@@ -35,8 +37,8 @@ public class AdminController {
         return ResponseEntity.ok(adminService.findAllUsers());
     }
 
-    @GetMapping("/get/public-data/goods")
-    public String fetchGoodsApi() {
+    @GetMapping(value = "/get/public-data/goods", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter fetchGoodsApi() {
         return adminService.fetchGoodApi();
     }
 }

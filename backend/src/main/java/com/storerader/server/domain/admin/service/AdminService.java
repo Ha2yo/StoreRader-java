@@ -22,8 +22,11 @@ import com.storerader.server.common.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.function.Consumer;
 
 @RequiredArgsConstructor
 @Service
@@ -32,7 +35,8 @@ public class AdminService {
     private final PublicApiService publicApiService;
 
     /**
-     *  전체 유저 목록을 조회하여 관리자용 응답 DTO로 반환한다
+     * 전체 유저 목록을 조회하여 관리자용 응답 DTO로 반환한다
+     *
      * @return 유저 목록
      */
     @Transactional
@@ -47,21 +51,49 @@ public class AdminService {
     }
 
     /**
-     *  공공 API로부터 상품 데이터를 조회하고 저장한다
+     * 공공 API로부터 상품 데이터를 조회하고 저장한다
+     *
      * @return 공공 API로부터 수신한 원본 XML 문자열
      */
-    public String fetchGoodApi() {
-        String xml = publicApiService.fetchString(
-                "/getProductInfoSvc.do",
-                "상품"
-        );
+    public SseEmitter fetchGoodApi() {
+        SseEmitter emitter = new SseEmitter(0L);
 
-        GoodApiResponseDTO response = publicApiService.parseGoodsResponse(xml);
+        new Thread(() -> {
+            try {
+                Consumer<String> log = msg -> safeSend(emitter, msg);
 
-        if (response == null || response.result() == null)
-            return xml;
+                log.accept("상품 데이터 추가 시작");
 
-        publicApiService.saveGoods(response);
-        return xml;
+                String xml = publicApiService.fetchString(
+                        "/getProductInfoSvc.do",
+                        "상품"
+                );
+                log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
+
+                GoodApiResponseDTO parsed = publicApiService.parseGoodsResponse(xml);
+                int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
+                log.accept("XML 파싱 완료 (items = " + count + ")");
+
+                int saved = publicApiService.saveGoods(parsed, log);
+                log.accept("DB 반영 완료 (saved = " + saved + ")");
+
+                log.accept("상품 데이터 추가 완료");
+                emitter.complete();
+            } catch (Exception e) {
+                safeSend(emitter, "오류: " + e.getMessage());
+                emitter.completeWithError(e);
+            }
+
+        }).start();
+
+        return emitter;
+    }
+
+    private void safeSend(SseEmitter emitter, String msg) {
+        try {
+            emitter.send(SseEmitter.event().name("log").data(msg));
+        } catch (IOException ignored) {
+            emitter.complete();
+        }
     }
 }

@@ -34,6 +34,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +50,17 @@ public class PublicApiService {
             "http://openapi.price.go.kr/openApiImpl/ProductPriceInfoService";
 
     @Transactional
-    public void saveGoods(GoodApiResponseDTO response) {
+    public int saveGoods(
+            GoodApiResponseDTO response,
+            Consumer<String> log
+    ) {
+        if (response == null || response.result() == null || response.result().item() == null) {
+            log.accept("저장할 데이터가 없습니다.");
+            return 0;
+        }
+
+        int saved = 0;
+
         for (GoodApiItemDTO item : response.result().item()) {
             Integer goodId = parseInteger(item.goodId());
             if (goodId == null) continue;
@@ -68,7 +79,14 @@ public class PublicApiService {
             good.setUpdatedAt(OffsetDateTime.now());
 
             goodRepository.save(good);
+            saved++;
+
+            if ( saved % 200 == 0) {
+                log.accept("DB 반영 진행 중.. (saved =" + saved + ")");
+            }
         }
+
+        return saved;
     }
 
     public String fetchString(

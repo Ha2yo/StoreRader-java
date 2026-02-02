@@ -24,7 +24,7 @@ function AddGoods() {
         }}
         onClick={() => syncGoodsTable()}
       >
-        관리자 페이지
+        데이터 추가
       </button>
     </div>
   );
