@@ -3,9 +3,9 @@ package com.storerader.server.domain.admin.dto;
 import java.util.List;
 
 public record FindAllGoodsListResponseDTO(
-        List<FindAllGoodsDTO> users
+        List<FindAllGoodsDTO> goods
 ) {
-    public static FindAllUsersListResponseDTO from(List<FindAllUsersDTO> users) {
-        return new FindAllUsersListResponseDTO(users);
+    public static FindAllGoodsListResponseDTO from(List<FindAllGoodsDTO> goods) {
+        return new FindAllGoodsListResponseDTO(goods);
     }
 }
