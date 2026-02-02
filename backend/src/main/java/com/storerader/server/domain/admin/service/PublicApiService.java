@@ -61,9 +61,11 @@ public class PublicApiService {
             return 0;
         }
 
+        int processed = 0;
         int applied = 0;
 
         for (GoodApiItemDTO item : response.result().item()) {
+            processed++;
 
             Integer goodId = parseInteger(item.goodId());
             if (goodId == null) continue;
@@ -86,7 +88,7 @@ public class PublicApiService {
                 applied += affected;
 
             if (applied % 200 == 0) {
-                log.accept("DB 반영 진행 중.. (applied = " + applied + ")");
+                log.accept("DB 반영 진행 중.. (processed = " + processed + ", applied = " + ")");
             }
         }
 
