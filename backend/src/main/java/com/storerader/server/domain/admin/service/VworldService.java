@@ -11,6 +11,8 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -28,11 +30,12 @@ public class VworldService {
             Consumer<String> log
     ) {
         try {
-            URI uri = UriComponentsBuilder.fromHttpUrl("https://api.vworld.kr/req/address?service=address")
+            URI uri = UriComponentsBuilder.fromHttpUrl("https://api.vworld.kr/req/address")
+                    .queryParam("service","address")
                     .queryParam("request", "getCoord")
                     .queryParam("version", "2.0")
                     .queryParam("crs", "epsg:4326")
-                    .queryParam("address", addr)
+                    .queryParam("address", URLEncoder.encode(addr, StandardCharsets.UTF_8))
                     .queryParam("refine", "true")
                     .queryParam("simple", "false")
                     .queryParam("type", "road")
@@ -51,7 +54,7 @@ public class VworldService {
             JsonNode json = objectMapper.readTree(body);
             JsonNode response = json.path("response");
             String status = response.path("status").asText("");
-            
+
             JsonNode point = response.path("result").path("point");
             double x = point.path("x").asDouble(0.0);
             double y = point.path("y").asDouble(0.0);
