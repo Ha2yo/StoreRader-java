@@ -1,0 +1,2 @@
+ALTER TABLE stores
+ALTER COLUMN store_id TYPE BIGINT;
