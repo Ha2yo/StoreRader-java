@@ -29,7 +29,7 @@ public class StoreRepositorySQL {
                                 ?, ?, ?, ?, ?)
                         ON CONFLICT (store_id)
                         DO UPDATE SET
-                            store_name = EXCLUDED.store_name,
+                            store_id = EXCLUDED.store_id,
                             store_name = EXCLUDED.store_name,
                             tel_no = EXCLUDED.tel_no,
                             post_no = EXCLUDED.post_no,
