@@ -98,6 +98,8 @@ public class PublicApiService {
             }
         }
 
+        log.accept(processed + "개 데이터 처리 완료");
+
         return applied;
     }
 
@@ -163,12 +165,15 @@ public class PublicApiService {
             if (affected > 0)
                 applied += affected;
 
-            if (processed % 200 == 0) {
+            if (processed % 100 == 0) {
                 log.accept("DB에 반영 중.. \n" +
                         "(processed = " + processed + ", applied = " + applied + ",\n" +
                         "geocode success = " + geoCodeSuccess + ", fail = " + geoCodeFail + ")");
             }
         }
+
+        log.accept(processed + "개 데이터 처리 완료 (geocode success = " +
+                geoCodeSuccess + ", fail: " + geoCodeFail);
 
         return applied;
     }
