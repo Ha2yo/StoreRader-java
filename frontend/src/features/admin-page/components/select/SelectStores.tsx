@@ -1,7 +1,7 @@
 import useStoresTable from "../../hooks/useStoresTable";
 
 function SelectStores() {
-    const { stores, sortedStores, isLoading, sortKey, sortOrder, handleSort } =
+    const { stores, isLoading, sortKey, sortOrder, handleSort } =
         useStoresTable();
 
     if (isLoading)
@@ -46,7 +46,7 @@ function SelectStores() {
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedStores.map((store) => (
+                        {/* {sortedStores.map((store) => (
                             <tr key={store.id}>
                                 <td>{store.id}</td>
                                 <td>{store.storeId}</td>
@@ -60,7 +60,7 @@ function SelectStores() {
                                     {store.updatedAt ? new Date(store.updatedAt).toLocaleString() : "기록 없음"}
                                 </td>
                             </tr>
-                        ))}
+                        ))} */}
                     </tbody>
                 </table>
             </div>

@@ -8,7 +8,7 @@
  *   2. Routes 구성
  *   3. 관리자 전용 라우트에 ProtectedRoute 적용
  */
-
+ 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import MyPage from "../pages/MyInfoPage";
