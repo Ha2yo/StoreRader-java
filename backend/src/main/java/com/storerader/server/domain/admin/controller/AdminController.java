@@ -14,8 +14,8 @@
 
 package com.storerader.server.domain.admin.controller;
 
-import com.storerader.server.domain.admin.dto.FindAllGoodsListResponseDTO;
-import com.storerader.server.domain.admin.dto.FindAllUsersListResponseDTO;
+import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListResponseDTO;
+import com.storerader.server.domain.admin.dto.select.users.FindAllUsersListResponseDTO;
 import com.storerader.server.domain.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

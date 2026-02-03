@@ -1,4 +1,4 @@
-package com.storerader.server.domain.admin.dto;
+package com.storerader.server.domain.admin.dto.select.users;
 
 import java.util.List;
 
