@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
-    Optional<StoreEntity> findByStoreId(Integer storeId);
-    boolean existsByStoreId(Integer storeId);
+    Optional<StoreEntity> findByStoreId(Long storeId);
+    boolean existsByStoreId(Long storeId);
 }
