@@ -1,0 +1,3 @@
+ALTER TABLE stores
+ALTER COLUMN area_code TYPE BIGINT;
+ALTER COLUMN area_detail_code TYPE BIGINT;

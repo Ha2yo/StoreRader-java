@@ -8,6 +8,7 @@ import SelectUsers from "./select/SelectUsers";
 import SelectGoods from "./select/SelectGoods";
 import AddGoods from "./add/AddGoods";
 import AddStores from "./add/AddStores";
+import SelectStores from "./select/SelectStores";
 
 function Admin() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
@@ -38,6 +39,7 @@ function Admin() {
             <ul className="dropdown-menu">
               <li onClick={() => setActiveMenu("select_users")}>users</li>
               <li onClick={() => setActiveMenu("select_goods")}>goods</li>
+              <li onClick={() => setActiveMenu("select_stores")}>stores</li>
             </ul>
           </li>
         </ul>
@@ -47,6 +49,7 @@ function Admin() {
         {activeMenu === "dashboard" && <div>관리자 홈입니다.</div>}
         {activeMenu === "select_users" && <SelectUsers />}
         {activeMenu === "select_goods" && <SelectGoods />}
+        {activeMenu === "select_stores" && <SelectStores />}
         {activeMenu === "add_goods" && <AddGoods />}
         {activeMenu === "add_stores" && <AddStores />}
       </main>

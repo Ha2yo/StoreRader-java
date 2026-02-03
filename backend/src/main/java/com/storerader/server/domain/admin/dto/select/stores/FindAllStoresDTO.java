@@ -14,8 +14,8 @@ public record FindAllStoresDTO(
         String road_addr,
         Double lat,
         Double lng,
-        String area_code,
-        String area_detail_code,
+        Long area_code,
+        Long area_detail_code,
         OffsetDateTime createdAt,
         OffsetDateTime lastLogin
 ) {

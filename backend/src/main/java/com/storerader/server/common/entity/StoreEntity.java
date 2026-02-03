@@ -45,10 +45,10 @@ public class StoreEntity {
     private Double lng;
 
     @Column(name = "area_code")
-    private String areaCode;
+    private Long areaCode;
 
     @Column(name = "area_detail_code")
-    private String areaDetailCode;
+    private Long areaDetailCode;
 
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
@@ -65,8 +65,8 @@ public class StoreEntity {
             String roadAddr,
             Double lat,
             Double lng,
-            String areaCode,
-            String areaDetailCode
+            Long areaCode,
+            Long areaDetailCode
     ) {
         this.storeId = storeId;
         this.storeName = storeName;

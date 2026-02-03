@@ -4,5 +4,5 @@ export interface User {
   email: string;
   role: string;
   createdAt: string;
-  lastLogin: string | null;
+  lastLogin: string;
 }
