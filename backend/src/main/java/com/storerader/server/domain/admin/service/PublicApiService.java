@@ -18,11 +18,13 @@ package com.storerader.server.domain.admin.service;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.storerader.server.common.entity.GoodEntity;
+import com.storerader.server.common.entity.RegionCodeEntity;
 import com.storerader.server.common.entity.StoreEntity;
-import com.storerader.server.common.repository.GoodRepository;
-import com.storerader.server.common.repository.GoodRepositorySQL;
-import com.storerader.server.common.repository.StoreRepository;
-import com.storerader.server.common.repository.StoreRepositorySQL;
+import com.storerader.server.common.repository.sql.GoodRepositorySQL;
+import com.storerader.server.common.repository.sql.RegionCodeRepositorySQL;
+import com.storerader.server.common.repository.sql.StoreRepositorySQL;
+import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiItemDTO;
+import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiItemDTO;
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.stores.StoreApiItemDTO;
@@ -45,10 +47,9 @@ import java.util.function.Consumer;
 @Service
 @RequiredArgsConstructor
 public class PublicApiService {
-    private final GoodRepository goodRepository;
     private final GoodRepositorySQL goodRepositorySQL;
-    private final StoreRepository storeRepository;
     private final StoreRepositorySQL storeRepositorySQL;
+    private final RegionCodeRepositorySQL regionCodeRepositorySQL;
     private final VworldService vworldService;
     private final RestClient restClient;
     private final XmlMapper xmlMapper = new XmlMapper();
@@ -75,8 +76,7 @@ public class PublicApiService {
         for (GoodApiItemDTO item : response.result().item()) {
             processed++;
 
-            GoodEntity good = goodRepository.findByGoodId(item.goodId())
-                    .orElseGet(GoodEntity::new);
+            GoodEntity good = new GoodEntity();
 
             if (good.getCreatedAt() == null) {
                 good.setCreatedAt(OffsetDateTime.now());
@@ -141,8 +141,7 @@ public class PublicApiService {
 
             geoCodeSuccess++;
 
-            StoreEntity store = storeRepository.findByStoreId(item.storeId())
-                    .orElseGet(StoreEntity::new);
+            StoreEntity store = new StoreEntity();
 
             if (store.getCreatedAt() == null) {
                 store.setCreatedAt(OffsetDateTime.now());
@@ -177,6 +176,48 @@ public class PublicApiService {
 
         return applied;
     }
+
+    @Transactional
+    public int saveRegionCodes(
+            RegionCodeApiResponseDTO response,
+            Consumer<String> log
+    ) {
+        if (response == null || response.result() == null || response.result().item() == null) {
+            log.accept("저장할 데이터가 없습니다.");
+            return 0;
+        }
+
+        int processed = 0;
+        int applied = 0;
+
+        for (RegionCodeApiItemDTO item : response.result().item()) {
+            processed++;
+
+            RegionCodeEntity regionCode = new RegionCodeEntity();
+
+            regionCode.setCode(item.code());
+            regionCode.setName(item.name());
+            regionCode.setParentCode(item.parentCode());
+
+            if(item.parentCode().equals("020000000"))
+                regionCode.setLevel(1);
+            else
+                regionCode.setLevel(2);
+
+            int affected = regionCodeRepositorySQL.upsertRegionCodes(regionCode);
+            if (affected > 0)
+                applied += affected;
+
+            if (processed % 200 == 0) {
+                log.accept("DB에 반영 중.. \n(processed = " + processed + ", applied = " + applied + ")");
+            }
+        }
+
+        log.accept(processed + "개 데이터 처리 완료");
+
+        return applied;
+    }
+
 
     public String fetchString(
             String path,
@@ -220,6 +261,14 @@ public class PublicApiService {
             return xmlMapper.readValue(xml, StoreApiResponseDTO.class);
         } catch (IOException ex) {
             throw new IllegalStateException("매장 응답 파싱 실패: " + ex.getMessage(), ex);
+        }
+    }
+
+    public RegionCodeApiResponseDTO parseRegionCodesResponse(String xml) {
+        try {
+            return xmlMapper.readValue(xml, RegionCodeApiResponseDTO.class);
+        } catch (IOException ex) {
+            throw new IllegalStateException("지역코드 응답 파싱 실패: " + ex.getMessage(), ex);
         }
     }
 

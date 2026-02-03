@@ -10,28 +10,28 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "regions")
-public class RegionEntity {
+public class RegionCodeEntity {
     @Column(name = "code", nullable = false)
-    private Long code;
+    private String code;
 
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "parent_code")
-    private String parent_code;
+    private String parentCode;
 
     @Column(name = "level")
-    private String level;
+    private Integer level;
 
-    public RegionEntity(
-            Long code,
+    public RegionCodeEntity(
+            String code,
             String name,
-            String parent_code,
-            String level
+            String parentCode,
+            Integer level
     ) {
         this.code = code;
         this.name = name;
-        this.parent_code = parent_code;
+        this.parentCode = parentCode;
         this.level = level;
     }
 }

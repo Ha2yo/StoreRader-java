@@ -1,4 +1,4 @@
-package com.storerader.server.common.repository;
+package com.storerader.server.common.repository.sql;
 
 import com.storerader.server.common.entity.StoreEntity;
 import lombok.RequiredArgsConstructor;

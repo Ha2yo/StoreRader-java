@@ -16,10 +16,11 @@ package com.storerader.server.domain.admin.service;
 
 import com.storerader.server.common.entity.GoodEntity;
 import com.storerader.server.common.entity.StoreEntity;
-import com.storerader.server.common.repository.GoodRepository;
 import com.storerader.server.common.entity.UserEntity;
+import com.storerader.server.common.repository.GoodRepository;
 import com.storerader.server.common.repository.StoreRepository;
 import com.storerader.server.common.repository.UserRepository;
+import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponseDTO;
 import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsDTO;
@@ -155,6 +156,41 @@ public class AdminService {
 
         return emitter;
     }
+
+    public SseEmitter fetchRegionCodesApi() {
+        SseEmitter emitter = new SseEmitter(0L);
+
+        new Thread(() -> {
+            try {
+                Consumer<String> log = msg -> safeSend(emitter, msg);
+
+                log.accept("지역코드 데이터 추가 시작");
+
+                String xml = publicApiService.fetchString(
+                        "/getProductInfoSvc.do",
+                        "지역코드"
+                );
+                log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
+
+                RegionCodeApiResponseDTO parsed = publicApiService.parseRegionCodesResponse(xml);
+                int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
+                log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
+
+                int saved = publicApiService.saveRegionCodes(parsed, log);
+                log.accept("\nDB 반영 완료 (applied = " + saved + ")");
+                log.accept("지역코드 데이터 추가 완료");
+
+                emitter.complete();
+            } catch (Exception e) {
+                safeSend(emitter, "오류: " + e.getMessage());
+                emitter.completeWithError(e);
+            }
+
+        }).start();
+
+        return emitter;
+    }
+
 
     private void safeSend(SseEmitter emitter, String msg) {
         try {
