@@ -7,7 +7,7 @@ import { useState } from "react";
 import SelectUsers from "./select/SelectUsers";
 import SelectGoods from "./select/SelectGoods";
 import AddGoods from "./add/AddGoods";
-
+import AddStores from "./add/AddStores";
 
 function Admin() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
@@ -27,6 +27,7 @@ function Admin() {
 
             <ul className="dropdown-menu">
               <li onClick={() => setActiveMenu("add_goods")}>goods</li>
+              <li onClick={() => setActiveMenu("add_stores")}>stores</li>
             </ul>
           </li>
 
@@ -47,6 +48,7 @@ function Admin() {
         {activeMenu === "select_users" && <SelectUsers />}
         {activeMenu === "select_goods" && <SelectGoods />}
         {activeMenu === "add_goods" && <AddGoods />}
+        {activeMenu === "add_stores" && <AddStores />}
       </main>
     </div>
   );

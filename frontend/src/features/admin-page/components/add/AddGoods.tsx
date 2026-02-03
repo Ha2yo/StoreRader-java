@@ -5,6 +5,7 @@
  */
 
 import { touchEffect } from "../../../../common/utils/touchEffect";
+import { addGoodsTable } from "../../apis/add/addGoodsTable";
 import { useSseLogStream } from "../../hooks/useSseLogStream";
 
 function AddGoods() {
@@ -12,6 +13,9 @@ function AddGoods() {
 
   return (
     <div className="container">
+      <div className="headerRow">
+                <h1>Goods Table 동기화</h1>
+      </div>
       <button
         {...touchEffect}
         style={{
@@ -24,7 +28,7 @@ function AddGoods() {
           fontWeight: "bold",
           marginTop: "20px",
         }}
-        onClick={() => start("/admin/get/public-data/goods")}
+        onClick={() => start(addGoodsTable.goods)}
       >
         {running ? "동기화 중..." : "데이터 추가"}
       </button>
@@ -39,7 +43,7 @@ function AddGoods() {
           borderRadius: "10px",
           fontFamily: "monospace",
           fontSize: "14px",
-          maxHeight: "260px",
+          maxHeight: "350px",
           overflowY: "auto",
           whiteSpace: "pre-wrap",
           textAlign: "left",
