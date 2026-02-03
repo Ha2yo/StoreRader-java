@@ -14,8 +14,9 @@
 
 package com.storerader.server.domain.admin.controller;
 
-import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListResponseDTO;
-import com.storerader.server.domain.admin.dto.select.users.FindAllUsersListResponseDTO;
+import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListDTO;
+import com.storerader.server.domain.admin.dto.select.stores.FindAllStoresListDTO;
+import com.storerader.server.domain.admin.dto.select.users.FindAllUsersListDTO;
 import com.storerader.server.domain.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -34,13 +35,18 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/select/users")
-    public ResponseEntity<FindAllUsersListResponseDTO> getAllUsers() {
+    public ResponseEntity<FindAllUsersListDTO> getAllUsers() {
         return ResponseEntity.ok(adminService.findAllUsers());
     }
 
     @GetMapping("/select/goods")
-    public ResponseEntity<FindAllGoodsListResponseDTO> getAllGoods() {
+    public ResponseEntity<FindAllGoodsListDTO> getAllGoods() {
         return ResponseEntity.ok(adminService.findAllGoods());
+    }
+
+    @GetMapping("/select/stores")
+    public ResponseEntity<FindAllStoresListDTO> getAllStores() {
+        return ResponseEntity.ok(adminService.findAllStores());
     }
 
     @GetMapping(value = "/get/public-data/goods", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

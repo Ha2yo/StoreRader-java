@@ -15,15 +15,19 @@
 package com.storerader.server.domain.admin.service;
 
 import com.storerader.server.common.entity.GoodEntity;
+import com.storerader.server.common.entity.StoreEntity;
 import com.storerader.server.common.repository.GoodRepository;
 import com.storerader.server.common.entity.UserEntity;
+import com.storerader.server.common.repository.StoreRepository;
 import com.storerader.server.common.repository.UserRepository;
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponseDTO;
 import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsDTO;
-import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListResponseDTO;
+import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListDTO;
+import com.storerader.server.domain.admin.dto.select.stores.FindAllStoresDTO;
+import com.storerader.server.domain.admin.dto.select.stores.FindAllStoresListDTO;
 import com.storerader.server.domain.admin.dto.select.users.FindAllUsersDTO;
-import com.storerader.server.domain.admin.dto.select.users.FindAllUsersListResponseDTO;
+import com.storerader.server.domain.admin.dto.select.users.FindAllUsersListDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,6 +42,7 @@ import java.util.function.Consumer;
 public class AdminService {
     private final UserRepository userRepository;
     private final GoodRepository goodRepository;
+    private final StoreRepository storeRepository;
     private final PublicApiService publicApiService;
 
     /**
@@ -46,25 +51,36 @@ public class AdminService {
      * @return 유저 목록
      */
     @Transactional
-    public FindAllUsersListResponseDTO findAllUsers() {
+    public FindAllUsersListDTO findAllUsers() {
         List<UserEntity> userEntities = userRepository.findAll();
 
         List<FindAllUsersDTO> userDtos = userEntities.stream()
                 .map(FindAllUsersDTO::from)
                 .toList();
 
-        return new FindAllUsersListResponseDTO(userDtos);
+        return new FindAllUsersListDTO(userDtos);
     }
 
     @Transactional
-    public FindAllGoodsListResponseDTO findAllGoods() {
+    public FindAllGoodsListDTO findAllGoods() {
         List<GoodEntity> goodEntities = goodRepository.findAll();
 
         List<FindAllGoodsDTO> goodDtos = goodEntities.stream()
                 .map(FindAllGoodsDTO::from)
                 .toList();
 
-        return new FindAllGoodsListResponseDTO(goodDtos);
+        return new FindAllGoodsListDTO(goodDtos);
+    }
+
+    @Transactional
+    public FindAllStoresListDTO findAllStores() {
+        List<StoreEntity> storeEntities = storeRepository.findAll();
+
+        List<FindAllStoresDTO> storeDtos = storeEntities.stream()
+                .map(FindAllStoresDTO::from)
+                .toList();
+
+        return new FindAllStoresListDTO(storeDtos);
     }
 
     /**
