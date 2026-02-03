@@ -89,10 +89,11 @@ public class AdminService {
 
                 GoodApiResponseDTO parsed = publicApiService.parseGoodsResponse(xml);
                 int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
-                log.accept("XML 파싱 완료 (items = " + count + ")\n");
+                log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
 
                 int saved = publicApiService.saveGoods(parsed, log);
                 log.accept("\nDB 반영 완료 (applied = " + saved + ")");
+                log.accept("상품 데이터 추가 완료");
 
                 emitter.complete();
             } catch (Exception e) {
@@ -122,10 +123,11 @@ public class AdminService {
 
                 StoreApiResponseDTO parsed = publicApiService.parseStoresResponse(xml);
                 int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
-                log.accept("XML 파싱 완료 (items = " + count + ")\n");
+                log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
 
                 int saved = publicApiService.saveStores(parsed, log);
                 log.accept("\nDB 반영 완료 (applied = " + saved + ")");
+                log.accept("매장 데이터 추가 완료");
 
                 emitter.complete();
             } catch (Exception e) {
