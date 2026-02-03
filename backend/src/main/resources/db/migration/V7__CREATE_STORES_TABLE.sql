@@ -1,4 +1,4 @@
-CREATE TABLE goods(
+CREATE TABLE stores(
     -- 식별 번호
     id SERIAL PRIMARY KEY,
 
