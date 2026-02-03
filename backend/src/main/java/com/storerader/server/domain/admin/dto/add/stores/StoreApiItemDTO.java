@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record StoreApiItemDTO(
         @JacksonXmlProperty(localName = "entpId")
-        Integer storeId,
+        Long storeId,
         @JacksonXmlProperty(localName = "entpName")
         String storeName,
         @JacksonXmlProperty(localName = "entpTelno")

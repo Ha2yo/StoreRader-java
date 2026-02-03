@@ -21,7 +21,7 @@ public class StoreEntity {
     private Long id;
 
     @Column(name = "store_id", nullable = false)
-    private Integer storeId;
+    private Long storeId;
 
     @Column(name = "store_name", nullable = false)
     private String storeName;
@@ -57,7 +57,7 @@ public class StoreEntity {
     private OffsetDateTime updatedAt;
 
     public StoreEntity(
-            Integer storeId,
+            Long storeId,
             String storeName,
             String telNo,
             String postNo,
