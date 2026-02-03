@@ -11,6 +11,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "regions")
 public class RegionCodeEntity {
+    @Id
     @Column(name = "code", nullable = false)
     private String code;
 
