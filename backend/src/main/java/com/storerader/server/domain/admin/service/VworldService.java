@@ -12,6 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +24,8 @@ public class VworldService {
     private String serviceKey;
 
     public Optional<VworldGeocodeDTO> geocode(
-            String addr
+            String addr,
+            Consumer<String> log
     ) {
         try {
             URI uri = UriComponentsBuilder.fromHttpUrl("https://api.vworld.kr/req/address?service=address")
@@ -49,28 +51,16 @@ public class VworldService {
             JsonNode json = objectMapper.readTree(body);
             JsonNode response = json.path("response");
             String status = response.path("status").asText("");
-
-            if ("NOT_FOUND".equals(status))
-                return Optional.empty();
-
-            if ("ERROR".equals(status)) {
-                JsonNode err = response.path("error");
-                String code = err.path("code").asText("UNKNOWN ERROR");
-                String text = err.path("text").asText("알 수 없는 에러가 발생하였습니다");
-                throw new IllegalStateException("vWorld ERROR [" + code + "]: " + text);
-            }
-
+            
             JsonNode point = response.path("result").path("point");
             double x = point.path("x").asDouble(0.0);
             double y = point.path("y").asDouble(0.0);
 
-            if (x == 0.0 && y == 0.0)
-                return Optional.empty();
-
             return Optional.of(new VworldGeocodeDTO(y, x));
 
         } catch (Exception e) {
-            throw new IllegalStateException("Vworld 지오코딩 실패: " + addr, e);
+            log.accept("VWorld 지오코딩 실패: " + e.getClass().getSimpleName() + "\naddr=" + addr);
+            return Optional.empty();
         }
     }
 }

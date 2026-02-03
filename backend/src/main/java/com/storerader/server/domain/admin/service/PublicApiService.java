@@ -128,7 +128,7 @@ public class PublicApiService {
 
             processed++;
 
-            var geoCoding = vworldService.geocode(addr);
+            var geoCoding = vworldService.geocode(addr, log);
             if (geoCoding.isEmpty()) {
                 geoCodeFail++;
                 continue;
