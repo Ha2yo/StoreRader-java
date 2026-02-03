@@ -45,6 +45,13 @@ public class AdminController {
 
     @GetMapping(value = "/get/public-data/goods", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter fetchGoodsApi() {
-        return adminService.fetchGoodApi();
+        return adminService.fetchGoodsApi();
+    }
+
+    @GetMapping(value = "/get/public-data/stores", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter fetchStoresApi() {
+        return adminService.fetchStoresApi();
     }
 }
+
+

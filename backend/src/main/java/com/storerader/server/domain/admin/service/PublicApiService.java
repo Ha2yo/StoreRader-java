@@ -18,10 +18,15 @@ package com.storerader.server.domain.admin.service;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.storerader.server.common.entity.GoodEntity;
+import com.storerader.server.common.entity.StoreEntity;
 import com.storerader.server.common.repository.GoodRepository;
 import com.storerader.server.common.repository.GoodRepositorySQL;
+import com.storerader.server.common.repository.StoreRepository;
+import com.storerader.server.common.repository.StoreRepositorySQL;
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiItemDTO;
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponseDTO;
+import com.storerader.server.domain.admin.dto.add.stores.StoreApiItemDTO;
+import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponseDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +47,9 @@ import java.util.function.Consumer;
 public class PublicApiService {
     private final GoodRepository goodRepository;
     private final GoodRepositorySQL goodRepositorySQL;
+    private final StoreRepository storeRepository;
+    private final StoreRepositorySQL storeRepositorySQL;
+    private final VworldService vworldService;
     private final RestClient restClient;
     private final XmlMapper xmlMapper = new XmlMapper();
 
@@ -67,20 +75,18 @@ public class PublicApiService {
         for (GoodApiItemDTO item : response.result().item()) {
             processed++;
 
-            Integer goodId = parseInteger(item.goodId());
-            if (goodId == null) continue;
-
-            GoodEntity good = goodRepository.findByGoodId(goodId)
+            GoodEntity good = goodRepository.findByGoodId(item.goodId())
                     .orElseGet(GoodEntity::new);
 
             if (good.getCreatedAt() == null) {
                 good.setCreatedAt(OffsetDateTime.now());
             }
 
-            good.setGoodId(goodId);
+            good.setGoodId(item.goodId());
             good.setGoodName(item.goodName());
             good.setTotalCnt(parseInteger(item.goodTotalCnt()));
             good.setTotalDivCode(item.goodTotalDivCode());
+
             good.setUpdatedAt(OffsetDateTime.now());
 
             int affected = goodRepositorySQL.upsertGoods(good);
@@ -88,7 +94,78 @@ public class PublicApiService {
                 applied += affected;
 
             if (processed % 200 == 0) {
-                log.accept("DB 반영 진행 중.. (processed = " + processed + ", applied = " + applied + ")");
+                log.accept("DB에 반영 중.. \n(processed = " + processed + ", applied = " + applied + ")");
+            }
+        }
+
+        return applied;
+    }
+
+    @Transactional
+    public int saveStores(
+            StoreApiResponseDTO response,
+            Consumer<String> log
+    ) {
+        if (response == null || response.result() == null || response.result().item() == null) {
+            log.accept("저장할 데이터가 없습니다.");
+            return 0;
+        }
+
+        int processed = 0;
+        int applied = 0;
+        int geoCodeFail = 0;
+        int geoCodeSuccess = 0;
+
+        for (StoreApiItemDTO item : response.result().item()) {
+
+            boolean roadBlank = item.roadAddr() == null || item.roadAddr().isBlank();
+            boolean jibunBlank = item.jibunAddr() == null || item.jibunAddr().isBlank();
+
+            if (roadBlank && jibunBlank)
+                continue;
+
+            String addr = !roadBlank ? item.roadAddr() : item.jibunAddr();
+
+            processed++;
+
+            var geoCoding = vworldService.geocode(addr);
+            if (geoCoding.isEmpty()) {
+                geoCodeFail++;
+                continue;
+            }
+
+            geoCodeSuccess++;
+            double lat = geoCoding.get().lat();
+            double lng = geoCoding.get().lng();
+
+            StoreEntity store = storeRepository.findByStoreId(item.storeId())
+                    .orElseGet(StoreEntity::new);
+
+            if (store.getCreatedAt() == null) {
+                store.setCreatedAt(OffsetDateTime.now());
+            }
+
+            store.setStoreId(item.storeId());
+            store.setStoreName(item.storeName());
+            store.setTelNo(item.telNo());
+            store.setPostNo(item.postNo());
+            store.setJibunAddr(item.jibunAddr());
+            store.setRoadAddr(item.roadAddr());
+            store.setLat(lat);
+            store.setLng(lng);
+            store.setAreaCode(item.areaCode());
+            store.setAreaDetailCode(item.areaDetailCode());
+
+            store.setUpdatedAt(OffsetDateTime.now());
+
+            int affected = storeRepositorySQL.upsertStores(store);
+            if (affected > 0)
+                applied += affected;
+
+            if (processed % 200 == 0) {
+                log.accept("DB에 반영 중.. \n" +
+                        "(processed = " + processed + ", applied = " + applied + ",\n" +
+                        "geocode success = " + geoCodeSuccess + ", fail = " + geoCodeFail + ")");
             }
         }
 
@@ -129,6 +206,14 @@ public class PublicApiService {
             return xmlMapper.readValue(xml, GoodApiResponseDTO.class);
         } catch (IOException ex) {
             throw new IllegalStateException("상품 응답 파싱 실패: " + ex.getMessage(), ex);
+        }
+    }
+
+    public StoreApiResponseDTO parseStoresResponse(String xml) {
+        try {
+            return xmlMapper.readValue(xml, StoreApiResponseDTO.class);
+        } catch (IOException ex) {
+            throw new IllegalStateException("매장 응답 파싱 실패: " + ex.getMessage(), ex);
         }
     }
 

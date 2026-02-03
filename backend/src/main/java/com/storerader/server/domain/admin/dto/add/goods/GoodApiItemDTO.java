@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record GoodApiItemDTO(
         @JacksonXmlProperty(localName = "goodId")
-        String goodId,
+        Integer goodId,
         @JacksonXmlProperty(localName = "goodName")
         String goodName,
         @JacksonXmlProperty(localName = "goodTotalCnt")

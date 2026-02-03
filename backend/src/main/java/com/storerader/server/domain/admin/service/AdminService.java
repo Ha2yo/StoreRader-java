@@ -19,6 +19,7 @@ import com.storerader.server.common.repository.GoodRepository;
 import com.storerader.server.common.entity.UserEntity;
 import com.storerader.server.common.repository.UserRepository;
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponseDTO;
+import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponseDTO;
 import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsDTO;
 import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListResponseDTO;
 import com.storerader.server.domain.admin.dto.select.users.FindAllUsersDTO;
@@ -71,7 +72,7 @@ public class AdminService {
      *
      * @return 공공 API로부터 수신한 원본 XML 문자열
      */
-    public SseEmitter fetchGoodApi() {
+    public SseEmitter fetchGoodsApi() {
         SseEmitter emitter = new SseEmitter(0L);
 
         new Thread(() -> {
@@ -94,6 +95,40 @@ public class AdminService {
                 log.accept("DB 반영 완료 (applied = " + saved + ")");
 
                 log.accept("상품 데이터 추가 완료");
+                emitter.complete();
+            } catch (Exception e) {
+                safeSend(emitter, "오류: " + e.getMessage());
+                emitter.completeWithError(e);
+            }
+
+        }).start();
+
+        return emitter;
+    }
+
+    public SseEmitter fetchStoresApi() {
+        SseEmitter emitter = new SseEmitter(0L);
+
+        new Thread(() -> {
+            try {
+                Consumer<String> log = msg -> safeSend(emitter, msg);
+
+                log.accept("매장 데이터 추가 시작");
+
+                String xml = publicApiService.fetchString(
+                        "/getStoreInfoSvc.do",
+                        "매장"
+                );
+                log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
+
+                StoreApiResponseDTO parsed = publicApiService.parseStoresResponse(xml);
+                int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
+                log.accept("XML 파싱 완료 (items = " + count + ")");
+
+                int saved = publicApiService.saveStores(parsed, log);
+                log.accept("DB 반영 완료 (applied = " + saved + ")");
+
+                log.accept("매장 데이터 추가 완료");
                 emitter.complete();
             } catch (Exception e) {
                 safeSend(emitter, "오류: " + e.getMessage());

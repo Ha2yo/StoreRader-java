@@ -33,6 +33,7 @@ services:
       - "APP_COOKIE_SAME_SITE=${APP_COOKIE_SAME_SITE}"
       - "APP_COOKIE_SECURE=${APP_COOKIE_SECURE}"
       - "PUBLIC_API_KEY=${PUBLIC_API_KEY}"
+      - "VWORLD_API_KEY=${VWORLD_API_KEY}"
 
     networks:
       - network
