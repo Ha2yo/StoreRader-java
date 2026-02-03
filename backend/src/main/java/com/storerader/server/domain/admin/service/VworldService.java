@@ -55,6 +55,9 @@ public class VworldService {
             JsonNode response = json.path("response");
             String status = response.path("status").asText("");
 
+            if (!"OK".equals(status))
+                return Optional.empty();
+
             JsonNode point = response.path("result").path("point");
             double x = point.path("x").asDouble(0.0);
             double y = point.path("y").asDouble(0.0);

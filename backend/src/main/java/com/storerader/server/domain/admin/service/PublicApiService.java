@@ -134,9 +134,10 @@ public class PublicApiService {
                 continue;
             }
 
-            geoCodeSuccess++;
             double lat = geoCoding.get().lat();
             double lng = geoCoding.get().lng();
+
+            geoCodeSuccess++;
 
             StoreEntity store = storeRepository.findByStoreId(item.storeId())
                     .orElseGet(StoreEntity::new);
