@@ -11,7 +11,7 @@ function SelectGoods() {
         <div className="container">
             <div className="headerRow">
                 <h1>Goods Table</h1>
-                <span>총 {goods.length}개</span>
+                <span>총 {goods?.length || 0}개</span>
             </div>
 
             <div className="tableWrap">

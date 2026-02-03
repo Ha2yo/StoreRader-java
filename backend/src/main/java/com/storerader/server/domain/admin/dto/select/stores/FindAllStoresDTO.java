@@ -6,16 +6,16 @@ import java.time.OffsetDateTime;
 
 public record FindAllStoresDTO(
         Long id,
-        Long store_id,
-        String store_name,
-        String tel_no,
-        String post_no,
-        String jibun_addr,
-        String road_addr,
+        Long storeId,
+        String storeName,
+        String telNo,
+        String postNo,
+        String jibunAddr,
+        String roadAddr,
         Double lat,
         Double lng,
-        String area_code,
-        String area_detail_code,
+        String areaCode,
+        String areaDetailCode,
         OffsetDateTime createdAt,
         OffsetDateTime lastLogin
 ) {

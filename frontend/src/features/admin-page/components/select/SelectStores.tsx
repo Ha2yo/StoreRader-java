@@ -1,7 +1,7 @@
 import useStoresTable from "../../hooks/useStoresTable";
 
 function SelectStores() {
-    const { stores, isLoading, sortKey, sortOrder, handleSort } =
+    const { stores, sortedStores, isLoading, sortKey, sortOrder, handleSort } =
         useStoresTable();
 
     if (isLoading)
@@ -11,7 +11,7 @@ function SelectStores() {
         <div className="container">
             <div className="headerRow">
                 <h1>Store Table</h1>
-                <span>총 {stores.length}개</span>
+                <span>총 {stores?.length || 0}개</span>
             </div>
 
             <div className="tableWrap">
@@ -25,6 +25,7 @@ function SelectStores() {
                             <th onClick={() => handleSort("storeId")} className="sortable">
                                 매장 ID {sortKey === "storeId" && (sortOrder === "asc" ? "▲" : "▼")}
                             </th>
+                            <th>매장명</th>
                             <th>전화번호</th>
                             <th>우편번호</th>
                             <th>지번주소</th>
@@ -46,13 +47,19 @@ function SelectStores() {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* {sortedStores.map((store) => (
+                        {sortedStores.map((store) => (
                             <tr key={store.id}>
                                 <td>{store.id}</td>
                                 <td>{store.storeId}</td>
                                 <td>{store.storeName}</td>
-                                <td>{store.totalCnt}</td>
-                                <td>{store.totalDivCode}</td>
+                                <td>{store.telNo}</td>
+                                <td>{store.postNo}</td>
+                                <td>{store.jibunAddr}</td>
+                                <td>{store.roadAddr}</td>
+                                <td>{store.lat}</td>
+                                <td>{store.lng}</td>
+                                <td>{store.areaCode}</td>
+                                <td>{store.areaDetailCode}</td>
                                 <td>
                                     {new Date(store.createdAt).toLocaleDateString()}
                                 </td>
@@ -60,7 +67,7 @@ function SelectStores() {
                                     {store.updatedAt ? new Date(store.updatedAt).toLocaleString() : "기록 없음"}
                                 </td>
                             </tr>
-                        ))} */}
+                        ))}
                     </tbody>
                 </table>
             </div>

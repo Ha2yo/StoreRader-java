@@ -15,7 +15,7 @@ function useStoresTable() {
     const sortedStores = [...stores].sort((a, b) => {
         const getValue = (store: any) => {
             if (sortKey === "id") return store.id;
-            if (sortKey === "storeId") return store.storesId;
+            if (sortKey === "storeId") return store.storeId;
             if (sortKey === "createdAt") return new Date(store.createdAt).getTime();
             if (sortKey === "updatedAt")
                 return store.updatedAt ? new Date(store.updatedAt).getTime() : 0;

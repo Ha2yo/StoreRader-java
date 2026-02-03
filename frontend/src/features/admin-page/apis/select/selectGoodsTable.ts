@@ -5,7 +5,7 @@ export async function selectGoodsTable() {
     const res = await apiClient.get(
       "/admin/select/goods"
     );
-
+    console.log(res.data.goods);
     return res.data.goods;
   } catch (error) {
     console.error("상품 테이블 조회 실패: ", error);

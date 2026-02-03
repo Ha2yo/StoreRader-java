@@ -10,6 +10,6 @@ export interface Store {
     lng: number;
     areaCode: string;
     areaDetailCode: string;
-    cratedAt: string;
+    createdAt: string;
     updatedAt: string;
 }

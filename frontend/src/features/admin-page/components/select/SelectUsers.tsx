@@ -17,7 +17,7 @@ function SelectUsers() {
         <div className="container">
             <div className="headerRow">
                 <h1>Users Table</h1>
-                <span>총 {users.length}명</span>
+                <span>총 {users?.length || 0}명</span>
             </div>
 
             <div className="tableWrap">
