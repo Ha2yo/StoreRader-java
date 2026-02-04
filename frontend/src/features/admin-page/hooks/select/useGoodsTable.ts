@@ -1,6 +1,6 @@
-import type { Good } from "../types/SelectGoods";
-import { selectGoodsTable } from "../apis/select/selectGoodsTable";
-import { useSortableTable } from "./useSortableTable";
+import type { Good } from "../../types/SelectGoods";
+import { selectGoodsTable } from "../../apis/select/selectGoodsTable";
+import { useSortableTable } from "../useSortableTable";
 
 type SortKey = "id" | "goodId" | "createdAt" | "updatedAt";
 

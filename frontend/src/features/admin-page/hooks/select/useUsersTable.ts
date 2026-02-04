@@ -4,9 +4,9 @@
  *   관리자 페이지에서 유저 목록을 조회하고 정렬 상태를 관리한다
  */
 
-import type { User } from "../types/SelectUsers";
-import { selectUsersTable } from "../apis/select/selectUsersTable";
-import { useSortableTable } from "./useSortableTable";
+import type { User } from "../../types/SelectUsers";
+import { selectUsersTable } from "../../apis/select/selectUsersTable";
+import { useSortableTable } from "../useSortableTable";
 
 type SortKey = "id" | "createdAt" | "lastLogin";
 

@@ -1,4 +1,4 @@
-import useStoresTable from "../../hooks/useStoresTable";
+import useStoresTable from "../../hooks/select/useStoresTable";
 import { DataTable, type Column } from "./DataTable";
 import type { Store } from "../../types/SelectStores";
 
@@ -37,7 +37,7 @@ export default function SelectStores() {
 
   return (
     <DataTable
-      title="Goods Table"
+      title="Stores Table"
       totalCount={stores?.length ?? 0}
       isLoading={isLoading}
       rows={sortedStores}

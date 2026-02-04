@@ -1,4 +1,4 @@
-import useGoodsTable from "../../hooks/useGoodsTable";
+import useGoodsTable from "../../hooks/select/useGoodsTable";
 import { DataTable, type Column } from "./DataTable";
 import type { Good } from "../../types/SelectGoods";
 

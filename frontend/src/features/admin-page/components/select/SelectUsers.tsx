@@ -4,7 +4,7 @@
  *   관리자 페이지에서 유저 목록을 테이블 형태로 표시하는 UI 컴포넌트
  */
 
-import useUsersTable from "../../hooks/useUsersTable";
+import useUsersTable from "../../hooks/select/useUsersTable";
 import { DataTable, type Column } from "./DataTable";
 import type { User } from "../../types/SelectUsers";
 
