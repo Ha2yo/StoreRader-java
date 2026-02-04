@@ -4,11 +4,12 @@
  *   관리자 페이지의 메인 레이아웃 및 메뉴 제어를 담당하는 UI 컴포넌트
  */
 import { useState } from "react";
-import SelectUsers from "./select/SelectUsers";
-import SelectGoods from "./select/SelectGoods";
-import AddGoods from "./add/AddGoods";
-import AddStores from "./add/AddStores";
-import SelectStores from "./select/SelectStores";
+import SelectUsers from "./select/selectUsers";
+import SelectGoods from "./select/selectGoods";
+import AddGoods from "./add/addGoods";
+import AddStores from "./add/addStores";
+import AddRegionCodes from "./add/addRegionCodes";
+import SelectStores from "./select/selectStores";
 
 function Admin() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
@@ -29,6 +30,7 @@ function Admin() {
             <ul className="dropdown-menu">
               <li onClick={() => setActiveMenu("add_goods")}>goods</li>
               <li onClick={() => setActiveMenu("add_stores")}>stores</li>
+              <li onClick={() => setActiveMenu("add_RegionCodes")}>regionCodes</li>
             </ul>
           </li>
 
@@ -52,6 +54,7 @@ function Admin() {
         {activeMenu === "select_stores" && <SelectStores />}
         {activeMenu === "add_goods" && <AddGoods />}
         {activeMenu === "add_stores" && <AddStores />}
+        {activeMenu === "add_RegionCodes" && <AddRegionCodes />}
       </main>
     </div>
   );

@@ -59,7 +59,7 @@ public class AdminController {
         return adminService.fetchStoresApi();
     }
 
-    @GetMapping(value = "/get/public-data/regions", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/get/public-data/regionCodes", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter fetchRegionCodesApi() {
         return adminService.fetchRegionCodesApi();
     }
