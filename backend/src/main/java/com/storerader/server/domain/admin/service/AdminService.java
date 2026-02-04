@@ -167,7 +167,7 @@ public class AdminService {
                 log.accept("지역코드 데이터 추가 시작");
 
                 String xml = publicApiService.fetchString(
-                        "/getProductInfoSvc.do",
+                        "/getStandardInfoSvc.do",
                         "지역코드"
                 );
                 log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
