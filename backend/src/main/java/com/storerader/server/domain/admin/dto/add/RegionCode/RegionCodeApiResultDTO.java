@@ -9,6 +9,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record RegionCodeApiResultDTO(
         @JacksonXmlElementWrapper(useWrapping = false)
-        @JacksonXmlProperty(localName = "item")
+        @JacksonXmlProperty(localName = "iros.openapi.service.vo.stdInfoVO")
         List<RegionCodeApiItemDTO> item
 ) {}
