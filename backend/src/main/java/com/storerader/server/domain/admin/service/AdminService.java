@@ -168,7 +168,7 @@ public class AdminService {
                 log.accept("지역코드 데이터 추가 시작");
 
                 String xml = publicApiService.fetchString(
-                        "getStandardInfoSvc.do?classCode=AR",
+                        "getStandardInfoSvc.do",
                         "지역코드",
                         Map.of("classCode", "AR")
                 );
