@@ -5,8 +5,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JacksonXmlRootElement(localName = "response")
+@JacksonXmlRootElement(localName = "iros.openapi.service.vo.stdInfoVO")
 public record RegionCodeApiResponseDTO(
-        @JacksonXmlProperty(localName = "iros.openapi.service.vo.stdInfoVO")
+        @JacksonXmlProperty(localName = "result")
         RegionCodeApiResultDTO result
 ) {}
