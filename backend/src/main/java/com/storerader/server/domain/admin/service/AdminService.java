@@ -15,9 +15,11 @@
 package com.storerader.server.domain.admin.service;
 
 import com.storerader.server.common.entity.GoodEntity;
+import com.storerader.server.common.entity.RegionCodeEntity;
 import com.storerader.server.common.entity.StoreEntity;
 import com.storerader.server.common.entity.UserEntity;
 import com.storerader.server.common.repository.GoodRepository;
+import com.storerader.server.common.repository.RegionCodeRepository;
 import com.storerader.server.common.repository.StoreRepository;
 import com.storerader.server.common.repository.UserRepository;
 import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiResponseDTO;
@@ -25,6 +27,8 @@ import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponseDTO;
 import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsDTO;
 import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListDTO;
+import com.storerader.server.domain.admin.dto.select.regionCodes.FindAllRegionCodesDTO;
+import com.storerader.server.domain.admin.dto.select.regionCodes.FindAllRegionCodesListDTO;
 import com.storerader.server.domain.admin.dto.select.stores.FindAllStoresDTO;
 import com.storerader.server.domain.admin.dto.select.stores.FindAllStoresListDTO;
 import com.storerader.server.domain.admin.dto.select.users.FindAllUsersDTO;
@@ -45,6 +49,7 @@ public class AdminService {
     private final UserRepository userRepository;
     private final GoodRepository goodRepository;
     private final StoreRepository storeRepository;
+    private final RegionCodeRepository regionCodeRepository;
     private final PublicApiService publicApiService;
 
     /**
@@ -83,6 +88,17 @@ public class AdminService {
                 .toList();
 
         return new FindAllStoresListDTO(storeDtos);
+    }
+
+    @Transactional
+    public FindAllRegionCodesListDTO findAllRegionCodes() {
+        List<RegionCodeEntity> regionCodesEntities = regionCodeRepository.findAll();
+
+        List<FindAllRegionCodesDTO> regionCodesDtos = regionCodesEntities.stream()
+                .map(FindAllRegionCodesDTO::from)
+                .toList();
+
+        return new FindAllRegionCodesListDTO(regionCodesDtos);
     }
 
     /**
