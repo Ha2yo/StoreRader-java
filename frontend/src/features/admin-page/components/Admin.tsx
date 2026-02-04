@@ -10,7 +10,7 @@ import AddStores from "./add/AddStores";
 import AddRegionCodes from "./add/AddRegionCodes";
 import SelectStores from "./select/SelectStores";
 import SelectGoods from "./select/SelectGoods";
-
+ 
 function Admin() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
 
