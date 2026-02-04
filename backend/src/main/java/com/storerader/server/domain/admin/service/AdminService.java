@@ -36,6 +36,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 @RequiredArgsConstructor
@@ -168,7 +169,8 @@ public class AdminService {
 
                 String xml = publicApiService.fetchString(
                         "getStandardInfoSvc.do?classCode=AR",
-                        "지역코드"
+                        "지역코드",
+                        Map.of("classCode", "AR")
                 );
                 log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
 

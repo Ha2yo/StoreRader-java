@@ -42,6 +42,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.function.Consumer;
 
 @Service
@@ -223,11 +224,21 @@ public class PublicApiService {
             String path,
             String label
     ) {
-        URI uri = UriComponentsBuilder.fromHttpUrl(BASE_URL)
+        return fetchString (path, label, Map.of());
+    }
+
+    public String fetchString(
+            String path,
+            String label,
+            Map<String, String> params
+    ) {
+        UriComponentsBuilder a = UriComponentsBuilder.fromHttpUrl(BASE_URL)
                 .path(path)
-                .queryParam("ServiceKey", serviceKey)
-                .build(true)
-                .toUri();
+                .queryParam("ServiceKey", serviceKey);
+
+        params.forEach(a::queryParam);
+
+        URI uri = a.build(true).toUri();
 
         try {
             String body = restClient.get()
