@@ -1,5 +1,5 @@
 import { addStoresTable } from "../../apis/add/addStoresTable";
-import SseLog from "./sseLog";
+import SseLog from "./SseLog";
 
 function AddStores() {
 

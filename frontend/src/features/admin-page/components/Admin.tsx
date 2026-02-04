@@ -4,12 +4,12 @@
  *   관리자 페이지의 메인 레이아웃 및 메뉴 제어를 담당하는 UI 컴포넌트
  */
 import { useState } from "react";
-import SelectUsers from "./select/selectUsers";
-import SelectGoods from "./select/selectGoods";
-import AddGoods from "./add/addGoods";
-import AddStores from "./add/addStores";
-import AddRegionCodes from "./add/addRegionCodes";
-import SelectStores from "./select/selectStores";
+import SelectUsers from "./select/SelectUsers";
+import AddGoods from "./add/AddGoods";
+import AddStores from "./add/AddStores";
+import AddRegionCodes from "./add/AddRegionCodes";
+import SelectStores from "./select/SelectStores";
+import SelectGoods from "./select/SelectGoods";
 
 function Admin() {
   const [activeMenu, setActiveMenu] = useState("dashboard");

@@ -5,7 +5,7 @@
  */
 
 import { addGoodsTable } from "../../apis/add/addGoodsTable";
-import SseLog from "./sseLog";
+import SseLog from "./SseLog";
 
 function AddGoods() {
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Store } from "../types/selectStores";
+import type { Store } from "../types/SelectStores";
 import { selectStoresTable } from "../apis/select/selectStoresTable";
 
 type SortKey = "id" | "storeId" | "createdAt" | "updatedAt";

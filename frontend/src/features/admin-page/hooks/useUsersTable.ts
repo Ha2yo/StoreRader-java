@@ -5,7 +5,7 @@
  */
 
 import { useEffect, useState } from "react";
-import type { User } from "../types/selectUsers";
+import type { User } from "../types/SelectUsers";
 import { selectUsersTable } from "../apis/select/selectUsersTable";
 
 type SortKey = "id" | "createdAt" | "lastLogin";

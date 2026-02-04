@@ -1,5 +1,5 @@
 import { addRegionCodesTable } from "../../apis/add/addRegionCodesTable";
-import SseLog from "./sseLog";
+import SseLog from "./SseLog";
 
 function AddRegionCodes() {
 
