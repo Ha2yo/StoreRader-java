@@ -1,78 +1,51 @@
 import useStoresTable from "../../hooks/useStoresTable";
+import { DataTable, type Column } from "./DataTable";
+import type { Store } from "../../types/SelectStores";
 
-function SelectStores() {
-    const { stores, sortedStores, isLoading, sortKey, sortOrder, handleSort } =
-        useStoresTable();
+type SortKey = "id" | "storeId" | "createdAt" | "updatedAt";
 
-    if (isLoading)
-        return <div>데이터를 불러오는 중입니다...</div>
+export default function SelectStores() {
+  const { stores, sortedStores, isLoading, sortKey, sortOrder, handleSort } =
+    useStoresTable();
 
-    return (
-        <div className="container">
-            <div className="headerRow">
-                <h1>Store Table</h1>
-                <span>총 {stores?.length || 0}개</span>
-            </div>
+  const columns: Column<Store, SortKey>[] = [
+    { key: "id", header: "ID", sortKey: "id", render: (s) => s.id },
+    { key: "goodId", header: "매장 ID", sortKey: "storeId", render: (s) => s.storeId },
+    { key: "storeName", header: "매장명", render: (g) => g.storeName },
+    { key: "telNo", header: "전화번호", render: (g) => g.telNo },
+    { key: "postNo", header: "우편번호", render: (g) => g.postNo },
+    { key: "jibunAddr", header: "지번주소", render: (g) => g.jibunAddr },
+    { key: "roadAddr", header: "도로명주소", render: (g) => g.roadAddr },
+    { key: "lat", header: "위도", render: (g) => g.lat },
+    { key: "lng", header: "경도", render: (g) => g.lng },
+    { key: "areaCode", header: "지역코드", render: (g) => g.areaCode },
+    { key: "areaDetailCode", header: "지역상세코드", render: (g) => g.areaDetailCode },
+    {
+      key: "createdAt",
+      header: "생성일자",
+      sortKey: "createdAt",
+      render: (g) => new Date(g.createdAt).toLocaleDateString(),
+    },
+    {
+      key: "updatedAt",
+      header: "수정일자",
+      sortKey: "updatedAt",
+      render: (g) =>
+        g.updatedAt ? new Date(g.updatedAt).toLocaleString() : "기록 없음",
+    },
+  ];
 
-            <div className="tableWrap">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            {/* ID 정렬 */}
-                            <th onClick={() => handleSort("id")} className="sortable">
-                                ID {sortKey === "id" && (sortOrder === "asc" ? "▲" : "▼")}
-                            </th>
-                            <th onClick={() => handleSort("storeId")} className="sortable">
-                                매장 ID {sortKey === "storeId" && (sortOrder === "asc" ? "▲" : "▼")}
-                            </th>
-                            <th>매장명</th>
-                            <th>전화번호</th>
-                            <th>우편번호</th>
-                            <th>지번주소</th>
-                            <th>도로주소</th>
-                            <th>위도</th>
-                            <th>경도</th>
-                            <th>지역코드</th>
-                            <th>지역상세코드</th>
-
-                            {/* 가입일 정렬 */}
-                            <th onClick={() => handleSort("createdAt")} className="sortable">
-                                생성일자 {sortKey === "createdAt" && (sortOrder === "asc" ? "▲" : "▼")}
-                            </th>
-
-                            {/* 최근 로그인 정렬 */}
-                            <th onClick={() => handleSort("updatedAt")} className="sortable">
-                                수정일자 {sortKey === "updatedAt" && (sortOrder === "asc" ? "▲" : "▼")}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {sortedStores.map((store) => (
-                            <tr key={store.id}>
-                                <td>{store.id}</td>
-                                <td>{store.storeId}</td>
-                                <td>{store.storeName}</td>
-                                <td>{store.telNo}</td>
-                                <td>{store.postNo}</td>
-                                <td>{store.jibunAddr}</td>
-                                <td>{store.roadAddr}</td>
-                                <td>{store.lat}</td>
-                                <td>{store.lng}</td>
-                                <td>{store.areaCode}</td>
-                                <td>{store.areaDetailCode}</td>
-                                <td>
-                                    {new Date(store.createdAt).toLocaleDateString()}
-                                </td>
-                                <td>
-                                    {store.updatedAt ? new Date(store.updatedAt).toLocaleString() : "기록 없음"}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
+  return (
+    <DataTable
+      title="Goods Table"
+      totalCount={stores?.length ?? 0}
+      isLoading={isLoading}
+      rows={sortedStores}
+      columns={columns}
+      sortKey={sortKey}
+      sortOrder={sortOrder}
+      onSort={handleSort}
+      rowKey={(g) => g.id}
+    />
+  );
 }
-
-export default SelectStores;

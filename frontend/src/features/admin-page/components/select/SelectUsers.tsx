@@ -5,68 +5,45 @@
  */
 
 import useUsersTable from "../../hooks/useUsersTable";
+import { DataTable, type Column } from "./DataTable";
+import type { User } from "../../types/SelectUsers";
 
-function SelectUsers() {
-    const { users, sortedUsers, isLoading, sortKey, sortOrder, handleSort } =
-        useUsersTable();
+type SortKey = "id" | "createdAt" | "lastLogin";
 
-    if (isLoading)
-        return <div>데이터를 불러오는 중입니다...</div>
+export default function SelectUsers() {
+  const { users, sortedUsers, isLoading, sortKey, sortOrder, handleSort } =
+    useUsersTable();
 
-    return (
-        <div className="container">
-            <div className="headerRow">
-                <h1>Users Table</h1>
-                <span>총 {users?.length || 0}명</span>
-            </div>
+  const columns: Column<User, SortKey>[] = [
+    { key: "id", header: "ID", sortKey: "id", render: (u) => u.id },
+    { key: "name", header: "유저 이름", render: (u) => u.name },
+    { key: "email", header: "유저 이메일", render: (u) => u.email },
+    {
+      key: "createdAt",
+      header: "생성일자",
+      sortKey: "createdAt",
+      render: (u) => new Date(u.createdAt).toLocaleDateString(),
+    },
+    {
+      key: "updatedAt",
+      header: "수정일자",
+      sortKey: "lastLogin",
+      render: (u) =>
+        u.lastLogin ? new Date(u.lastLogin).toLocaleString() : "기록 없음",
+    },
+  ];
 
-            <div className="tableWrap">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            {/* ID 정렬 */}
-                            <th onClick={() => handleSort("id")} className="sortable">
-                                ID {sortKey === "id" && (sortOrder === "asc" ? "▲" : "▼")}
-                            </th>
-                            <th>이름</th>
-                            <th>이메일</th>
-                            <th>권한</th>
-
-                            {/* 가입일 정렬 */}
-                            <th onClick={() => handleSort("createdAt")} className="sortable">
-                                가입일 {sortKey === "createdAt" && (sortOrder === "asc" ? "▲" : "▼")}
-                            </th>
-                            
-                            {/* 최근 로그인 정렬 */}
-                            <th onClick={() => handleSort("lastLogin")} className="sortable">
-                                최근 로그인 {sortKey === "lastLogin" && (sortOrder === "asc" ? "▲" : "▼")}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {sortedUsers.map((user) => (
-                            <tr key={user.id}>
-                                <td>{user.id}</td>
-                                <td>{user.name}</td>
-                                <td>{user.email}</td>
-                                <td>
-                                    <span >
-                                        {user.role}
-                                    </span>
-                                </td>
-                                <td>
-                                    {new Date(user.createdAt).toLocaleDateString()}
-                                </td>
-                                <td>
-                                    {user.lastLogin ? new Date(user.lastLogin).toLocaleString() : "기록 없음"}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
+  return (
+    <DataTable
+      title="Users Table"
+      totalCount={users?.length ?? 0}
+      isLoading={isLoading}
+      rows={sortedUsers}
+      columns={columns}
+      sortKey={sortKey}
+      sortOrder={sortOrder}
+      onSort={handleSort}
+      rowKey={(u) => u.id}
+    />
+  );
 }
-
-export default SelectUsers;
