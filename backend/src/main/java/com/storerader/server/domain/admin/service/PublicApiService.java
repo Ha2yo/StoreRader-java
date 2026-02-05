@@ -259,9 +259,7 @@ public class PublicApiService {
             if (affected > 0)
                 applied += affected;
 
-            if (processed % 200 == 0) {
-                log.accept("DB에 반영 중.. \n(processed = " + processed + ", applied = " + applied + ")");
-            }
+            log.accept("DB에 반영 중..");
         }
 
         log.accept(processed + "개 데이터 처리 완료");

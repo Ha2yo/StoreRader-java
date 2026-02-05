@@ -9,4 +9,7 @@ import java.util.List;
 public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
     @Query("select s.storeId from StoreEntity s")
     List<Long> findAllStoreIds();
+
+    @Query("select s.storeName from StoreEntity s where s.storeId = :storeId")
+    String findStoreNameByStoreId(Long storeId);
 }

@@ -229,9 +229,11 @@ public class AdminService {
 
                 for (int i = 0; i < storeIds.size(); i++) {
                     Long storeId = storeIds.get(i);
+                    String storeName = storeRepository.findStoreNameByStoreId(storeId);
 
                     try {
-                        log.accept("\n[" + (i+1) + "/" + storeIds.size() + "] storeId = " + storeId + "시작");
+                        log.accept("\n[" + (i+1) + "/" + storeIds.size() + "]\nstoreId = " + storeId +
+                                " (" + storeName);
 
                         String xml = publicApiService.fetchString(
                                 "/getProductPriceInfoSvc.do",
@@ -242,7 +244,7 @@ public class AdminService {
                         log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
 
                         PriceApiResponseDTO parsed = publicApiService.parsePricesResponse(xml);
-                        
+
                         int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
                         log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
 
