@@ -255,8 +255,11 @@ public class AdminService {
                         log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
 
                         int saved = publicApiService.savePrices(parsed, log);
-                        log.accept("\nDB 반영 완료 (applied = " + saved + ")");
-                        log.accept("가격 데이터 추가 완료");
+
+                        if (saved != 0){
+                            log.accept("\nDB 반영 완료 (applied = " + saved + ")");
+                            log.accept("가격 데이터 추가 완료");
+                        }
                     } catch (Exception e) {
                         log.accept("오류 (storeId = " + storeId + "): " + e.getMessage());
                     }
