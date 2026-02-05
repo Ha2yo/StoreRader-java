@@ -1,0 +1,2 @@
+ALTER TABLE prices
+ALTER COLUMN store_id TYPE BIGINT;

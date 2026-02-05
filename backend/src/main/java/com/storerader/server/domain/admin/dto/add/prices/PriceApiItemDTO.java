@@ -8,7 +8,7 @@ public record PriceApiItemDTO(
         @JacksonXmlProperty(localName = "goodInspectDay")
         String inspectDay,
         @JacksonXmlProperty(localName = "entpId")
-        Integer storeId,
+        Long storeId,
         @JacksonXmlProperty(localName = "goodId")
         Integer goodId,
         @JacksonXmlProperty(localName = "goodPrice")
