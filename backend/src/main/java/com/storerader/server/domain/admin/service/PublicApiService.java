@@ -234,6 +234,7 @@ public class PublicApiService {
             return 0;
         }
 
+        boolean started = false;
         int processed = 0;
         int applied = 0;
 
@@ -259,7 +260,10 @@ public class PublicApiService {
             if (affected > 0)
                 applied += affected;
 
-            log.accept("DB에 반영 중..");
+            if (!started) {
+                log.accept("DB에 반영 중..");
+                started = true;
+            }
         }
 
         log.accept(processed + "개 데이터 처리 완료");

@@ -4,5 +4,5 @@ import com.storerader.server.common.entity.GoodEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface GoodRepository extends JpaRepository<GoodEntity, Long> {
-
+    boolean existsByGoodId(Long goodId);
 }

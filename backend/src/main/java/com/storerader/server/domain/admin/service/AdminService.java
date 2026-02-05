@@ -229,12 +229,18 @@ public class AdminService {
 
                 for (int i = 0; i < storeIds.size(); i++) {
                     Long storeId = storeIds.get(i);
+
                     String storeName = storeRepository.findStoreNameByStoreId(storeId);
 
-                    try {
-                        log.accept("\n[" + (i+1) + "/" + storeIds.size() + "]\nstoreId = " + storeId +
-                                " (" + storeName);
+                    log.accept("\n[" + (i+1) + "/" + storeIds.size() + "]\nstoreId = " + storeId +
+                            " (" + storeName + ")");
 
+                    if (!goodRepository.existsByGoodId(storeId)) {
+                        log.accept("DB에 해당 매장 없으므로 스킵\n");
+                        continue;
+                    }
+
+                    try {
                         String xml = publicApiService.fetchString(
                                 "/getProductPriceInfoSvc.do",
                                 "가격",
