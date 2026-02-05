@@ -237,11 +237,12 @@ public class AdminService {
                                 "/getProductPriceInfoSvc.do",
                                 "가격",
                                 Map.of("goodInspectDay", inspectDay,
-                                        "entpId", "e")
+                                        "entpId", storeId.toString())
                         );
                         log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
 
                         PriceApiResponseDTO parsed = publicApiService.parsePricesResponse(xml);
+                        
                         int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
                         log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
 
@@ -252,9 +253,6 @@ public class AdminService {
                         log.accept("오류 (storeId = " + storeId + "): " + e.getMessage());
                     }
                 }
-
-
-
 
                 emitter.complete();
             } catch (Exception e) {
