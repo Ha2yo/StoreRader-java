@@ -215,7 +215,7 @@ public class AdminService {
             try {
                 Consumer<String> log = msg -> safeSend(emitter, msg);
 
-            if(priceRepository.isExistsByInspectDay(inspectDay)) {
+            if(priceRepository.existsByInspectDay(inspectDay)) {
                 log.accept("이미 해당 일자의 가격 데이터가 존재합니다 (inspectDay = " + inspectDay + ")");
                 log.accept("작업을 종료합니다");
                 emitter.complete();
