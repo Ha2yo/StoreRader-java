@@ -13,5 +13,5 @@ public interface StoreRepository extends JpaRepository<StoreEntity, Long> {
     @Query("select s.storeName from StoreEntity s where s.storeId = :storeId")
     String findStoreNameByStoreId(Long storeId);
 
-    boolean existsByGoodId(Long goodId);
+    boolean existsByStoreId(Long storeId);
 }
