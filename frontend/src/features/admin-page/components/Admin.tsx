@@ -11,6 +11,7 @@ import AddRegionCodes from "./add/AddRegionCodes";
 import SelectStores from "./select/SelectStores";
 import SelectGoods from "./select/SelectGoods";
 import SelectRegionCodes from "./select/RegionCodesTable";
+import AddPrices from "./add/AddPrices";
  
 function Admin() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
@@ -31,6 +32,7 @@ function Admin() {
             <ul className="dropdown-menu">
               <li onClick={() => setActiveMenu("add_goods")}>goods</li>
               <li onClick={() => setActiveMenu("add_stores")}>stores</li>
+              <li onClick={() => setActiveMenu("add_prices")}>prices</li>
               <li onClick={() => setActiveMenu("add_RegionCodes")}>regionCodes</li>
             </ul>
           </li>
@@ -57,6 +59,7 @@ function Admin() {
         {activeMenu === "select_regionCodes" && <SelectRegionCodes />}
         {activeMenu === "add_goods" && <AddGoods />}
         {activeMenu === "add_stores" && <AddStores />}
+        {activeMenu === "add_prices" && <AddPrices />}
         {activeMenu === "add_RegionCodes" && <AddRegionCodes />}
       </main>
     </div>
