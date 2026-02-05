@@ -18,12 +18,10 @@ import com.storerader.server.common.entity.GoodEntity;
 import com.storerader.server.common.entity.RegionCodeEntity;
 import com.storerader.server.common.entity.StoreEntity;
 import com.storerader.server.common.entity.UserEntity;
-import com.storerader.server.common.repository.GoodRepository;
-import com.storerader.server.common.repository.RegionCodeRepository;
-import com.storerader.server.common.repository.StoreRepository;
-import com.storerader.server.common.repository.UserRepository;
+import com.storerader.server.common.repository.*;
 import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponseDTO;
+import com.storerader.server.domain.admin.dto.add.prices.PriceApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponseDTO;
 import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsDTO;
 import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListDTO;
@@ -50,6 +48,7 @@ public class AdminService {
     private final GoodRepository goodRepository;
     private final StoreRepository storeRepository;
     private final RegionCodeRepository regionCodeRepository;
+    private final PriceRepository priceRepository;
     private final PublicApiService publicApiService;
 
     /**
@@ -209,6 +208,64 @@ public class AdminService {
         return emitter;
     }
 
+    public SseEmitter fetchPricesApi(String inspectDay) {
+        SseEmitter emitter = new SseEmitter(0L);
+
+        new Thread(() -> {
+            try {
+                Consumer<String> log = msg -> safeSend(emitter, msg);
+
+            if(priceRepository.isExistsByInspectDay(inspectDay)) {
+                log.accept("이미 해당 일자의 가격 데이터가 존재합니다 (inspectDay = " + inspectDay + ")");
+                log.accept("작업을 종료합니다");
+                emitter.complete();
+                return;
+            }
+
+                log.accept("가격 데이터 추가 시작 (inspectDay = " + inspectDay + ")");
+
+                List<Integer> storeIds = storeRepository.findAllStoreIds();
+                log.accept("대상 매장 수 = " + storeIds.size());
+
+                for (int i = 0; i < storeIds.size(); i++) {
+                    Integer storeId = storeIds.get(i);
+
+                    try {
+                        log.accept("\n[" + (i+1) + "/" + storeIds.size() + "] storeId = " + storeId + "시작");
+
+                        String xml = publicApiService.fetchString(
+                                "/getProductPriceInfoSvc.do",
+                                "가격",
+                                Map.of("goodInspectDay", inspectDay,
+                                        "entpId", "e")
+                        );
+                        log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
+
+                        PriceApiResponseDTO parsed = publicApiService.parsePricesResponse(xml);
+                        int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
+                        log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
+
+                        int saved = publicApiService.savePrices(parsed, log);
+                        log.accept("\nDB 반영 완료 (applied = " + saved + ")");
+                        log.accept("가격 데이터 추가 완료");
+                    } catch (Exception e) {
+                        log.accept("오류 (storeId = " + storeId + "): " + e.getMessage());
+                    }
+                }
+
+
+
+
+                emitter.complete();
+            } catch (Exception e) {
+                safeSend(emitter, "오류: " + e.getMessage());
+                emitter.completeWithError(e);
+            }
+
+        }).start();
+
+        return emitter;
+    }
 
     private void safeSend(SseEmitter emitter, String msg) {
         try {

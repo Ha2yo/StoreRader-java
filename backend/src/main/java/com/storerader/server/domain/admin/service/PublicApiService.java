@@ -18,15 +18,19 @@ package com.storerader.server.domain.admin.service;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.storerader.server.common.entity.GoodEntity;
+import com.storerader.server.common.entity.PriceEntity;
 import com.storerader.server.common.entity.RegionCodeEntity;
 import com.storerader.server.common.entity.StoreEntity;
 import com.storerader.server.common.repository.sql.GoodRepositorySQL;
+import com.storerader.server.common.repository.sql.PriceRepositorySQL;
 import com.storerader.server.common.repository.sql.RegionCodeRepositorySQL;
 import com.storerader.server.common.repository.sql.StoreRepositorySQL;
 import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiItemDTO;
 import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiItemDTO;
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponseDTO;
+import com.storerader.server.domain.admin.dto.add.prices.PriceApiItemDTO;
+import com.storerader.server.domain.admin.dto.add.prices.PriceApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.stores.StoreApiItemDTO;
 import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponseDTO;
 import jakarta.transaction.Transactional;
@@ -51,6 +55,7 @@ public class PublicApiService {
     private final GoodRepositorySQL goodRepositorySQL;
     private final StoreRepositorySQL storeRepositorySQL;
     private final RegionCodeRepositorySQL regionCodeRepositorySQL;
+    private final PriceRepositorySQL priceRepositorySQL;
     private final VworldService vworldService;
     private final RestClient restClient;
     private final XmlMapper xmlMapper = new XmlMapper();
@@ -219,6 +224,50 @@ public class PublicApiService {
         return applied;
     }
 
+    @Transactional
+    public int savePrices(
+            PriceApiResponseDTO response,
+            Consumer<String> log
+    ) {
+        if (response == null || response.result() == null || response.result().item() == null) {
+            log.accept("저장할 데이터가 없습니다.");
+            return 0;
+        }
+
+        int processed = 0;
+        int applied = 0;
+
+        for (PriceApiItemDTO item : response.result().item()) {
+            processed++;
+
+            PriceEntity price = new PriceEntity();
+
+            if (price.getCreatedAt() == null) {
+                price.setCreatedAt(OffsetDateTime.now());
+            }
+
+            price.setInspectDay(item.inspectDay());
+            price.setStoreId(item.storeId());
+            price.setGoodId(item.goodId());
+            price.setPrice(item.price());
+            price.setIsOnePlusOne(item.isOnePlusOne());
+            price.setIsDiscount(item.isDiscount());
+            price.setDiscountStart(item.discountStart());
+            price.setDiscountEnd(item.discountEnd());
+
+            int affected = priceRepositorySQL.upsertPrices(price);
+            if (affected > 0)
+                applied += affected;
+
+            if (processed % 200 == 0) {
+                log.accept("DB에 반영 중.. \n(processed = " + processed + ", applied = " + applied + ")");
+            }
+        }
+
+        log.accept(processed + "개 데이터 처리 완료");
+
+        return applied;
+    }
 
     public String fetchString(
             String path,
@@ -280,6 +329,14 @@ public class PublicApiService {
             return xmlMapper.readValue(xml, RegionCodeApiResponseDTO.class);
         } catch (IOException ex) {
             throw new IllegalStateException("지역코드 응답 파싱 실패: " + ex.getMessage(), ex);
+        }
+    }
+
+    public PriceApiResponseDTO parsePricesResponse(String xml) {
+        try {
+            return xmlMapper.readValue(xml, PriceApiResponseDTO.class);
+        } catch (IOException ex) {
+            throw new IllegalStateException("가격 응답 파싱 실패: " + ex.getMessage(), ex);
         }
     }
 
