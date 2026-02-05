@@ -24,7 +24,7 @@ public class PriceEntity {
     private Integer goodId;
 
     @Column(name = "store_id", nullable = false)
-    private Integer storeId;
+    private Long storeId;
 
     @Column(name = "inspect_day", nullable = false)
     private String inspectDay;
@@ -50,7 +50,7 @@ public class PriceEntity {
     public PriceEntity(
             Integer id,
             Integer goodId,
-            Integer storeId,
+            Long storeId,
             String inspectDay,
             Integer price,
             String isOnePlusOne,

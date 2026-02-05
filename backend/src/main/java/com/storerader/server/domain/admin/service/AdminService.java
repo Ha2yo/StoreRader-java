@@ -224,11 +224,11 @@ public class AdminService {
 
                 log.accept("가격 데이터 추가 시작 (inspectDay = " + inspectDay + ")");
 
-                List<Integer> storeIds = storeRepository.findAllStoreIds();
+                List<Long> storeIds = storeRepository.findAllStoreIds();
                 log.accept("대상 매장 수 = " + storeIds.size());
 
                 for (int i = 0; i < storeIds.size(); i++) {
-                    Integer storeId = storeIds.get(i);
+                    Long storeId = storeIds.get(i);
 
                     try {
                         log.accept("\n[" + (i+1) + "/" + storeIds.size() + "] storeId = " + storeId + "시작");
