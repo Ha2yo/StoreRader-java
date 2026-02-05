@@ -235,7 +235,7 @@ public class AdminService {
                     log.accept("\n[" + (i+1) + "/" + storeIds.size() + "]\nstoreId = " + storeId +
                             " (" + storeName + ")");
 
-                    if (!goodRepository.existsByGoodId(storeId)) {
+                    if (!storeRepository.existsByGoodId(storeId)) {
                         log.accept("DB에 해당 매장 없으므로 스킵\n");
                         continue;
                     }
