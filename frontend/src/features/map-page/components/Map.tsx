@@ -9,17 +9,30 @@ import { useMapInit } from "../hooks/useMapInit";
 import { useUserLocation } from "../hooks/useUserLocation";
 import { recenterMap } from "../utils/recenterMap";
 import "leaflet/dist/leaflet.css";
+import { useStoreData } from "../hooks/useStoreData";
+import { useRenderKeyEvent } from "../hooks/useRenderKeyEvents";
 
 function Map() {
     const mapRef = useRef<HTMLDivElement>(null);
     const leafletMap = useRef<L.Map | null>(null);
-    const markerRef = useRef<L.Layer | null>(null);
+    const userMarkerRef = useRef<L.Layer | null>(null);
+
+    const storeMarkersRef = useRef<Record<string, L.Marker>>({});
+
+    const renderKey = useRenderKeyEvent();
 
     // 지도 초기화
     useMapInit(mapRef, leafletMap);
 
     // 사용자 현재 위치 주기적으로 갱신
-    useUserLocation(leafletMap, markerRef);
+    useUserLocation(leafletMap, userMarkerRef);
+
+    // 매장 마커 표시
+    useStoreData({
+        map: leafletMap.current,
+        storeMarkersRef,
+        renderKey,
+    });
 
     return (
         <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
