@@ -152,7 +152,7 @@ body,
 .search-bar-map {
   position: fixed;
   height: 50px;
-  top: 35px;
+  top: 15px;
   left: 16px;
   width: calc(100% - 32px);
   max-width: 700px;

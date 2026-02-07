@@ -5,14 +5,12 @@
  */
 
 import Map from "../features/map-page/components/Map";
-import Search from "../features/search-bar/components/SearchBar";
+import SearchBar from "../features/map-conponent/components/SearchBar";
 
 function MapPage() {
   return (
     <div >
-      <div>
-        <Search />
-      </div>
+      <SearchBar />
       <Map />
     </div>
   );
