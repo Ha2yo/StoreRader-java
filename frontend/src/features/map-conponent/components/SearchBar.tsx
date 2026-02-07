@@ -17,7 +17,7 @@ function Search() {
           style={{
             all: "unset",
             fontSize: 25,
-            width: 60,
+            width: 75,
             height: 50,
             cursor: "pointer",
             color: "#333",
@@ -29,7 +29,7 @@ function Search() {
                 setIsSidebarOpen(true);
               }}
         >
-          &nbsp;&nbsp;☰
+          &nbsp;&nbsp;&nbsp;☰
         </button>
 
         <input
