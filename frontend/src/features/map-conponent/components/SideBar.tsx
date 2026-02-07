@@ -83,7 +83,7 @@ function Sidebar({ onClose }: SidebarProps) {
                     position: "fixed",
                     top: 0,
                     left: 0,
-                    width: "30%",
+                    width: "250px",
                     height: "100vh",
                     background: "#fff",
                     borderTopRightRadius: 20,
