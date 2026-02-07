@@ -13,7 +13,7 @@ function RecenterButton({ leafletMap } : Props) {
                 onClick={recenterMap(leafletMap)}
                 style={{
                     position: "absolute",
-                    bottom: "12%",
+                    bottom: "150px",
                     right: "5%",
                     zIndex: 1000,
                     backgroundColor: "#fff",
