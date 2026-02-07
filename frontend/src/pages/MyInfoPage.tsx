@@ -8,7 +8,7 @@ import MyInfo from "../features/my-info-page/components/MyInfo";
 
 function MyInfoPage() {
   return (
-    <div>
+    <div className="container">
       <MyInfo />
     </div>
   );

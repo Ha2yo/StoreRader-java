@@ -26,12 +26,21 @@
   -webkit-text-size-adjust: 100%;
 }
 
+
 .container {
-  margin: 0;
-  padding-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  padding: 16px 12px;
+  padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
+  text-align: center;
+}
+
+.myinfo-card {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
   text-align: center;
 }
 
@@ -144,9 +153,9 @@ body,
   position: fixed;
   height: 50px;
   top: 35px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 16px;
   width: calc(100% - 32px);
+  max-width: 700px;
 
   display: flex;
   align-items: center;
@@ -241,13 +250,6 @@ body,
 
 .search-page {
   margin-top: 10px;
-}
-
-.container {
-  padding: 40px 20px;
-  padding-bottom: 120px;
-  /* 하단 네비 간격 */
-  text-align: center;
 }
 
 .profile {

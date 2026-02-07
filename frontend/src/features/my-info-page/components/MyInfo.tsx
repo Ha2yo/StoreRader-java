@@ -65,7 +65,7 @@ export default function MyInfo() {
 
   // 로그인 상태
   return (
-    <div className="container" style={{ paddingTop: "100px" }}>
+    <div className="myinfo-card" style={{ paddingTop: "100px" }}>
       <div>
         <img src={user?.picture} alt="profile" className="profile" />
         <p style={{ marginTop: 16, fontSize: 20, fontWeight: "bold" }}>
@@ -78,7 +78,7 @@ export default function MyInfo() {
           <button
             {...touchEffect}
             style={{
-              width: "30%",
+              width: "40%",
               padding: "12px",
               background: "#1890FF",
               borderRadius: "10px",
@@ -94,7 +94,7 @@ export default function MyInfo() {
         )}
 
         {/* 사용자 기록 조회 */}
-        <button
+        <button 
           {...touchEffect}
           style={{
             width: "80%",
