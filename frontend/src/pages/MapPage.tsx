@@ -10,7 +10,7 @@ import Search from "../features/search-bar/components/SearchBar";
 function MapPage() {
   return (
     <div >
-      <div className="container">
+      <div>
         <Search />
       </div>
       <Map />

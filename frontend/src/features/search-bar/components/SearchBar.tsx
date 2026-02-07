@@ -13,15 +13,15 @@ function Search() {
               style={{
                 all: "unset",
                 fontSize: 25,
-                width: 80,
+                width: 60,
                 height: 50,
                 cursor: "pointer",
                 color: "#333",
                 borderRadius: "25px 8px 8px 25px",
-                // background: "rgba(0,0,0,0.05)",
+                //background: "rgba(0,0,0,0.05)",
               }}
             >
-              &nbsp;&nbsp;&nbsp;&nbsp;☰
+              &nbsp;&nbsp;☰
             </button>
 
             <input

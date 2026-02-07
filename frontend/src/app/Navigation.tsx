@@ -40,9 +40,10 @@ function Navigation() {
     <nav
       style={{
         position: "fixed",
-        bottom: "60px",
+        bottom: "20px",
         left: "50%",
         transform: "translateX(-50%)",
+        maxWidth: "1000px",
         width: "92%",
         height: "70px",
         background: "#fff",
