@@ -7,7 +7,6 @@ export async function findAllStore(): Promise<Store[]> {
     const res = await apiClient.get<StoreResponse>(
       "/find/store/all"
     );
-    console.log(res.data);
     return res.data.stores;
   } catch (error) {
     console.error("매장 테이블 조회 실패: ", error);

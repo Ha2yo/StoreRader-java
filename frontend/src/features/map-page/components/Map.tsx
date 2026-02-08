@@ -16,6 +16,7 @@ function Map() {
     const mapRef = useRef<HTMLDivElement>(null);
     const leafletMap = useRef<L.Map | null>(null);
     const userMarkerRef = useRef<L.Layer | null>(null);
+    const circleRef = useRef<L.Circle | null>(null); 
 
     const storeMarkersRef = useRef<Record<string, L.Marker>>({});
 
@@ -31,6 +32,7 @@ function Map() {
     useStoreData({
         map: leafletMap.current,
         storeMarkersRef,
+        circleRef,
         renderKey,
     });
 

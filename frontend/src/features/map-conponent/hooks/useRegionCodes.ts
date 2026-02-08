@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import type { RegionCode } from "../types/RegionCodeItem";
 import { findAllRegionCodes } from "../apis/findAllRegionCodes";
 
-const south_korea: RegionCode = {
+const SOUTH_KOREA: RegionCode = {
     code: "020000000",
     name: "전체",
     parent_code: null,
@@ -24,7 +24,7 @@ export function useRegionCodes() {
                 const topRegions = data.filter((r) => r.level === 1);
 
                 if (!alive) return;
-                setRegionCodes([south_korea, ...topRegions]);
+                setRegionCodes([SOUTH_KOREA, ...topRegions]);
             } catch (e) {
                 console.error("지역 코드 불러오기 실패:", e);
             }
