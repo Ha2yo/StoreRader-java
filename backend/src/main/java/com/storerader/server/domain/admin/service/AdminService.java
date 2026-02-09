@@ -14,10 +14,7 @@
 
 package com.storerader.server.domain.admin.service;
 
-import com.storerader.server.common.entity.GoodEntity;
-import com.storerader.server.common.entity.RegionCodeEntity;
-import com.storerader.server.common.entity.StoreEntity;
-import com.storerader.server.common.entity.UserEntity;
+import com.storerader.server.common.entity.*;
 import com.storerader.server.common.repository.*;
 import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponseDTO;
@@ -25,6 +22,8 @@ import com.storerader.server.domain.admin.dto.add.prices.PriceApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponseDTO;
 import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsDTO;
 import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListDTO;
+import com.storerader.server.domain.admin.dto.select.prices.FindAllPricesDTO;
+import com.storerader.server.domain.admin.dto.select.prices.FindAllPricesListDTO;
 import com.storerader.server.domain.admin.dto.select.regionCodes.FindAllRegionCodesDTO;
 import com.storerader.server.domain.admin.dto.select.regionCodes.FindAllRegionCodesListDTO;
 import com.storerader.server.domain.admin.dto.select.stores.FindAllStoresDTO;
@@ -47,8 +46,9 @@ public class AdminService {
     private final UserRepository userRepository;
     private final GoodRepository goodRepository;
     private final StoreRepository storeRepository;
-    private final RegionCodeRepository regionCodeRepository;
     private final PriceRepository priceRepository;
+
+    private final RegionCodeRepository regionCodeRepository;
     private final PublicApiService publicApiService;
 
     /**
@@ -98,6 +98,17 @@ public class AdminService {
                 .toList();
 
         return new FindAllRegionCodesListDTO(regionCodesDtos);
+    }
+
+    @Transactional
+    public FindAllPricesListDTO findAllPrices() {
+        List<PriceEntity> pricesEntities = priceRepository.findAll();
+
+        List<FindAllPricesDTO> priceDtos = pricesEntities.stream()
+                .map(FindAllPricesDTO::from)
+                .toList();
+
+        return new FindAllPricesListDTO(priceDtos);
     }
 
     /**

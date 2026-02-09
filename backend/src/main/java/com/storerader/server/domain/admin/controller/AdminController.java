@@ -15,6 +15,7 @@
 package com.storerader.server.domain.admin.controller;
 
 import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListDTO;
+import com.storerader.server.domain.admin.dto.select.prices.FindAllPricesListDTO;
 import com.storerader.server.domain.admin.dto.select.regionCodes.FindAllRegionCodesListDTO;
 import com.storerader.server.domain.admin.dto.select.stores.FindAllStoresListDTO;
 import com.storerader.server.domain.admin.dto.select.users.FindAllUsersListDTO;
@@ -51,9 +52,14 @@ public class AdminController {
         return ResponseEntity.ok(adminService.findAllStores());
     }
 
-    @GetMapping("/select/regionCodes")
+    @GetMapping("/select/region-codes")
     public ResponseEntity<FindAllRegionCodesListDTO> getAllRegionCodes() {
         return ResponseEntity.ok(adminService.findAllRegionCodes());
+    }
+
+    @GetMapping("/select/prices")
+    public ResponseEntity<FindAllPricesListDTO> getAllPriceCodes() {
+        return ResponseEntity.ok(adminService.findAllPrices());
     }
 
     @GetMapping(value = "/get/public-data/goods", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
