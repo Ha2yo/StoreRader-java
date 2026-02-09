@@ -11,6 +11,7 @@ import AddRegionCodes from "./add/AddRegionCodes";
 import SelectStores from "./select/SelectStores";
 import SelectGoods from "./select/SelectGoods";
 import SelectRegionCodes from "./select/RegionCodesTable";
+import SelectPrices from "./select/PricesTable";
 import AddPrices from "./add/AddPrices";
  
 function Admin() {
@@ -46,6 +47,7 @@ function Admin() {
               <li onClick={() => setActiveMenu("select_goods")}>goods</li>
               <li onClick={() => setActiveMenu("select_stores")}>stores</li>
               <li onClick={() => setActiveMenu("select_regionCodes")}>regionCodes</li>
+              <li onClick={() => setActiveMenu("select_prices")}>prices</li>
             </ul>
           </li>
         </ul>
@@ -57,6 +59,7 @@ function Admin() {
         {activeMenu === "select_goods" && <SelectGoods />}
         {activeMenu === "select_stores" && <SelectStores />}
         {activeMenu === "select_regionCodes" && <SelectRegionCodes />}
+        {activeMenu === "select_prices" && <SelectPrices />}
         {activeMenu === "add_goods" && <AddGoods />}
         {activeMenu === "add_stores" && <AddStores />}
         {activeMenu === "add_prices" && <AddPrices />}

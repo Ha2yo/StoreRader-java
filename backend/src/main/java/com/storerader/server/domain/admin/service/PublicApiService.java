@@ -234,6 +234,7 @@ public class PublicApiService {
             return 0;
         }
 
+        int total = 0;
         boolean started = false;
         int processed = 0;
         int applied = 0;
