@@ -37,7 +37,7 @@ export function useStoreData({
 
             if (selectedGoodName)
                 priceData = await findPrice(selectedGoodName);
-             console.log("[priceData] len =", priceData.length, priceData.slice(0, 3));
+            console.log("[priceData] len =", priceData.length, priceData.slice(0, 3));
 
             // 지역/거리 필터
             let filteredStores = stores;
@@ -124,6 +124,11 @@ export function useStoreData({
 
                     const marker = L.marker([store.lat, store.lng], { icon }).addTo(map);
 
+                    storeMarkersRef.current[String(store.storeId)] = marker;
+                    marker.on("click", () => setSelectedStore(store));
+
+                    storeMarkersRef.current[String(store.storeId)] = marker;
+
                     marker.bindTooltip(
                         `₩${store.price.toLocaleString()}`,
                         {
@@ -157,9 +162,6 @@ export function useStoreData({
                                 offset: L.point(0, -15),
                             }
                         );
-
-                        storeMarkersRef.current[store.storeId] = marker;
-                        marker.on("click", () => setSelectedStore(store));
                     }
                 });
             }
