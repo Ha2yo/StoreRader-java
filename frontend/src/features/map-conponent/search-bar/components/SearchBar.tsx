@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./SideBar";
+import Sidebar from "../../side-bar/components/SideBar";
 import { useState } from "react";
 import { useLastSearch } from "../hooks/useLastSearch";
 

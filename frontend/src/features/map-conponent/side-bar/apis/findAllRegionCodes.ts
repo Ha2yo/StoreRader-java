@@ -1,4 +1,4 @@
-import apiClient from "../../../contexts/apiClient";
+import apiClient from "../../../../contexts/apiClient";
 import type { RegionCodeResponse } from "../types/RegionCodeResponse";
 
 export async function findAllRegionCodes() {

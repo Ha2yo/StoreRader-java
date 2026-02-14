@@ -5,7 +5,7 @@
  */
 
 import Map from "../features/map-page/components/Map";
-import SearchBar from "../features/map-conponent/components/SearchBar";
+import SearchBar from "../features/map-conponent/search-bar/components/SearchBar";
 
 function MapPage() {
   return (
