@@ -17,7 +17,7 @@ function StoreDetailPanel({ store, onClose }: Props) {
             <div
                 style={{
                     position: "absolute",
-                    bottom: "20px",
+                    bottom: "0",
                     
                     left: "50%",
                     transform: "translateX(-50%)",
@@ -105,7 +105,7 @@ function StoreDetailPanel({ store, onClose }: Props) {
                         top: 0,
                         left: 0,
                         width: "100vw",
-                        height: "100vh",
+                        height: "100dvh",
                         backgroundColor: "rgba(0, 0, 0, 0.45)",
                         backdropFilter: "blur(1px)",
                         display: "flex",

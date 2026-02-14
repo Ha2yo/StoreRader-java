@@ -21,7 +21,7 @@ export default function MyInfo() {
 
   if (isLoading) {
     return (
-      <div className="container" style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <div className="container" style={{ height: "100dvh", display: "flex", justifyContent: "center", alignItems: "center" }}>
         <p style={{ color: "#666" }}>불러오는 중...</p>
       </div>
     );
@@ -33,7 +33,7 @@ export default function MyInfo() {
       <div
         className="container"
         style={{
-          height: "100vh",
+          height: "100dvh",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",

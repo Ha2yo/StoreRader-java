@@ -46,7 +46,7 @@ function Map() {
     useZoomScale(leafletMap.current);
 
     return (
-        <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
+        <div style={{ position: "relative", width: "100vw", height: "100dvh" }}>
             {/* 지도 표시 영역 */}
             <div ref={mapRef} id="map" style={{ width: "100%", height: "100%" }} />
 
