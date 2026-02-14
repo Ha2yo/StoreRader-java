@@ -11,12 +11,13 @@ import "leaflet/dist/leaflet.css";
 import { useStoreData } from "../hooks/useStoreData";
 import { useRenderKeyEvent } from "../hooks/useRenderKeyEvents";
 import RecenterButton from "./RecenterButton";
+import { useZoomScale } from "../hooks/useZoomScale";
 
 function Map() {
     const mapRef = useRef<HTMLDivElement>(null);
     const leafletMap = useRef<L.Map | null>(null);
     const userMarkerRef = useRef<L.Layer | null>(null);
-    const circleRef = useRef<L.Circle | null>(null); 
+    const circleRef = useRef<L.Circle | null>(null);
 
     const storeMarkersRef = useRef<Record<string, L.Marker>>({});
 
@@ -36,11 +37,14 @@ function Map() {
         renderKey,
     });
 
+    // 줌 레벨에 따른 마커 크기 조절
+    useZoomScale(leafletMap.current);
+
     return (
         <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
             {/* 지도 표시 영역 */}
             <div ref={mapRef} id="map" style={{ width: "100%", height: "100%" }} />
-        
+
             <RecenterButton leafletMap={leafletMap} />
         </div>
     );
