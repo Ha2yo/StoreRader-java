@@ -51,9 +51,9 @@ public class PriceRepositorySQL {
         return jdbcTemplate.query(
                 """
                         SELECT
-                            p.store_id AS storeId,
-                            p.price AS price,
-                            p.inspect_day AS inspectDay
+                            p.store_id,
+                            p.price,
+                            p.inspect_day
                         FROM prices p
                         JOIN (
                             SELECT
@@ -77,7 +77,11 @@ public class PriceRepositorySQL {
                             LIMIT 1
                         )
                         """,
-                new BeanPropertyRowMapper<>(PriceItemDTO.class),
+                (rs, rowNum) -> new PriceItemDTO(
+                        rs.getInt("store_id"),
+                        rs.getInt("price"),
+                        rs.getString("inspect_day")
+                ),
                 goodName,
                 goodName
         );
