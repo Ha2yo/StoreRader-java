@@ -51,9 +51,9 @@ public class PriceRepositorySQL {
         return jdbcTemplate.query(
                 """
                         SELECT
-                            p.store_id,
-                            p.price,
-                            p.inspect_day
+                            p.store_id AS storeId,
+                            p.price AS price,
+                            p.inspect_day AS inspectDay
                         FROM prices p
                         JOIN (
                             SELECT
