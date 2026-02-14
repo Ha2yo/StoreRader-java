@@ -10,7 +10,8 @@ export function useStoreData({
     map,
     storeMarkersRef,
     circleRef,
-    renderKey
+    renderKey,
+    setSelectedStore
 }: StoreDataProps) {
     useEffect(() => {
         if (!map) return;
@@ -53,18 +54,22 @@ export function useStoreData({
                     circleRef.current = null;
                 }
             }
+
+            // 기존 마커 제거
             Object.values(storeMarkersRef.current).forEach((m) => map.removeLayer(m));
             storeMarkersRef.current = {};
 
+            // 마커 생성 + 클릭 시 상세패널 오픈
             filteredStores.forEach((store) => {
+                if (store.lat == null || store.lng == null) return;
 
-                const lat = store.lat;
-                const lng = store.lng;
-
-                const marker = L.marker([lat, lng], { icon: blackIcon }).addTo(map);
+                const marker = L.marker([store.lat, store.lng], { icon: blackIcon }).addTo(map);
                 storeMarkersRef.current[String(store.storeId)] = marker;
 
+                marker.on("click", () => {
+                    setSelectedStore(store);
+                });
             });
         })();
-    }, [map, renderKey]);
+    }, [map, renderKey, setSelectedStore]);
 }
