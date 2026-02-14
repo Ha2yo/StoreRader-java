@@ -14,7 +14,7 @@ public class PriceController {
 
     @GetMapping("/find/price")
     public FindPriceResponseDTO findPrices(
-            @RequestParam String goodName
+            @RequestParam(name = "good-name") String goodName
     ) {
         return priceService.findPrices(goodName);
     }
