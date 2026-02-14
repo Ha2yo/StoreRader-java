@@ -1,10 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./SideBar";
 import { useState } from "react";
+import { useLastSearch } from "../hooks/useLastSearch";
 
 function Search() {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const lastSearch = useLastSearch();
 
   return (
     <>
@@ -35,6 +38,7 @@ function Search() {
         <input
           className="search-bar-box"
           type="text"
+          value={lastSearch}
           onClick={() => navigate("/search")}
           placeholder="상품명을 입력하세요"
           readOnly
