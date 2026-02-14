@@ -78,7 +78,7 @@ public class PriceRepositorySQL {
                         )
                         """,
                 (rs, rowNum) -> new PriceItemDTO(
-                        rs.getInt("store_id"),
+                        rs.getLong("store_id"),
                         rs.getInt("price"),
                         rs.getString("inspect_day")
                 ),
