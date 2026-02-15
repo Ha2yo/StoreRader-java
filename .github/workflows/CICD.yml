@@ -114,6 +114,7 @@ jobs:
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
           echo "AWS_SG_ID=${{ secrets.AWS_SG_ID }}" >> .env
           echo "DOCKERHUB_TOKEN=${{ secrets.DOCKERHUB_TOKEN }}" >> .env
+          echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" >> .env
           echo "EC2_HOST=${{ secrets.EC2_HOST }}" >> .env
           echo "EC2_SSH_PORT=${{ secrets.EC2_SSH_PORT }}" >> .env
           echo "EC2_USERNAME=${{ secrets.EC2_USERNAME }}" >> .env
