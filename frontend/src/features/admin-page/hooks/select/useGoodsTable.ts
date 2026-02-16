@@ -1,9 +1,9 @@
-import type { Good, GoodsSortKey } from "../../types/SelectGoods";
+import type { Good, GoodSortKey } from "../../types/SelectGoods";
 import { useServerTable } from "./useServerTable";
 import { selectGoodsTable } from "../../apis/select/selectGoodsTable";
 
 export default function useGoodsTable() {
- return useServerTable<Good, GoodsSortKey>({
+ return useServerTable<Good, GoodSortKey>({
   fetcher: selectGoodsTable,
   size: 10,
   initialSortKey: "id",

@@ -1,6 +1,6 @@
 import useGoodsTable from "../../hooks/select/useGoodsTable";
 import { DataTable, type Column } from "./DataTable";
-import type { Good, GoodsSortKey } from "../../types/SelectGoods";
+import type { Good, GoodSortKey } from "../../types/SelectGoods";
 import Pagination from "./Pagination";
 
 export default function SelectGoods() {
@@ -16,7 +16,7 @@ export default function SelectGoods() {
     setPage
   } = useGoodsTable();
 
-  const columns: Column<Good, GoodsSortKey>[] = [
+  const columns: Column<Good, GoodSortKey>[] = [
     { key: "id", header: "ID", sortKey: "id", render: (g) => g.id },
     { key: "goodId", header: "상품 ID", sortKey: "goodId", render: (g) => g.goodId },
     { key: "goodName", header: "상품명", render: (g) => g.goodName },
@@ -39,7 +39,7 @@ export default function SelectGoods() {
 
   return (
     <div>
-      <DataTable<Good, GoodsSortKey>
+      <DataTable<Good, GoodSortKey>
         title="Goods Table"
         totalCount={totalCount}
         isLoading={isLoading}

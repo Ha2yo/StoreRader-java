@@ -13,3 +13,6 @@ export interface Store {
     createdAt: string;
     updatedAt: string;
 }
+
+export type StoreSortKey = "id" | "storeId" | "createdAt" | "areaCode" | "areaDetailCode" | "updatedAt";
+export type SortOrder = "asc" | "desc";

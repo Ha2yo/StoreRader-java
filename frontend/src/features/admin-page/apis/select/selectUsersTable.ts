@@ -1,11 +1,11 @@
 import apiClient from "../../../../contexts/apiClient";
 import type { PageResult } from "../../types/PageResult";
-import type { User, UsersSortKey, SortOrder } from "../../types/SelectUsers";
+import type { User, UserSortKey, SortOrder } from "../../types/SelectUsers";
 
 export async function selectUsersTable(params:{
   page: number;
   size: number;
-  sortKey: UsersSortKey;
+  sortKey: UserSortKey;
   sortOrder: SortOrder;
 }): Promise<PageResult<User>> {
   const res = await apiClient.get("/admin/select/users", {

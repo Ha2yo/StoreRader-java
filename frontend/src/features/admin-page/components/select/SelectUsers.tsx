@@ -1,6 +1,6 @@
 import useUsersTable from "../../hooks/select/useUsersTable";
 import { DataTable, type Column } from "./DataTable";
-import type { User, UsersSortKey } from "../../types/SelectUsers";
+import type { User, UserSortKey } from "../../types/SelectUsers";
 import Pagination from "./Pagination";
 
 export default function SelectUsers() {
@@ -16,7 +16,7 @@ export default function SelectUsers() {
     setPage
   } = useUsersTable();
 
-   const columns: Column<User, UsersSortKey>[] = [
+   const columns: Column<User, UserSortKey>[] = [
     { key: "id", header: "ID", sortKey: "id", render: (u) => u.id },
     { key: "role", header: "권한", sortKey: "role", render: (u) => u.role },
     { key: "name", header: "유저 이름", render: (u) => u.name },
@@ -39,7 +39,7 @@ export default function SelectUsers() {
 
   return (
     <div>
-      <DataTable<User, UsersSortKey>
+      <DataTable<User, UserSortKey>
         title="Users Table"
         totalCount={totalCount}
         isLoading={isLoading}

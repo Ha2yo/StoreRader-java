@@ -103,14 +103,24 @@ public class AdminService {
     }
 
     @Transactional
-    public FindAllStoresListDTO findAllStores() {
-        List<StoreEntity> storeEntities = storeRepository.findAll();
+    public FindAllStoresListDTO findAllStores(
+            int page,
+            int size,
+            String sortKey,
+            String sortOrder
+    ) {
+        Sort.Direction dir = "asc".equalsIgnoreCase(sortOrder)
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
 
-        List<FindAllStoresDTO> storeDtos = storeEntities.stream()
-                .map(FindAllStoresDTO::from)
-                .toList();
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(dir, sortKey)
+        );
 
-        return new FindAllStoresListDTO(storeDtos);
+        Page<StoreEntity> pageResult = storeRepository.findAll(pageable);
+        return FindAllStoresListDTO.from(pageResult);
     }
 
     @Transactional

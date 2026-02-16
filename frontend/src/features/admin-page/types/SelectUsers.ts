@@ -11,5 +11,5 @@ export interface User {
   lastLogin: string;
 }
 
-export type UsersSortKey = "id" | "role" | "createdAt" | "lastLogin";
+export type UserSortKey = "id" | "role" | "createdAt" | "lastLogin";
 export type SortOrder = "asc" | "desc";

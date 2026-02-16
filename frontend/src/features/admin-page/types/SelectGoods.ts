@@ -8,5 +8,5 @@ export interface Good {
     updatedAt: string | null;
 }
 
-export type GoodsSortKey = "id" | "goodId" | "totalDivCode" | "createdAt" | "updatedAt";
+export type GoodSortKey = "id" | "goodId" | "totalDivCode" | "createdAt" | "updatedAt";
 export type SortOrder = "asc" | "desc";
