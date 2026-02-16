@@ -6,7 +6,7 @@
 
 import type { User } from "../../types/SelectUsers";
 import { selectUsersTable } from "../../apis/select/selectUsersTable";
-import { useSortableTable } from "../useSortableTable";
+import { useSortableTable } from "./useServerTable.ts";
 
 type SortKey = "id" | "createdAt" | "lastLogin";
 

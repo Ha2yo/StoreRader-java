@@ -32,6 +32,9 @@ import com.storerader.server.domain.admin.dto.select.users.FindAllUsersDTO;
 import com.storerader.server.domain.admin.dto.select.users.FindAllUsersListDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -68,14 +71,13 @@ public class AdminService {
     }
 
     @Transactional
-    public FindAllGoodsListDTO findAllGoods() {
-        List<GoodEntity> goodEntities = goodRepository.findAll();
-
-        List<FindAllGoodsDTO> goodDtos = goodEntities.stream()
-                .map(FindAllGoodsDTO::from)
-                .toList();
-
-        return new FindAllGoodsListDTO(goodDtos);
+    public FindAllGoodsListDTO findAllGoods(
+            int page,
+            int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<GoodEntity> pageResult = goodRepository.findAll(pageable);
+        return FindAllGoodsListDTO.from(pageResult);
     }
 
     @Transactional
@@ -226,12 +228,12 @@ public class AdminService {
             try {
                 Consumer<String> log = msg -> safeSend(emitter, msg);
 
-            if(priceRepository.existsByInspectDay(inspectDay)) {
-                log.accept("이미 해당 일자의 가격 데이터가 존재합니다 (inspectDay = " + inspectDay + ")");
-                log.accept("작업을 종료합니다");
-                emitter.complete();
-                return;
-            }
+                if (priceRepository.existsByInspectDay(inspectDay)) {
+                    log.accept("이미 해당 일자의 가격 데이터가 존재합니다 (inspectDay = " + inspectDay + ")");
+                    log.accept("작업을 종료합니다");
+                    emitter.complete();
+                    return;
+                }
 
                 log.accept("가격 데이터 추가 시작 (inspectDay = " + inspectDay + ")");
 
@@ -243,7 +245,7 @@ public class AdminService {
 
                     String storeName = storeRepository.findStoreNameByStoreId(storeId);
 
-                    log.accept("\n[" + (i+1) + "/" + storeIds.size() + "]\nstoreId = " + storeId +
+                    log.accept("\n[" + (i + 1) + "/" + storeIds.size() + "]\nstoreId = " + storeId +
                             " (" + storeName + ")");
 
                     if (!storeRepository.existsByStoreId(storeId)) {
@@ -267,7 +269,7 @@ public class AdminService {
 
                         int saved = publicApiService.savePrices(parsed, log);
 
-                        if (saved != 0){
+                        if (saved != 0) {
                             log.accept("\nDB 반영 완료 (applied = " + saved + ")");
                             log.accept("가격 데이터 추가 완료");
                         }

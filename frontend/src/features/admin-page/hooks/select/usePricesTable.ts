@@ -1,6 +1,6 @@
 import type { Price } from "../../types/SelectPrices";
 import { selectPricesTable } from "../../apis/select/selectPricesTable";
-import { useSortableTable } from "../useSortableTable";
+import { useSortableTable } from "./useServerTable.ts";
 
 type SortKey = "id" | "goodId" | "storeId" | "inspectDay" | "createdAt";
 

@@ -7,3 +7,6 @@ export interface Good {
     createdAt: string;
     updatedAt: string | null;
 }
+
+export type GoodsSortKey = "id" | "goodId" | "createdAt" | "updatedAt";
+export type SortOrder = "asc" | "desc";

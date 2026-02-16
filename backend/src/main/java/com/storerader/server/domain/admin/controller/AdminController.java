@@ -43,8 +43,11 @@ public class AdminController {
     }
 
     @GetMapping("/select/goods")
-    public ResponseEntity<FindAllGoodsListDTO> getAllGoods() {
-        return ResponseEntity.ok(adminService.findAllGoods());
+    public ResponseEntity<FindAllGoodsListDTO> getAllGoods(
+            @RequestParam int page,
+            @RequestParam int size
+    ) {
+        return ResponseEntity.ok(adminService.findAllGoods(page, size));
     }
 
     @GetMapping("/select/stores")

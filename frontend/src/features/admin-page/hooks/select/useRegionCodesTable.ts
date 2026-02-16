@@ -1,6 +1,6 @@
 import type { RegionCode } from "../../types/SelectRegionCodes";
 import { selectRegionCodesTable } from "../../apis/select/selectRegionCodesTable";
-import { useSortableTable } from "../useSortableTable";
+import { useSortableTable } from "./useServerTable.ts";
 
 type SortKey = "parentCode" | "level";
 

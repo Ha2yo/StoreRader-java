@@ -1,14 +1,23 @@
 import useGoodsTable from "../../hooks/select/useGoodsTable";
 import { DataTable, type Column } from "./DataTable";
-import type { Good } from "../../types/SelectGoods";
-
-type SortKey = "id" | "goodId" | "createdAt" | "updatedAt";
+import type { Good, GoodsSortKey } from "../../types/SelectGoods";
+import type {  } from "../../types/PageResult";
 
 export default function SelectGoods() {
-  const { goods, sortedGoods, isLoading, sortKey, sortOrder, handleSort } =
-    useGoodsTable();
+  const {
+    rows,
+    totalCount,
+    isLoading,
+    sortKey,
+    sortOrder,
+    handleSort,
+    page,
+    canPrev,
+    canNext,
+    setPage
+  } = useGoodsTable();
 
-  const columns: Column<Good, SortKey>[] = [
+  const columns: Column<Good, GoodsSortKey>[] = [
     { key: "id", header: "ID", sortKey: "id", render: (g) => g.id },
     { key: "goodId", header: "상품 ID", sortKey: "goodId", render: (g) => g.goodId },
     { key: "goodName", header: "상품명", render: (g) => g.goodName },
@@ -30,16 +39,24 @@ export default function SelectGoods() {
   ];
 
   return (
-    <DataTable
-      title="Goods Table"
-      totalCount={goods?.length ?? 0}
-      isLoading={isLoading}
-      rows={sortedGoods}
-      columns={columns}
-      sortKey={sortKey}
-      sortOrder={sortOrder}
-      onSort={handleSort}
-      rowKey={(g) => g.id}
-    />
+    <div>
+      <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 12 }}>
+        <button disabled={!canPrev} onClick={() => setPage(page - 1)}>이전</button>
+        <span>{page + 1}</span>
+        <button disabled={!canNext} onClick={() => setPage(page + 1)}>다음</button>
+      </div>
+
+      <DataTable<Good, GoodsSortKey>
+        title="Goods Table"
+        totalCount={totalCount}
+        isLoading={isLoading}
+        rows={rows}
+        columns={columns}
+        sortKey={sortKey}
+        sortOrder={sortOrder}
+        onSort={handleSort}
+        rowKey={(g) => g.id}
+      />
+    </div>
   );
 }
