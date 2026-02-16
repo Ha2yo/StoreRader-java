@@ -35,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -73,9 +74,20 @@ public class AdminService {
     @Transactional
     public FindAllGoodsListDTO findAllGoods(
             int page,
-            int size
+            int size,
+            String sortKey,
+            String sortOrder
     ) {
-        Pageable pageable = PageRequest.of(page, size);
+        Sort.Direction dir = "asc".equalsIgnoreCase(sortOrder)
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(dir, sortKey)
+        );
+
         Page<GoodEntity> pageResult = goodRepository.findAll(pageable);
         return FindAllGoodsListDTO.from(pageResult);
     }

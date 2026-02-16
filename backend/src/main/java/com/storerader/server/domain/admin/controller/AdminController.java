@@ -45,9 +45,11 @@ public class AdminController {
     @GetMapping("/select/goods")
     public ResponseEntity<FindAllGoodsListDTO> getAllGoods(
             @RequestParam int page,
-            @RequestParam int size
+            @RequestParam int size,
+            @RequestParam String sortKey,
+            @RequestParam String sortOrder
     ) {
-        return ResponseEntity.ok(adminService.findAllGoods(page, size));
+        return ResponseEntity.ok(adminService.findAllGoods(page, size, sortKey, sortOrder));
     }
 
     @GetMapping("/select/stores")
