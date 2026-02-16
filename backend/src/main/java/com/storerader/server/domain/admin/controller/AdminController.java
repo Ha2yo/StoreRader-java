@@ -68,8 +68,13 @@ public class AdminController {
     }
 
     @GetMapping("/select/region-codes")
-    public ResponseEntity<FindAllRegionCodesListDTO> getAllRegionCodes() {
-        return ResponseEntity.ok(adminService.findAllRegionCodes());
+    public ResponseEntity<FindAllRegionCodesListDTO> getAllRegionCodes(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam String sortKey,
+            @RequestParam String sortOrder
+    ) {
+        return ResponseEntity.ok(adminService.findAllRegionCodes(page, size, sortKey, sortOrder));
     }
 
     @GetMapping("/select/prices")

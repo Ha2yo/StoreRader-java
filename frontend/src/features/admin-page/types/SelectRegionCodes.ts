@@ -4,3 +4,6 @@ export interface RegionCode {
     parentCode: string;
     level: number;
 }
+
+export type RegionCodeSortKey = "code" | "parentCode";
+export type SortOrder = "asc" | "desc";

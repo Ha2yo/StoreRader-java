@@ -10,7 +10,7 @@ import AddStores from "./add/AddStores";
 import AddRegionCodes from "./add/AddRegionCodes";
 import SelectStores from "./select/SelectStores";
 import SelectGoods from "./select/SelectGoods";
-import SelectRegionCodes from "./select/RegionCodesTable";
+import SelectRegionCodes from "./select/SelectRegionCodes";
 import SelectPrices from "./select/PricesTable";
 import AddPrices from "./add/AddPrices";
  

@@ -124,14 +124,24 @@ public class AdminService {
     }
 
     @Transactional
-    public FindAllRegionCodesListDTO findAllRegionCodes() {
-        List<RegionCodeEntity> regionCodesEntities = regionCodeRepository.findAll();
+    public FindAllRegionCodesListDTO findAllRegionCodes(
+            int page,
+            int size,
+            String sortKey,
+            String sortOrder
+    ) {
+        Sort.Direction dir = "asc".equalsIgnoreCase(sortOrder)
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
 
-        List<FindAllRegionCodesDTO> regionCodesDtos = regionCodesEntities.stream()
-                .map(FindAllRegionCodesDTO::from)
-                .toList();
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(dir, sortKey)
+        );
 
-        return new FindAllRegionCodesListDTO(regionCodesDtos);
+        Page<RegionCodeEntity> pageResult = regionCodeRepository.findAll(pageable);
+        return FindAllRegionCodesListDTO.from(pageResult);
     }
 
     @Transactional
