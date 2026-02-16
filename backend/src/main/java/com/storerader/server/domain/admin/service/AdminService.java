@@ -285,6 +285,8 @@ public class AdminService {
                 List<Long> storeIds = storeRepository.findAllStoreIds();
                 log.accept("대상 매장 수 = " + storeIds.size());
 
+                int total = 0;
+
                 for (int i = 0; i < storeIds.size(); i++) {
                     Long storeId = storeIds.get(i);
 
@@ -313,15 +315,17 @@ public class AdminService {
                         log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
 
                         int saved = publicApiService.savePrices(parsed, log);
+                        total += saved;
 
                         if (saved != 0) {
                             log.accept("\nDB 반영 완료 (applied = " + saved + ")");
-                            log.accept("가격 데이터 추가 완료");
                         }
                     } catch (Exception e) {
                         log.accept("오류 (storeId = " + storeId + "): " + e.getMessage());
                     }
                 }
+
+                log.accept("\n가격 데이터 추가 완료 ("+total+"개)");
 
                 emitter.complete();
             } catch (Exception e) {

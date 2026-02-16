@@ -237,6 +237,7 @@ public class PublicApiService {
         boolean started = false;
         int processed = 0;
         int applied = 0;
+        int total = 0;
 
         for (PriceApiItemDTO item : response.result().item()) {
             processed++;
