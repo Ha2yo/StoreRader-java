@@ -1,20 +1,33 @@
-/**
- * File: features/admin-page/api/fetchUsersTable.tsx
- * Description:
- *   서버로부터 사용자 목록을 조회한다
- */
-
 import apiClient from "../../../../contexts/apiClient";
+import type { PageResult } from "../../types/PageResult";
+import type { User, UsersSortKey, SortOrder } from "../../types/SelectUsers";
 
-export async function selectUsersTable() {
-  try {
-    const res = await apiClient.get(
-      "/admin/select/users"
-    );
+export async function selectUsersTable(params:{
+  page: number;
+  size: number;
+  sortKey: UsersSortKey;
+  sortOrder: SortOrder;
+}): Promise<PageResult<User>> {
+  const res = await apiClient.get("/admin/select/users", {
+    params: {
+      page: params.page,
+      size: params.size,
+      sortKey: params.sortKey,
+      sortOrder: params.sortOrder
+    }
+  });
 
-    return res.data.users;
-  } catch (error) {
-    console.error("유저 테이블 조회 실패: ", error);
-    throw error;
-  }
+  const data = res.data as {
+    users: User[];
+    totalCount: number;
+    page: number;
+    size: number;
+  };
+
+  return {
+    items: data.users,
+    totalCount: data.totalCount,
+    page: data.page,
+    size: data.size
+  };
 }

@@ -61,14 +61,24 @@ public class AdminService {
      * @return 유저 목록
      */
     @Transactional
-    public FindAllUsersListDTO findAllUsers() {
-        List<UserEntity> userEntities = userRepository.findAll();
+    public FindAllUsersListDTO findAllUsers(
+            int page,
+            int size,
+            String sortKey,
+            String sortOrder
+    ) {
+        Sort.Direction dir = "asc".equalsIgnoreCase(sortOrder)
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
 
-        List<FindAllUsersDTO> userDtos = userEntities.stream()
-                .map(FindAllUsersDTO::from)
-                .toList();
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(dir, sortKey)
+        );
 
-        return new FindAllUsersListDTO(userDtos);
+        Page<UserEntity> pageResult = userRepository.findAll(pageable);
+        return FindAllUsersListDTO.from(pageResult);
     }
 
     @Transactional

@@ -38,8 +38,13 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/select/users")
-    public ResponseEntity<FindAllUsersListDTO> getAllUsers() {
-        return ResponseEntity.ok(adminService.findAllUsers());
+    public ResponseEntity<FindAllUsersListDTO> getAllUsers(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam String sortKey,
+            @RequestParam String sortOrder
+    ) {
+        return ResponseEntity.ok(adminService.findAllUsers(page, size, sortKey, sortOrder));
     }
 
     @GetMapping("/select/goods")

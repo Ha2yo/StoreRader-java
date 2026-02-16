@@ -5,18 +5,26 @@ import java.time.OffsetDateTime;
 
 public record FindAllUsersDTO(
         Long id,
+        String role,
         String name,
         String email,
-        String role,
+        String sub,
+        String picture,
+        String refreshToken,
+        OffsetDateTime refreshTokenExpiresAt,
         OffsetDateTime createdAt,
         OffsetDateTime lastLogin
 ) {
     public static FindAllUsersDTO from(UserEntity userEntity) {
         return new FindAllUsersDTO(
                 userEntity.getId(),
+                userEntity.getRole(),
                 userEntity.getName(),
                 userEntity.getEmail(),
-                userEntity.getRole(),
+                userEntity.getSub(),
+                userEntity.getPicture(),
+                userEntity.getRefreshToken(),
+                userEntity.getRefreshTokenExpiresAt(),
                 userEntity.getCreatedAt(),
                 userEntity.getLastLogin()
         );

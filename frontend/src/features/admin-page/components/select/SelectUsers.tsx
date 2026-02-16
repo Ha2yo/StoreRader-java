@@ -1,20 +1,22 @@
-/**
- * File: features/admin-page/components/SelectUsers.tsx
- * Description:
- *   관리자 페이지에서 유저 목록을 테이블 형태로 표시하는 UI 컴포넌트
- */
-
 import useUsersTable from "../../hooks/select/useUsersTable";
 import { DataTable, type Column } from "./DataTable";
-import type { User } from "../../types/SelectUsers";
-
-type SortKey = "id" | "createdAt" | "lastLogin";
+import type { User, UsersSortKey } from "../../types/SelectUsers";
+import Pagination from "./Pagination";
 
 export default function SelectUsers() {
-  const { users, sortedUsers, isLoading, sortKey, sortOrder, handleSort } =
-    useUsersTable();
+  const {
+    rows,
+    totalCount,
+    isLoading,
+    sortKey,
+    sortOrder,
+    handleSort,
+    page,
+    size,
+    setPage
+  } = useUsersTable();
 
-  const columns: Column<User, SortKey>[] = [
+   const columns: Column<User, UsersSortKey>[] = [
     { key: "id", header: "ID", sortKey: "id", render: (u) => u.id },
     { key: "name", header: "유저 이름", render: (u) => u.name },
     { key: "email", header: "유저 이메일", render: (u) => u.email },
@@ -33,17 +35,26 @@ export default function SelectUsers() {
     },
   ];
 
+
   return (
-    <DataTable
-      title="Users Table"
-      totalCount={users?.length ?? 0}
-      isLoading={isLoading}
-      rows={sortedUsers}
-      columns={columns}
-      sortKey={sortKey}
-      sortOrder={sortOrder}
-      onSort={handleSort}
-      rowKey={(u) => u.id}
-    />
+    <div>
+      <DataTable<User, UsersSortKey>
+        title="Users Table"
+        totalCount={totalCount}
+        isLoading={isLoading}
+        rows={rows}
+        columns={columns}
+        sortKey={sortKey}
+        sortOrder={sortOrder}
+        onSort={handleSort}
+        rowKey={(u) => u.id}
+      />
+      <Pagination 
+        page={page}
+        size={size}
+        totalCount={totalCount}
+        onPageChange={setPage}
+        groupSize={10}/>
+    </div>
   );
 }
