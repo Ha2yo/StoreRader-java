@@ -18,6 +18,7 @@ export default function SelectUsers() {
 
    const columns: Column<User, UsersSortKey>[] = [
     { key: "id", header: "ID", sortKey: "id", render: (u) => u.id },
+    { key: "role", header: "권한", sortKey: "role", render: (u) => u.role },
     { key: "name", header: "유저 이름", render: (u) => u.name },
     { key: "email", header: "유저 이메일", render: (u) => u.email },
     {

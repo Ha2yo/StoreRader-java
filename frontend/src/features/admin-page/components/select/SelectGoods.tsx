@@ -21,7 +21,7 @@ export default function SelectGoods() {
     { key: "goodId", header: "상품 ID", sortKey: "goodId", render: (g) => g.goodId },
     { key: "goodName", header: "상품명", render: (g) => g.goodName },
     { key: "totalCnt", header: "총 용량", render: (g) => g.totalCnt },
-    { key: "totalDivCode", header: "분류 코드", render: (g) => g.totalDivCode },
+    { key: "totalDivCode", header: "분류 코드", sortKey: "totalDivCode", render: (g) => g.totalDivCode },
     {
       key: "createdAt",
       header: "생성일자",

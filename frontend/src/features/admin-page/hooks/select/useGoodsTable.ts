@@ -7,6 +7,6 @@ export default function useGoodsTable() {
   fetcher: selectGoodsTable,
   size: 10,
   initialSortKey: "id",
-  initialSortOrder: "desc"
+  initialSortOrder: "asc"
  });
 }
