@@ -1,7 +1,6 @@
 import useGoodsTable from "../../hooks/select/useGoodsTable";
 import { DataTable, type Column } from "./DataTable";
 import type { Good, GoodsSortKey } from "../../types/SelectGoods";
-import type {  } from "../../types/PageResult";
 
 export default function SelectGoods() {
   const {
