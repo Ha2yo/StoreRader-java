@@ -145,14 +145,24 @@ public class AdminService {
     }
 
     @Transactional
-    public FindAllPricesListDTO findAllPrices() {
-        List<PriceEntity> pricesEntities = priceRepository.findAll();
+    public FindAllPricesListDTO findAllPrices(
+            int page,
+            int size,
+            String sortKey,
+            String sortOrder
+    ) {
+        Sort.Direction dir = "asc".equalsIgnoreCase(sortOrder)
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
 
-        List<FindAllPricesDTO> priceDtos = pricesEntities.stream()
-                .map(FindAllPricesDTO::from)
-                .toList();
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(dir, sortKey)
+        );
 
-        return new FindAllPricesListDTO(priceDtos);
+        Page<PriceEntity> pageResult = priceRepository.findAll(pageable);
+        return FindAllPricesListDTO.from(pageResult);
     }
 
     /**

@@ -11,7 +11,7 @@ import AddRegionCodes from "./add/AddRegionCodes";
 import SelectStores from "./select/SelectStores";
 import SelectGoods from "./select/SelectGoods";
 import SelectRegionCodes from "./select/SelectRegionCodes";
-import SelectPrices from "./select/PricesTable";
+import SelectPrices from "./select/SelectPrices";
 import AddPrices from "./add/AddPrices";
  
 function Admin() {

@@ -1,14 +1,22 @@
 import usePricesTable from "../../hooks/select/usePricesTable";
 import { DataTable, type Column } from "./DataTable";
-import type { Price } from "../../types/SelectPrices";
-
-type SortKey = "id" | "goodId" | "storeId" | "inspectDay" | "createdAt";
+import type { Price, PriceSortKey } from "../../types/SelectPrices";
+import Pagination from "./Pagination";
 
 export default function SelectPrices() {
-    const { prices, sortedPrices, isLoading, sortKey, sortOrder, handleSort } =
-        usePricesTable();
+    const {
+        rows,
+        totalCount,
+        isLoading,
+        sortKey,
+        sortOrder,
+        handleSort,
+        page,
+        size,
+        setPage
+    } = usePricesTable();
 
-    const columns: Column<Price, SortKey>[] = [
+    const columns: Column<Price, PriceSortKey>[] = [
         { key: "id", header: "ID", sortKey: "id", render: (p) => p.id },
         { key: "goodId", header: "상품 ID", sortKey: "goodId", render: (p) => p.goodId },
         { key: "storeId", header: "매장 ID", sortKey: "storeId", render: (p) => p.storeId },
@@ -27,16 +35,24 @@ export default function SelectPrices() {
     ];
 
     return (
-        <DataTable
-            title="Prices Table"
-            totalCount={prices?.length ?? 0}
-            isLoading={isLoading}
-            rows={sortedPrices}
-            columns={columns}
-            sortKey={sortKey}
-            sortOrder={sortOrder}
-            onSort={handleSort}
-            rowKey={(p) => p.id}
-        />
+        <div>
+            <DataTable<Price, PriceSortKey>
+                title="PRices Table"
+                totalCount={totalCount}
+                isLoading={isLoading}
+                rows={rows}
+                columns={columns}
+                sortKey={sortKey}
+                sortOrder={sortOrder}
+                onSort={handleSort}
+                rowKey={(p) => p.id}
+            />
+            <Pagination
+                page={page}
+                size={size}
+                totalCount={totalCount}
+                onPageChange={setPage}
+                groupSize={10} />
+        </div>
     );
 }

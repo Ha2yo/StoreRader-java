@@ -10,3 +10,6 @@ export interface Price {
     discountEnd: string;
     createdAt: string;
 }
+
+export type PriceSortKey = "id" | "goodId" | "storeId" | "inspectDay" | "createdAt";
+export type SortOrder = "asc" | "desc";

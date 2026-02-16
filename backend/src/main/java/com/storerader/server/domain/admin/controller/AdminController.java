@@ -78,8 +78,13 @@ public class AdminController {
     }
 
     @GetMapping("/select/prices")
-    public ResponseEntity<FindAllPricesListDTO> getAllPriceCodes() {
-        return ResponseEntity.ok(adminService.findAllPrices());
+    public ResponseEntity<FindAllPricesListDTO> getAllPriceCodes(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam String sortKey,
+            @RequestParam String sortOrder
+    ) {
+        return ResponseEntity.ok(adminService.findAllPrices(page, size, sortKey, sortOrder));
     }
 
     @GetMapping(value = "/get/public-data/goods", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
