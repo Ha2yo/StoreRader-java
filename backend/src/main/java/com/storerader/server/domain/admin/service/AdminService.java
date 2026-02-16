@@ -280,13 +280,6 @@ public class AdminService {
             try {
                 Consumer<String> log = msg -> safeSend(emitter, msg);
 
-                if (priceRepository.existsByInspectDay(inspectDay)) {
-                    log.accept("이미 해당 일자의 가격 데이터가 존재합니다 (inspectDay = " + inspectDay + ")");
-                    log.accept("작업을 종료합니다");
-                    emitter.complete();
-                    return;
-                }
-
                 log.accept("가격 데이터 추가 시작 (inspectDay = " + inspectDay + ")");
 
                 List<Long> storeIds = storeRepository.findAllStoreIds();

@@ -36,6 +36,7 @@ import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponseDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -224,7 +225,6 @@ public class PublicApiService {
         return applied;
     }
 
-    @Transactional
     public int savePrices(
             PriceApiResponseDTO response,
             Consumer<String> log
@@ -234,7 +234,6 @@ public class PublicApiService {
             return 0;
         }
 
-        int total = 0;
         boolean started = false;
         int processed = 0;
         int applied = 0;
@@ -257,13 +256,15 @@ public class PublicApiService {
             price.setDiscountStart(item.discountStart());
             price.setDiscountEnd(item.discountEnd());
 
-            int affected = priceRepositorySQL.upsertPrices(price);
-            if (affected > 0)
-                applied += affected;
-
             if (!started) {
                 log.accept("DB에 반영 중..");
                 started = true;
+            }
+
+            try {
+                int affected = priceRepositorySQL.upsertPrices(price);
+                if (affected > 0) applied += affected;
+            } catch (DataIntegrityViolationException e) {
             }
         }
 
