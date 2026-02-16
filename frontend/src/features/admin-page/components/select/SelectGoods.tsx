@@ -1,6 +1,7 @@
 import useGoodsTable from "../../hooks/select/useGoodsTable";
 import { DataTable, type Column } from "./DataTable";
 import type { Good, GoodsSortKey } from "../../types/SelectGoods";
+import Pagination from "./Pagination";
 
 export default function SelectGoods() {
   const {
@@ -11,8 +12,7 @@ export default function SelectGoods() {
     sortOrder,
     handleSort,
     page,
-    canPrev,
-    canNext,
+    size,
     setPage
   } = useGoodsTable();
 
@@ -39,12 +39,6 @@ export default function SelectGoods() {
 
   return (
     <div>
-      <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 12 }}>
-        <button disabled={!canPrev} onClick={() => setPage(page - 1)}>이전</button>
-        <span>{page + 1}</span>
-        <button disabled={!canNext} onClick={() => setPage(page + 1)}>다음</button>
-      </div>
-
       <DataTable<Good, GoodsSortKey>
         title="Goods Table"
         totalCount={totalCount}
@@ -56,6 +50,12 @@ export default function SelectGoods() {
         onSort={handleSort}
         rowKey={(g) => g.id}
       />
+      <Pagination 
+        page={page}
+        size={size}
+        totalCount={totalCount}
+        onPageChange={setPage}
+        groupSize={10}/>
     </div>
   );
 }

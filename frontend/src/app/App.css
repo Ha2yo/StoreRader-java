@@ -441,3 +441,10 @@ table tbody tr:nth-child(even) {
   padding: 24px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+  gap: 10px;
+}
