@@ -27,7 +27,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
-import com.storerader.server.common.repository.sql.UserPreferencesSQL;
+import com.storerader.server.common.repository.sql.UserPreferenceSQL;
 import com.storerader.server.domain.auth.dto.GoogleClaimsDTO;
 import com.storerader.server.domain.auth.dto.GoogleLoginRequestDTO;
 import com.storerader.server.domain.auth.dto.GoogleLoginResponseDTO;
@@ -53,7 +53,7 @@ import java.util.Date;
 @Service
 public class AuthService {
     private final UserRepository userRepository;
-    private final UserPreferencesSQL userPreferencesSQL;
+    private final UserPreferenceSQL userPreferencesSQL;
 
     @Value("${GOOGLE_CLIENT_ID}")
     private String googleClientId;
