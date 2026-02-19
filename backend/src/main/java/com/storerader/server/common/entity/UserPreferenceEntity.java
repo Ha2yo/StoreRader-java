@@ -21,14 +21,14 @@ public class UserPreferenceEntity {
     private Integer id;
 
     @Column(name = "selection_count")
-    private Integer selection_count;
+    private Integer selectionCount;
 
     @Column(name = "distance_weight")
-    private Double distance_weight;
+    private Double distanceWeight;
 
     @Column(name = "price_weight")
-    private Double price_weight;
+    private Double priceWeight;
 
     @Column(name = "updated_at")
-    private OffsetDateTime updated_at;
+    private OffsetDateTime updatedAt;
 }
