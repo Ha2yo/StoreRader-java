@@ -19,7 +19,7 @@ public class UserPreferenceController {
 
     @GetMapping("/find/user-preference")
     public UserPreferenceItemDTO findUserPreference(
-            @CookieValue("accsesToken") String accessToken
+            @CookieValue("accessToken") String accessToken
     ) {
 
         Claims claims = authService.decodeJwt(accessToken);
