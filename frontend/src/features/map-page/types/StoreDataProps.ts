@@ -5,5 +5,8 @@ export interface StoreDataProps {
     storeMarkersRef: React.RefObject<Record<string, L.Marker>>;
     circleRef: React.RefObject<L.Circle | null>;
     renderKey: number;
+    distanceWeight: number;
+    priceWeight: number
     setSelectedStore: (s: Store | null) => void;
+    isWeight: boolean;
 }

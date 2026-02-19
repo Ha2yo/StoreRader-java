@@ -4,7 +4,7 @@
  *   Leaflet 지도를 렌더링하고 사용자 위치를 표시하는 UI 컴포넌트
  */
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StoreDetailPanel from "../../map-conponent/store-detail-panel/components/StoreDetailPanel";
 import { useMapInit } from "../hooks/useMapInit";
 import { useUserLocation } from "../hooks/useUserLocation";
@@ -14,6 +14,7 @@ import { useRenderKeyEvent } from "../hooks/useRenderKeyEvents";
 import RecenterButton from "./RecenterButton";
 import { useZoomScale } from "../hooks/useZoomScale";
 import type { Store } from "../types/StoreItem";
+import { usePreference } from "../hooks/usePreference";
 
 function Map() {
     const mapRef = useRef<HTMLDivElement>(null);
@@ -25,6 +26,21 @@ function Map() {
 
     const storeMarkersRef = useRef<Record<string, L.Marker>>({});
 
+    // 사용자별 가중치 로딩
+    const { preference, refreshPreference } = usePreference();
+    const [isWeight, setIsWeight] = useState(false);
+
+    useEffect(() => {
+        (async () => {
+            await refreshPreference();
+            setIsWeight(true);
+        })();
+    }, []);
+
+    const distanceWeight = preference.distanceWeight;
+    const priceWeight = preference.priceWeight;
+
+    // 지역/거리 변경 시 강제 렌더링 트리거
     const renderKey = useRenderKeyEvent();
 
     // 지도 초기화
@@ -39,7 +55,10 @@ function Map() {
         storeMarkersRef,
         circleRef,
         renderKey,
-        setSelectedStore
+        distanceWeight,
+        priceWeight,
+        setSelectedStore,
+        isWeight
     });
 
     // 줌 레벨에 따른 마커 크기 조절

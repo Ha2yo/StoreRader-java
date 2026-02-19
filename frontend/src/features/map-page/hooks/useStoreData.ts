@@ -15,11 +15,15 @@ export function useStoreData({
     storeMarkersRef,
     circleRef,
     renderKey,
-    setSelectedStore
+    distanceWeight,
+    priceWeight,
+    setSelectedStore,
+    isWeight
 }: StoreDataProps) {
     const [scoredStores, setScoredStores] = useState<Store[]>([]);
 
     useEffect(() => {
+        if (!isWeight) return;
         if (!map) return;
 
         (async () => {
@@ -97,7 +101,7 @@ export function useStoreData({
                     const inspectDay = matched?.inspectDay;
 
                     const score = calcEfficiency(
-                        price, distance, maxPrice, maxDistance, 0.5, 0.5
+                        price, distance, maxPrice, maxDistance, distanceWeight, priceWeight
                     );
 
                     return { ...store, price, distance, inspectDay, score };
@@ -177,6 +181,6 @@ export function useStoreData({
             }
 
         })();
-    }, [map, renderKey]);
+    }, [renderKey, isWeight]);
     return scoredStores;
 }
