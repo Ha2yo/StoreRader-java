@@ -13,11 +13,6 @@ public class UserPreferenceService {
     private final UserPreferenceSQL userPreferenceSQL;
 
     public UserPreferenceItemDTO findUserPreference(Long userId) {
-        var userPreferences = userPreferenceSQL.findPreferenceByUserId(userId)
-                .stream()
-                .map(StoreItemDTO::from)
-                .toList();
-
-        return FindAllStoreResponseDTO.of(stores);
+        return userPreferenceSQL.findPreferenceByUserId(userId);
     }
 }
