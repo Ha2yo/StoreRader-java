@@ -18,7 +18,7 @@ import java.time.OffsetDateTime;
 public class UserPreferenceEntity {
     @Id
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "selection_count")
     private Integer selectionCount;

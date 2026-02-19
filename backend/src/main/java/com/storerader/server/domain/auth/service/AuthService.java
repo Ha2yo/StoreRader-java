@@ -27,6 +27,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.storerader.server.common.repository.sql.UserPreferencesSQL;
 import com.storerader.server.domain.auth.dto.GoogleClaimsDTO;
 import com.storerader.server.domain.auth.dto.GoogleLoginRequestDTO;
 import com.storerader.server.domain.auth.dto.GoogleLoginResponseDTO;
@@ -52,6 +53,7 @@ import java.util.Date;
 @Service
 public class AuthService {
     private final UserRepository userRepository;
+    private final UserPreferencesSQL userPreferencesSQL;
 
     @Value("${GOOGLE_CLIENT_ID}")
     private String googleClientId;
@@ -78,7 +80,10 @@ public class AuthService {
         // 2. DB 유저 정보 업데이트
         UserEntity user = insertOrUpdateUser(claims);
 
-        // 3. 서버 자체 Token 생성
+        // 3. DB user_preference 테이블 레코드 추가 (없는 경우)
+        userPreferencesSQL.createDefaultPreference(user.getId());
+
+        // 4. 서버 자체 Token 생성
         String accessToken = createAccessToken(user);
         String refreshToken = createAndSaveRefreshToken(user);
 
