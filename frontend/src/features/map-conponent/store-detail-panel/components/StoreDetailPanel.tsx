@@ -169,9 +169,21 @@ function StoreDetailPanel({ store, onClose }: Props) {
                                         const dlat = store.lat;
                                         const dlng = store.lng;
                                         const dname = encodeURIComponent(store.storeName);
-                                    
-                                        const naverMapUrl = `https://map.naver.com/p/directions/${slng},${slat},${sname}/${dlng},${dlat},${dname}/-/transit?c=15.00,0,0,0,dh`;
-                                        window.open(naverMapUrl, "_blank");
+                                        const naverMapAppUrl =
+                                            `nmap://route/public?slat=${slat}&slng=${slng}&sname=${sname}&dlat=${dlat}&dlng=${dlng}&dname=${dname}&appname=com.ik9014.storerader`
+                                        const naverMapWebUrl =
+                                            `https://map.naver.com/p/directions/${slng},${slat},${sname}/${dlng},${dlat},${dname}/-/transit?c=15.00,0,0,0,dh`;
+
+                                        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+                                        if (isMobile) {
+                                            window.location.href = naverMapAppUrl;
+
+                                            setTimeout(() => window.open(naverMapWebUrl, "_blank", "noopener,noreferrer"), 800);
+                                        } else {
+                                            window.open(naverMapWebUrl, "_blank", "noopener,noreferrer");
+                                        }
+                                        
                                         // const threshold = await fetchPreferenceThreshold();
                                         // const preferenceType = determinePreferenceType(store, candidates, threshold);
                                         // await logUserSelection(store, goodId, preferenceType);
