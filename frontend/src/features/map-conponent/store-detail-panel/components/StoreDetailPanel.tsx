@@ -18,7 +18,7 @@ function StoreDetailPanel({ store, onClose }: Props) {
                 style={{
                     position: "absolute",
                     bottom: "0",
-                    
+
                     left: "50%",
                     transform: "translateX(-50%)",
 
@@ -144,6 +144,92 @@ function StoreDetailPanel({ store, onClose }: Props) {
                                 gap: "14px",
                             }}
                         >
+                            {/* 네이버 지도 */}
+                            <button
+                                {...touchEffect}
+                                style={{
+                                    flex: 1,
+                                    aspectRatio: "1",
+                                    borderRadius: "14px",
+                                    background: "#fff",
+                                    border: "none",
+                                    boxShadow: "none",
+                                    color: "#fff",
+                                    fontSize: "15px",
+                                    fontWeight: 600,
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                                onClick={async () => {
+                                    if (store.lat && store.lng) {
+                                        const slat = pos.lat;
+                                        const slng = pos.lng;
+                                        const sname = encodeURIComponent("내 위치");
+                                        const dlat = store.lat;
+                                        const dlng = store.lng;
+                                        const dname = encodeURIComponent(store.storeName);
+                                    
+                                        const naverMapUrl = `https://map.naver.com/p/directions/${slng},${slat},${sname}/${dlng},${dlat},${dname}/-/transit?c=15.00,0,0,0,dh`;
+                                        window.open(naverMapUrl, "_blank");
+                                        // const threshold = await fetchPreferenceThreshold();
+                                        // const preferenceType = determinePreferenceType(store, candidates, threshold);
+                                        // await logUserSelection(store, goodId, preferenceType);
+                                    }
+                                }}
+                            >
+                                <img
+                                    src="/navermap.png"
+                                    style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        objectFit: "cover",
+                                        borderRadius: "20%",
+                                    }} />
+                            </button>
+
+                            {/* 카카오맵 */}
+                            <button
+                                {...touchEffect}
+                                style={{
+                                    flex: 1,
+                                    aspectRatio: "1",
+                                    borderRadius: "14px",
+                                    background: "#fff",
+                                    border: "none",
+                                    boxShadow: "none",
+                                    color: "#3A1D1D",
+                                    fontSize: "15px",
+                                    fontWeight: 600,
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                                onClick={async () => {
+                                    if (store.lat && store.lng) {
+                                        const slat = pos.lat;
+                                        const slng = pos.lng;
+                                        const sname = encodeURIComponent("내 위치");
+                                        const dlat = store.lat;
+                                        const dlng = store.lng;
+                                        const dname = encodeURIComponent(store.storeName);
+                                        const kakaoMapUrl = `https://map.kakao.com/link/from/${sname},${slat},${slng}/to/${dname},${dlat},${dlng}`;
+                                        // const threshold = await fetchPreferenceThreshold();
+                                        // const preferenceType = determinePreferenceType(store, candidates, threshold);
+                                        // await logUserSelection(store, goodId, preferenceType);
+                                        window.open(kakaoMapUrl, "_blank");
+                                    }
+                                }}
+                            >
+                                <img
+                                    src="/kakaomap.png"
+                                    style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        objectFit: "cover",
+                                        borderRadius: "20%",
+                                    }} />
+                            </button>
 
                         </div>
                         {/* 닫기 */}
