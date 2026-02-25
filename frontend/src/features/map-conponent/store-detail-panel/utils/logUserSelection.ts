@@ -8,10 +8,10 @@ export async function logUserSelection (
 ) {
 
     const payload = {
-        store_id: store.storeId,
-        good_id: goodId,
+        storeId: store.storeId,
+        goodId: goodId,
         price: store.price,
-        preference_type: preferenceType,
+        preferenceType: preferenceType,
 
     };
     console.log("서버 전송 데이터:", JSON.stringify(payload, null, 2));
