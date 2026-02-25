@@ -4,7 +4,8 @@ import type { SelectionPayload } from "../types/SelectionPayload";
 export async function insertUserSelection(payload: SelectionPayload) {
   try {
     await apiClient.post(
-      "/insert/user-selection", payload
+      "/insert/user-selection", payload,
+      { withCredentials: true }
     );
     console.log("로그인 사용자 - 매장 선택 로그 기록");
 
