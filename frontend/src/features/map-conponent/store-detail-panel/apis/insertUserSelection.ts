@@ -10,7 +10,7 @@ export async function insertUserSelection(payload: SelectionPayload) {
     console.log("로그인 사용자 - 매장 선택 로그 기록");
 
   } catch (error: any) {
-    if (error.response.status === 400) {
+    if (error.response.status === 500) {
       console.log("비로그인 사용자 - 로그 저장 스킵");
 
     }

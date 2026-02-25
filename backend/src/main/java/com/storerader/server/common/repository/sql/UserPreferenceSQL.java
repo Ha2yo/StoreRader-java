@@ -46,7 +46,7 @@ public class UserPreferenceSQL {
         Integer count = jdbcTemplate.queryForObject("""
                         UPDATE user_preferences
                         SET selection_count = selection_count + 1
-                        WHERE user_id = ?
+                        WHERE id = ?
                         RETURNING selection_count
                         """,
                 Integer.class,
