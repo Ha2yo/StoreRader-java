@@ -1,13 +1,12 @@
 package com.storerader.server.domain.userSelectionLog.controller;
 
 import com.storerader.server.domain.auth.service.AuthService;
-import com.storerader.server.domain.userPreference.dto.UserPreferenceItemDTO;
 import com.storerader.server.domain.userSelectionLog.dto.UserSelectionLogReqDTO;
 import com.storerader.server.domain.userSelectionLog.service.UserSelectionLogService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
