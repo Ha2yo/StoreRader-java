@@ -7,6 +7,7 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,8 +19,8 @@ public class UserSelectionLogController {
     @PostMapping("/insert/user-selection")
     public void updateUserSelectionLog(
             @CookieValue("accessToken") String accessToken,
-            UserSelectionLogReqDTO req
-    ) {
+            @RequestBody UserSelectionLogReqDTO req
+            ) {
 
         Claims claims = authService.decodeJwt(accessToken);
         Long userId = Long.parseLong(claims.getSubject());
