@@ -3,8 +3,10 @@ import type { Props } from "../types/StoreDetail";
 import { calcDistance } from "../../../../common/utils/calcDistance";
 import { loadSavedPosition } from "../../../../common/utils/loadSavedPos";
 import { touchEffect } from "../../../../common/utils/touchEffect";
+import { determinePreferenceType } from "../utils/determinePrefType";
+import { logUserSelection } from "../utils/logUserSelection";
 
-function StoreDetailPanel({ store, onClose }: Props) {
+function StoreDetailPanel({ store, candidates, goodId, onClose }: Props) {
     const [isRouteModalOpen, setIsRouteModalOpen] = useState(false);
 
     // 사용자 위치 및 매장까지의 거리 계산
@@ -183,10 +185,8 @@ function StoreDetailPanel({ store, onClose }: Props) {
                                         } else {
                                             window.open(naverMapWebUrl, "_blank", "noopener,noreferrer");
                                         }
-                                        
-                                        // const threshold = await fetchPreferenceThreshold();
-                                        // const preferenceType = determinePreferenceType(store, candidates, threshold);
-                                        // await logUserSelection(store, goodId, preferenceType);
+                                        const preferenceType = determinePreferenceType(store, candidates);
+                                        await logUserSelection(store, goodId, preferenceType);
                                     }
                                 }}
                             >
@@ -226,9 +226,8 @@ function StoreDetailPanel({ store, onClose }: Props) {
                                         const dlng = store.lng;
                                         const dname = encodeURIComponent(store.storeName);
                                         const kakaoMapUrl = `https://map.kakao.com/link/from/${sname},${slat},${slng}/to/${dname},${dlat},${dlng}`;
-                                        // const threshold = await fetchPreferenceThreshold();
-                                        // const preferenceType = determinePreferenceType(store, candidates, threshold);
-                                        // await logUserSelection(store, goodId, preferenceType);
+                                        const preferenceType = determinePreferenceType(store, candidates);
+                                        await logUserSelection(store, goodId, preferenceType);
                                         window.open(kakaoMapUrl, "_blank");
                                     }
                                 }}

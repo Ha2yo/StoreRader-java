@@ -1,5 +1,6 @@
 package com.storerader.server.common.repository.sql;
 
+import com.storerader.server.common.entity.UserPreferenceEntity;
 import com.storerader.server.domain.userPreference.dto.UserPreferenceItemDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -39,5 +40,38 @@ public class UserPreferenceSQL {
                         rs.getDouble("price_weight")
                 ),
                 userId);
+    }
+
+    public int increaseSelectionCount(Long userId) {
+        Integer count = jdbcTemplate.queryForObject("""
+                        UPDATE user_preferences
+                        SET selection_count = selection_count + 1
+                        WHERE user_id = ?
+                        RETURNING selection_count
+                        """,
+                Integer.class,
+                userId
+        );
+
+        if (count == null) {
+            throw new IllegalStateException("selection_count 증가 실패");
+        }
+
+        return count;
+    }
+
+    public void updateUserWeights(
+            long userId,
+            double priceWeight,
+            double distanceWeight) {
+        jdbcTemplate.update("""
+                        UPDATE user_preferences
+                        SET price_weight = ?, distance_weight = ?
+                        WHERE id = ?
+                """,
+                priceWeight,
+                distanceWeight,
+                userId
+                );
     }
 }

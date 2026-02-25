@@ -24,6 +24,7 @@ function Map() {
 
     const [selectedStore, setSelectedStore] = useState<Store | null>(null);
 
+    const selectedGoodId = localStorage.getItem("selectedGoodId");
     const storeMarkersRef = useRef<Record<string, L.Marker>>({});
 
     // 사용자별 가중치 로딩
@@ -50,7 +51,7 @@ function Map() {
     useUserLocation(leafletMap, userMarkerRef);
 
     // 매장 마커 표시
-    useStoreData({
+    const scoredStores = useStoreData({
         map: leafletMap.current,
         storeMarkersRef,
         circleRef,
@@ -74,6 +75,8 @@ function Map() {
             {selectedStore && (
                 <StoreDetailPanel
                     store={selectedStore}
+                    candidates={scoredStores}
+                    goodId={Number(selectedGoodId)}
                     onClose={() => setSelectedStore(null)} />
             )}
         </div>

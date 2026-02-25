@@ -15,5 +15,7 @@ export interface Store {
 
 export interface Props {
     store: Store;
+    candidates: Store[];
+    goodId: number;
     onClose: () => void;
 }
