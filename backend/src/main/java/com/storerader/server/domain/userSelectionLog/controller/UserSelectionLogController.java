@@ -16,7 +16,7 @@ public class UserSelectionLogController {
     private final AuthService authService;
     private final UserSelectionLogService userSelectionLogService;
 
-    @GetMapping("/insert/user-selection")
+    @PostMapping("/insert/user-selection")
     public void updateUserSelectionLog(
             @CookieValue("accessToken") String accessToken,
             UserSelectionLogReqDTO req
