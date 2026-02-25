@@ -48,7 +48,7 @@ public class UserSelectionLogService {
         double priceWeight = oldPreference.getPriceWeight() * (1.0 - alpha) + newPriceWeightRaw * alpha;
 
         priceWeight = Math.round(priceWeight * 1000.0) / 1000.0;
-        double distanceWeight = Math.round(1.0 - priceWeight * 1000.0) / 1000.0;
+        double distanceWeight =  Math.round((1.0 - priceWeight) * 1000.0) / 1000.0;
 
         userPreferenceSQL.updateUserWeights(userId, priceWeight, distanceWeight);
     }
