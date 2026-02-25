@@ -1,4 +1,4 @@
-import { fetchUserSelectionLog } from "../apis/fetchUserSelection";
+import { insertUserSelection } from "../apis/insertUserSelection";
 import type { Store } from "../types/StoreDetail";
 
 export async function logUserSelection (
@@ -16,7 +16,7 @@ export async function logUserSelection (
     };
     console.log("서버 전송 데이터:", JSON.stringify(payload, null, 2));
 
-    await fetchUserSelectionLog(payload);
+    await insertUserSelection(payload);
 
 
 }
