@@ -15,4 +15,4 @@ export async function insertUserSelection(payload: SelectionPayload) {
     }
     console.error("매장 선택 로그 저장 실패: ", error);
   }
-}
+} 
