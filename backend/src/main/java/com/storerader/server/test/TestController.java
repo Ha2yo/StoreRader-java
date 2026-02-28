@@ -11,7 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "테스트 API", description = "Swagger 테스트용 API")
 @RestController
-@RequestMapping("/")
+@RequestMapping("/test")
 public class TestController {
 
     private final TestService testService;
