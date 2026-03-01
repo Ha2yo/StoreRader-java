@@ -11,7 +11,7 @@ function HomePage() {
   const [hello, setHello] = useState<string>("");
 
   useEffect(() => {
-    apiClient.get<string>("/")
+    apiClient.get<string>("/test/")
       .then(res => setHello(res.data))
       .catch(console.error);
   }, []);
