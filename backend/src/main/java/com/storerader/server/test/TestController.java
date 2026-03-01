@@ -18,6 +18,6 @@ public class TestController {
     )
     @GetMapping("/")
     public String index() {
-        return "index";
+        return "success";
     }
 }
