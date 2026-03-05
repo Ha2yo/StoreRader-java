@@ -1,32 +1,14 @@
-/*
- * File: domain/auth/controller/AuthController.java
- * Description:
- *     인증(auth) 도메인의 컨트롤러 계층으로,
- *     클라이언트의 인증/인가 관련 요청을 받아 서비스 계층으로 위임하고
- *     그 결과를 HTTP 응답 형태로 반환하다.
- *
- * Responsibilities:
- *      1) googleLogin()
- *         - Google ID Token으로 로그인 처리 후 토큰 쿠키 설정
- *
- *      2) refresh()
- *         - Refresh Token으로 새로운 Access Token 발급 및 쿠키 갱신
- *
- *      3) getMyInfo()
- *         - 현재 로그인한 유저 정보 조회
- *
- *      4) Logout()
- *          - 로그아웃 처리 (토큰 쿠키 삭제)
- */
-
 package com.storerader.server.domain.auth.controller;
 
-import com.storerader.server.domain.auth.dto.GoogleLoginRequestDTO;
-import com.storerader.server.domain.auth.dto.GoogleLoginResponseDTO;
-import com.storerader.server.domain.auth.dto.TokenRefreshRequestDTO;
-import com.storerader.server.domain.auth.dto.TokenRefreshResponseDTO;
+import com.storerader.server.domain.auth.dto.response.GoogleLoginRes;
+import com.storerader.server.domain.auth.model.GoogleLoginResult;
+import com.storerader.server.domain.auth.dto.request.GoogleLoginReq;
+import com.storerader.server.domain.auth.dto.request.RefreshAccessTokenReq;
+import com.storerader.server.domain.auth.dto.response.RefreshAccessTokenRes;
 import com.storerader.server.domain.auth.service.AuthService;
 import com.storerader.server.common.web.cookie.CookieHelper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -34,16 +16,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "인증 API", description = "유저 정보 관리 API")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private final AuthService authService;
     private final CookieHelper cookieHelper;
 
-    private static final long ACCESS_TOKEN_EXPIRATION = 30 * 60;           // 30분
-    //    private static final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60; // 7일
-    private static final long REFRESH_TOKEN_EXPIRATION = 24 * 60 * 60; // 24시간
+    private static final long ACCESS_TOKEN_EXPIRATION =
+            30 * 60;            // 30분
+    private static final long REFRESH_TOKEN_EXPIRATION =
+            7 * 24 * 60 * 60;   // 7일
 
     /**
      * 구글 ID Token으로 로그인을 시도한다.
@@ -53,13 +38,19 @@ public class AuthController {
      * @param response 헤더를 추가하기 위한 응답 객체
      * @return 로그인 성공 유저 정보 및 토큰 정보
      */
+    @Operation(
+            summary = "구글 로그인 수행",
+            description = "Google ID Token으로 로그인 처리 후 Access/Refresh Token을 쿠키로 설정합니다."
+    )
     @PostMapping("/google")
-    public ResponseEntity<GoogleLoginResponseDTO> googleLogin(
-            @RequestBody GoogleLoginRequestDTO request,
+    public ResponseEntity<GoogleLoginRes> googleLogin(
+            @RequestBody GoogleLoginReq request,
             HttpServletResponse response
     ) {
-        GoogleLoginResponseDTO loginResponse = authService.googleLogin(request);
+        // Google ID Token 검증 및 유저 로그인 처리
+        GoogleLoginResult loginResponse = authService.googleLogin(request);
 
+        // Refresh/Access Token 쿠키 설정
         cookieHelper.addCookie(
                 response, cookieHelper.buildCookie(
                         "refreshToken",
@@ -67,6 +58,7 @@ public class AuthController {
                         REFRESH_TOKEN_EXPIRATION
                 )
         );
+
         cookieHelper.addCookie(
                 response, cookieHelper.buildCookie(
                         "accessToken",
@@ -75,26 +67,44 @@ public class AuthController {
                 )
         );
 
-        return ResponseEntity.ok(loginResponse);
+        // 로그인된 유저 정보 추출 및 반환
+        GoogleLoginResult.AuthUser user = loginResponse.user();
+
+        GoogleLoginRes res = new GoogleLoginRes(
+                new GoogleLoginRes.UserResponse(
+                        user.name(),
+                        user.email(),
+                        user.picture(),
+                        user.role()
+                )
+        );
+
+        return ResponseEntity.ok(res);
     }
 
     /**
-     * Refresh Token을 사용하여 새로운 Access Token을 발급받는다.
+     * Refresh Token을 사용해 AccessToken을 재발급한다.
      *
-     * @param tokenRefreshRequest 쿠키에서 추출한 리프레시 토큰
-     * @param response            새 액세스 토큰 쿠키 설정을 위한 응답 객체
-     * @return 새로 발급된 액세스 토큰
+     * @param refreshAccessTokenReq refreshToken을 포함한 요청 바디
+     * @param request               쿠키에서 refreshToken을 추출하기 위한 요청 객체
+     * @param response              새 accessToken 쿠키를 설정하기 위한 응답 객체
+     * @return 새로 발급된 accessToken
      */
+    @Operation(
+            summary = "Access Token 재발급",
+            description = "Refresh 토큰으로 새로운 Access Token을 발급하고, accessToken 쿠키를 갱신합니다."
+    )
     @PostMapping("/refresh")
-    public ResponseEntity<TokenRefreshResponseDTO> refresh(
-            @RequestBody(required = false) TokenRefreshRequestDTO tokenRefreshRequest,
+    public ResponseEntity<RefreshAccessTokenRes> refreshAccessToken(
+            @RequestBody(required = false) RefreshAccessTokenReq refreshAccessTokenReq,
             HttpServletRequest request,
             HttpServletResponse response
     ) {
         String refreshToken = null;
 
-        if (tokenRefreshRequest != null) {
-            refreshToken = tokenRefreshRequest.refreshToken();
+        // refreshToken 추출
+        if (refreshAccessTokenReq != null) {
+            refreshToken = refreshAccessTokenReq.refreshToken();
         }
 
         if (refreshToken == null || refreshToken.isBlank()) {
@@ -105,8 +115,10 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        // Access Token 재발급
         String newAccessToken = authService.refreshAccessToken(refreshToken);
 
+        // 새 Access Token 쿠키 설정
         cookieHelper.addCookie(
                 response,
                 cookieHelper.buildCookie(
@@ -116,7 +128,7 @@ public class AuthController {
                 )
         );
 
-        return ResponseEntity.ok(new TokenRefreshResponseDTO(newAccessToken));
+        return ResponseEntity.ok(new RefreshAccessTokenRes(newAccessToken));
     }
 
     /**
@@ -125,6 +137,10 @@ public class AuthController {
      * @param request 현재 요청 객체
      * @return 로그인한 유저의 정보 (id, name, email..)
      */
+    @Operation(
+            summary = "내 정보 조회",
+            description = "쿠키를 기반으로 현재 로그인한 유저의 정보를 조회합니다."
+    )
     @GetMapping("/me")
     public ResponseEntity<?> getMyInfo(
             HttpServletRequest request
@@ -148,6 +164,10 @@ public class AuthController {
      * @param response 쿠키 삭제 헤더를 추가하기 위한 응답 객체
      * @return 성공 시 OK
      */
+    @Operation(
+            summary = "유저 로그아웃",
+            description = "accessToken/refreshToken 쿠키를 삭제합니다."
+    )
     @PostMapping("/logout")
     public ResponseEntity<?> logout(
             HttpServletResponse response
