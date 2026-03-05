@@ -1,6 +1,6 @@
 package com.storerader.server.common.repository.sql;
 
-import com.storerader.server.domain.userSelectionLog.dto.UserSelectionLogReqDTO;
+import com.storerader.server.domain.userSelectionLog.dto.req.UserSelectionLogReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -12,7 +12,7 @@ public class UserSelectionLogSQL {
 
     public void insertUserSelectionLog(
             Long userId,
-            UserSelectionLogReqDTO req
+            UserSelectionLogReq req
     ) {
         jdbcTemplate.update("""
                         INSERT INTO user_selection_log (

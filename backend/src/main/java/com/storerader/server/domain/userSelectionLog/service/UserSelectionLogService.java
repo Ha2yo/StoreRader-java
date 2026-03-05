@@ -6,7 +6,7 @@ import com.storerader.server.common.repository.UserPreferenceRepository;
 import com.storerader.server.common.repository.UserSelectionLogRepository;
 import com.storerader.server.common.repository.sql.UserPreferenceSQL;
 import com.storerader.server.common.repository.sql.UserSelectionLogSQL;
-import com.storerader.server.domain.userSelectionLog.dto.UserSelectionLogReqDTO;
+import com.storerader.server.domain.userSelectionLog.dto.req.UserSelectionLogReq;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class UserSelectionLogService {
     @Transactional
     public void updateUserSelectionLog(
             Long userId,
-            UserSelectionLogReqDTO req
+            UserSelectionLogReq req
     ) {
         userSelectionLogReqDTO.insertUserSelectionLog(userId, req);
 

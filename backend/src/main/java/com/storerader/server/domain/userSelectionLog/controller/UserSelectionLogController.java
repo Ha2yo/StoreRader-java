@@ -1,7 +1,7 @@
 package com.storerader.server.domain.userSelectionLog.controller;
 
 import com.storerader.server.domain.auth.service.AuthService;
-import com.storerader.server.domain.userSelectionLog.dto.UserSelectionLogReqDTO;
+import com.storerader.server.domain.userSelectionLog.dto.req.UserSelectionLogReq;
 import com.storerader.server.domain.userSelectionLog.service.UserSelectionLogService;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +36,7 @@ public class UserSelectionLogController {
     @PostMapping("/insert/user-selection")
     public void updateUserSelectionLog(
             @CookieValue("accessToken") String accessToken,
-            @RequestBody UserSelectionLogReqDTO req
+            @RequestBody UserSelectionLogReq req
     ) {
         Claims claims = authService.decodeJwt(accessToken);
         Long userId = Long.parseLong(claims.getSubject());
