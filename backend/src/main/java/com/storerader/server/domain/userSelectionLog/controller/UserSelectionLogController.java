@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "유저 선택 로그 API", description = "유저의 매장 선택 로그를 기록하는 API")
+@Tag(name = "유저 선택 로그 API", description = "유저의 매장 선택 로그를 관리하는 API")
 @RestController
 @RequiredArgsConstructor
 public class UserSelectionLogController {
