@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@Tag(name = "테스트 API", description = "Swagger 테스트용 API")
+@Tag(name = "테스트 API", description = "서버 상태 점검용 API")
 @RestController
 @RequestMapping("/test")
 public class TestController {
