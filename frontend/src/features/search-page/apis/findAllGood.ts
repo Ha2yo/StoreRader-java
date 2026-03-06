@@ -6,7 +6,7 @@ export async function findAllGood(): Promise<Good[]> {
     const res = await apiClient.get(
       "/find/good/all"
     );
-    return res.data.goods;
+    return res.data;
   } catch (error) {
     console.error("상품 테이블 조회 실패: ", error);
     throw error;
