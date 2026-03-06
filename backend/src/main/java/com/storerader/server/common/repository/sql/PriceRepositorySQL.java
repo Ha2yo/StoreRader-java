@@ -1,9 +1,8 @@
 package com.storerader.server.common.repository.sql;
 
 import com.storerader.server.common.entity.PriceEntity;
-import com.storerader.server.domain.price.dto.PriceItemDTO;
+import com.storerader.server.domain.price.dto.res.PriceItemDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
