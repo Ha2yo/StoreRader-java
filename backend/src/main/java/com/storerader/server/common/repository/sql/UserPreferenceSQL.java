@@ -1,7 +1,6 @@
 package com.storerader.server.common.repository.sql;
 
-import com.storerader.server.common.entity.UserPreferenceEntity;
-import com.storerader.server.domain.userPreference.dto.UserPreferenceItemDTO;
+import com.storerader.server.domain.userPreference.dto.res.UserPreferenceRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -29,13 +28,13 @@ public class UserPreferenceSQL {
                 userId);
     }
 
-    public UserPreferenceItemDTO findPreferenceByUserId(Long userId) {
+    public UserPreferenceRes findPreferenceByUserId(Long userId) {
         return jdbcTemplate.queryForObject("""
                         SELECT *
                             FROM user_preferences
                             WHERE id = ?
                         """,
-                (rs, rowNum) -> new UserPreferenceItemDTO(
+                (rs, rowNum) -> new UserPreferenceRes(
                         rs.getDouble("distance_weight"),
                         rs.getDouble("price_weight")
                 ),

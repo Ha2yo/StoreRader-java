@@ -20,6 +20,6 @@ public record GoogleLoginRes(
             String picture,
 
             @Schema(description = "유저 권한", example = "USER")
-            String role
+            String role 
     ) {}
 }
