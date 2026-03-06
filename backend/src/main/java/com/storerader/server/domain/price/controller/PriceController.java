@@ -1,6 +1,6 @@
 package com.storerader.server.domain.price.controller;
 
-import com.storerader.server.domain.price.dto.res.PriceItemDTO;
+import com.storerader.server.domain.price.dto.res.PriceRes;
 import com.storerader.server.domain.price.service.PriceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,7 +22,7 @@ public class PriceController {
             description = "사용자가 입력한 상품에 대한 각 매장별 가격 리스트를 반환합니다."
     )
     @GetMapping("/find/price")
-    public List<PriceItemDTO> findPrices(
+    public List<PriceRes> findPrices(
             @RequestParam(name = "good-name") String goodName
     ) {
         return priceService.findPrices(goodName);
