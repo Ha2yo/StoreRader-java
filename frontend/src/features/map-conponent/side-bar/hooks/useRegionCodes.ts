@@ -18,7 +18,7 @@ export function useRegionCodes() {
 
         (async () => {
             try {
-                const data = await findAllRegionCodes();
+                const data: RegionCode[]  = await findAllRegionCodes();
                 console.log("regionCodes api:", data);
 
                 const topRegions = data.filter((r) => r.level === 1);
