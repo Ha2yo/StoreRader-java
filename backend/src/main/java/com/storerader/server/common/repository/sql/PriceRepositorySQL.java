@@ -1,7 +1,7 @@
 package com.storerader.server.common.repository.sql;
 
 import com.storerader.server.common.entity.PriceEntity;
-import com.storerader.server.domain.price.dto.res.PriceItemDTO;
+import com.storerader.server.domain.price.dto.res.PriceRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -46,7 +46,7 @@ public class PriceRepositorySQL {
         );
     }
 
-    public List<PriceItemDTO> findLatestPricesByGoodName(String goodName) {
+    public List<PriceRes> findLatestPricesByGoodName(String goodName) {
         return jdbcTemplate.query(
                 """
                         SELECT
@@ -76,7 +76,7 @@ public class PriceRepositorySQL {
                             LIMIT 1
                         )
                         """,
-                (rs, rowNum) -> new PriceItemDTO(
+                (rs, rowNum) -> new PriceRes(
                         rs.getLong("store_id"),
                         rs.getInt("price"),
                         rs.getString("inspect_day")

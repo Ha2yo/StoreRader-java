@@ -1,10 +1,9 @@
 import apiClient from "../../../contexts/apiClient";
 import type { Good } from "../types/GoodItem";
-import type { GoodResponse } from "../types/GoodsResponse";
 
 export async function findAllGood(): Promise<Good[]> {
   try {
-    const res = await apiClient.get<GoodResponse>(
+    const res = await apiClient.get(
       "/find/good/all"
     );
     return res.data.goods;
