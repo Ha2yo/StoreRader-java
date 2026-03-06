@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
-@Tag(name = "Store API", description = "매장 정보 관련 API")
+@Tag(name = "매장 API", description = "매장 정보 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class StoreController {
