@@ -2,6 +2,7 @@ package com.storerader.server.domain.userSelectionLog.dto.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "유저가 선택한 매장 및 선호 유형 정보")
 public record UserSelectionLogReq(
         @Schema(description = "선택한 매장 ID", example = "1766")
         Long storeId,
