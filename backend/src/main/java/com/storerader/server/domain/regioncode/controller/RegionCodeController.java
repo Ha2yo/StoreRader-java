@@ -2,6 +2,7 @@ package com.storerader.server.domain.regioncode.controller;
 
 import com.storerader.server.domain.regioncode.dto.res.RegionCodeRes;
 import com.storerader.server.domain.regioncode.service.RegionCodeService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,10 @@ public class RegionCodeController {
 
     private final RegionCodeService regionCodeService;
 
+    @Operation(
+            summary = "전체 지역 코드 목록 조회",
+            description = "DB에 등록된 모든 지역 코드를 리스트로 반환합니다."
+    )
     @GetMapping("/find/region-code/all")
     public List<RegionCodeRes> findAllStores() {
         return regionCodeService.findAllRegionCodes();
