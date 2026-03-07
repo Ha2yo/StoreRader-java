@@ -110,7 +110,7 @@ public class AdminController {
             summary = "공공데이터 상품 수집",
             description = "공공데이터포털의 상품 데이터를 조회하여 DB에 적재합니다."
     )
-    @PostMapping(value = "/public-data/goods/collect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/public-data/goods/collect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter fetchGoodsApi() {
         return adminService.fetchGoodsApi();
     }
@@ -119,7 +119,7 @@ public class AdminController {
             summary = "공공데이터 매장 수집",
             description = "공공데이터포털의 매장 데이터를 조회하여 DB에 적재합니다."
     )
-    @PostMapping(value = "/public-data/stores/collect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/public-data/stores/collect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter fetchStoresApi() {
         return adminService.fetchStoresApi();
     }
@@ -128,7 +128,7 @@ public class AdminController {
             summary = "공공데이터 지역코드 수집",
             description = "공공데이터포털의 지역코드 데이터를 조회하여 DB에 적재합니다."
     )
-    @PostMapping(value = "/public-data/regionCodes/collect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/public-data/regionCodes/collect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter fetchRegionCodesApi() {
         return adminService.fetchRegionCodesApi();
     }
@@ -137,7 +137,7 @@ public class AdminController {
             summary = "공공데이터 가격 수집",
             description = "공공데이터포털의 가격 데이터를 조회하여 DB에 적재합니다."
     )
-    @PostMapping(value = "/public-data/prices/collect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/public-data/prices/collect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter fetchPricesApi(
             @RequestParam String inspectDay
     ) {
