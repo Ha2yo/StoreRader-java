@@ -4,7 +4,7 @@ import type { Good } from "../types/GoodItem";
 export async function findAllGood(): Promise<Good[]> {
   try {
     const res = await apiClient.get(
-      "/find/good/all"
+      "/goods"
     );
     return res.data;
   } catch (error) {

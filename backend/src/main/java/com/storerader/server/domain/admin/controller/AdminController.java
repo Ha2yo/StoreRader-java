@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-@Tag(name = "Admin API", description = "관리자 전용 데이터 관리 API")
+@Tag(name = "관리자 API", description = "관리자 전용 데이터 관리 API")
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor

@@ -19,7 +19,7 @@ public class GoodController {
             summary = "전체 상품 목록 조회",
             description = "DB에 등록된 모든 상품 정보를 리스트로 반환합니다."
     )
-    @GetMapping("/find/good/all")
+    @GetMapping("/goods")
     public List<GoodRes> findAllGoods() {
         return goodService.findAllGoods();
     }
