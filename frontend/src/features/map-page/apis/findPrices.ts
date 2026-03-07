@@ -4,7 +4,7 @@ import type { StorePrice } from "../types/StorePriceItem";
 export async function findPrice(goodName: string): Promise<StorePrice[]> {
   try {
     const res = await apiClient.get(
-      "/find/price",
+      "/prices",
       {
         params: { "good-name": goodName }
       }

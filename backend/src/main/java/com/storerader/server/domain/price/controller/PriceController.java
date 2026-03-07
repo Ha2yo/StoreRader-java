@@ -21,7 +21,7 @@ public class PriceController {
             summary = "특정 상품에 대한 가격 목록 조회",
             description = "사용자가 입력한 상품에 대한 각 매장별 가격 리스트를 반환합니다."
     )
-    @GetMapping("/find/price")
+    @GetMapping("/prices")
     public List<PriceRes> findPrices(
             @RequestParam(name = "good-name") String goodName
     ) {
