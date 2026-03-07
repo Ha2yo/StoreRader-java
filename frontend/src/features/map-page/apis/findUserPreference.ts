@@ -9,7 +9,7 @@ export async function findUserPreference(): Promise<UserPreference> {
 
   try {
     const res = await apiClient.get<UserPreference>(
-      "/find/user-preference"
+      "/user-preference"
     );
     console.log("로그인 사용자 - 개별값 사용");
     return res.data;

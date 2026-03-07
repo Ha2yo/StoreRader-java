@@ -23,7 +23,7 @@ public class UserPreferenceController {
             summary = "유저 선호도 가중치 조회",
             description = "로그인한 유저의 선호도 가중치를 조회합니다."
     )
-    @GetMapping("/find/user-preference")
+    @GetMapping("/user-preference")
     public UserPreferenceRes findUserPreference(
             @CookieValue("accessToken") String accessToken
     ) {
