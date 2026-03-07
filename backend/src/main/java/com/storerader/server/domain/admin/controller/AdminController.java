@@ -14,10 +14,10 @@
 
 package com.storerader.server.domain.admin.controller;
 
-import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListDTO;
-import com.storerader.server.domain.admin.dto.select.prices.FindAllPricesListDTO;
-import com.storerader.server.domain.admin.dto.select.regionCodes.FindAllRegionCodesListDTO;
-import com.storerader.server.domain.admin.dto.select.stores.FindAllStoresListDTO;
+import com.storerader.server.domain.admin.dto.select.goods.GoodList;
+import com.storerader.server.domain.admin.dto.select.prices.PriceList;
+import com.storerader.server.domain.admin.dto.select.regionCodes.RegionCodeList;
+import com.storerader.server.domain.admin.dto.select.stores.StoreList;
 import com.storerader.server.domain.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -37,7 +37,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/select/goods")
-    public ResponseEntity<FindAllGoodsListDTO> getAllGoods(
+    public ResponseEntity<GoodList> getAllGoods(
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam String sortKey,
@@ -47,7 +47,7 @@ public class AdminController {
     }
 
     @GetMapping("/select/stores")
-    public ResponseEntity<FindAllStoresListDTO> getAllStores(
+    public ResponseEntity<StoreList> getAllStores(
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam String sortKey,
@@ -57,7 +57,7 @@ public class AdminController {
     }
 
     @GetMapping("/select/region-codes")
-    public ResponseEntity<FindAllRegionCodesListDTO> getAllRegionCodes(
+    public ResponseEntity<RegionCodeList> getAllRegionCodes(
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam String sortKey,
@@ -67,7 +67,7 @@ public class AdminController {
     }
 
     @GetMapping("/select/prices")
-    public ResponseEntity<FindAllPricesListDTO> getAllPriceCodes(
+    public ResponseEntity<PriceList> getAllPriceCodes(
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam String sortKey,

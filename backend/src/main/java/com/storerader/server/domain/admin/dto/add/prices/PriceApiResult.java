@@ -1,4 +1,4 @@
-package com.storerader.server.domain.admin.dto.add.RegionCode;
+package com.storerader.server.domain.admin.dto.add.prices;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
@@ -6,9 +6,12 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import java.util.List;
 
+// 공공데이터 가격 API 결과 영역
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record RegionCodeApiResultDTO(
+public record PriceApiResult(
+
+        // 가격 목록
         @JacksonXmlElementWrapper(useWrapping = false)
-        @JacksonXmlProperty(localName = "iros.openapi.service.vo.stdInfoVO")
-        List<RegionCodeApiItemDTO> item
+        @JacksonXmlProperty(localName = "iros.openapi.service.vo.goodPriceVO")
+        List<PriceApiItem> item
 ) {}

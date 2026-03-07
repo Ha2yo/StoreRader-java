@@ -16,14 +16,14 @@ package com.storerader.server.domain.admin.service;
 
 import com.storerader.server.common.entity.*;
 import com.storerader.server.common.repository.*;
-import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiResponseDTO;
-import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponseDTO;
-import com.storerader.server.domain.admin.dto.add.prices.PriceApiResponseDTO;
-import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponseDTO;
-import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListDTO;
-import com.storerader.server.domain.admin.dto.select.prices.FindAllPricesListDTO;
-import com.storerader.server.domain.admin.dto.select.regionCodes.FindAllRegionCodesListDTO;
-import com.storerader.server.domain.admin.dto.select.stores.FindAllStoresListDTO;
+import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiResponse;
+import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponse;
+import com.storerader.server.domain.admin.dto.add.prices.PriceApiResponse;
+import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponse;
+import com.storerader.server.domain.admin.dto.select.goods.GoodList;
+import com.storerader.server.domain.admin.dto.select.prices.PriceList;
+import com.storerader.server.domain.admin.dto.select.regionCodes.RegionCodeList;
+import com.storerader.server.domain.admin.dto.select.stores.StoreList;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +51,7 @@ public class AdminService {
     private final PublicApiService publicApiService;
 
     @Transactional
-    public FindAllGoodsListDTO findAllGoods(
+    public GoodList findAllGoods(
             int page,
             int size,
             String sortKey,
@@ -68,11 +68,11 @@ public class AdminService {
         );
 
         Page<GoodEntity> pageResult = goodRepository.findAll(pageable);
-        return FindAllGoodsListDTO.from(pageResult);
+        return GoodList.from(pageResult);
     }
 
     @Transactional
-    public FindAllStoresListDTO findAllStores(
+    public StoreList findAllStores(
             int page,
             int size,
             String sortKey,
@@ -89,11 +89,11 @@ public class AdminService {
         );
 
         Page<StoreEntity> pageResult = storeRepository.findAll(pageable);
-        return FindAllStoresListDTO.from(pageResult);
+        return StoreList.from(pageResult);
     }
 
     @Transactional
-    public FindAllRegionCodesListDTO findAllRegionCodes(
+    public RegionCodeList findAllRegionCodes(
             int page,
             int size,
             String sortKey,
@@ -110,11 +110,11 @@ public class AdminService {
         );
 
         Page<RegionCodeEntity> pageResult = regionCodeRepository.findAll(pageable);
-        return FindAllRegionCodesListDTO.from(pageResult);
+        return RegionCodeList.from(pageResult);
     }
 
     @Transactional
-    public FindAllPricesListDTO findAllPrices(
+    public PriceList findAllPrices(
             int page,
             int size,
             String sortKey,
@@ -131,7 +131,7 @@ public class AdminService {
         );
 
         Page<PriceEntity> pageResult = priceRepository.findAll(pageable);
-        return FindAllPricesListDTO.from(pageResult);
+        return PriceList.from(pageResult);
     }
 
     /**
@@ -154,7 +154,7 @@ public class AdminService {
                 );
                 log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
 
-                GoodApiResponseDTO parsed = publicApiService.parseGoodsResponse(xml);
+                GoodApiResponse parsed = publicApiService.parseGoodsResponse(xml);
                 int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
                 log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
 
@@ -188,7 +188,7 @@ public class AdminService {
                 );
                 log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
 
-                StoreApiResponseDTO parsed = publicApiService.parseStoresResponse(xml);
+                StoreApiResponse parsed = publicApiService.parseStoresResponse(xml);
                 int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
                 log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
 
@@ -223,7 +223,7 @@ public class AdminService {
                 );
                 log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
 
-                RegionCodeApiResponseDTO parsed = publicApiService.parseRegionCodesResponse(xml);
+                RegionCodeApiResponse parsed = publicApiService.parseRegionCodesResponse(xml);
                 int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
                 log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
 
@@ -278,7 +278,7 @@ public class AdminService {
                         );
                         log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
 
-                        PriceApiResponseDTO parsed = publicApiService.parsePricesResponse(xml);
+                        PriceApiResponse parsed = publicApiService.parsePricesResponse(xml);
 
                         int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
                         log.accept("XML 파싱 완료 (items = " + count + ")\n\n");

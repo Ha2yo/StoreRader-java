@@ -2,7 +2,7 @@ package com.storerader.server.domain.admin.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.storerader.server.domain.admin.dto.add.stores.VworldGeocodeDTO;
+import com.storerader.server.domain.admin.dto.add.stores.VworldGeocodeResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ public class VworldService {
     @Value("${VWORLD_API_KEY:}")
     private String serviceKey;
 
-    public Optional<VworldGeocodeDTO> geocode(
+    public Optional<VworldGeocodeResult> geocode(
             String addr,
             Consumer<String> log
     ) {
@@ -62,7 +62,7 @@ public class VworldService {
             double x = point.path("x").asDouble(0.0);
             double y = point.path("y").asDouble(0.0);
 
-            return Optional.of(new VworldGeocodeDTO(y, x));
+            return Optional.of(new VworldGeocodeResult(y, x));
 
         } catch (Exception e) {
             log.accept("VWorld 지오코딩 실패: " + e.getClass().getSimpleName() + "\naddr=" + addr);

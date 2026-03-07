@@ -25,14 +25,14 @@ import com.storerader.server.common.repository.sql.GoodRepositorySQL;
 import com.storerader.server.common.repository.sql.PriceRepositorySQL;
 import com.storerader.server.common.repository.sql.RegionCodeRepositorySQL;
 import com.storerader.server.common.repository.sql.StoreRepositorySQL;
-import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiItemDTO;
-import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiResponseDTO;
-import com.storerader.server.domain.admin.dto.add.goods.GoodApiItemDTO;
-import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponseDTO;
-import com.storerader.server.domain.admin.dto.add.prices.PriceApiItemDTO;
-import com.storerader.server.domain.admin.dto.add.prices.PriceApiResponseDTO;
-import com.storerader.server.domain.admin.dto.add.stores.StoreApiItemDTO;
-import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponseDTO;
+import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiItem;
+import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiResponse;
+import com.storerader.server.domain.admin.dto.add.goods.GoodApiItem;
+import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponse;
+import com.storerader.server.domain.admin.dto.add.prices.PriceApiItem;
+import com.storerader.server.domain.admin.dto.add.prices.PriceApiResponse;
+import com.storerader.server.domain.admin.dto.add.stores.StoreApiItem;
+import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,7 +69,7 @@ public class PublicApiService {
 
     @Transactional
     public int saveGoods(
-            GoodApiResponseDTO response,
+            GoodApiResponse response,
             Consumer<String> log
     ) {
         if (response == null || response.result() == null || response.result().item() == null) {
@@ -80,7 +80,7 @@ public class PublicApiService {
         int processed = 0;
         int applied = 0;
 
-        for (GoodApiItemDTO item : response.result().item()) {
+        for (GoodApiItem item : response.result().item()) {
             processed++;
 
             GoodEntity good = new GoodEntity();
@@ -112,7 +112,7 @@ public class PublicApiService {
 
     @Transactional
     public int saveStores(
-            StoreApiResponseDTO response,
+            StoreApiResponse response,
             Consumer<String> log
     ) {
         if (response == null || response.result() == null || response.result().item() == null) {
@@ -125,7 +125,7 @@ public class PublicApiService {
         int geoCodeFail = 0;
         int geoCodeSuccess = 0;
 
-        for (StoreApiItemDTO item : response.result().item()) {
+        for (StoreApiItem item : response.result().item()) {
 
             boolean roadBlank = item.roadAddr() == null || item.roadAddr().isBlank();
             boolean jibunBlank = item.jibunAddr() == null || item.jibunAddr().isBlank();
@@ -186,7 +186,7 @@ public class PublicApiService {
 
     @Transactional
     public int saveRegionCodes(
-            RegionCodeApiResponseDTO response,
+            RegionCodeApiResponse response,
             Consumer<String> log
     ) {
         if (response == null || response.result() == null || response.result().item() == null) {
@@ -197,7 +197,7 @@ public class PublicApiService {
         int processed = 0;
         int applied = 0;
 
-        for (RegionCodeApiItemDTO item : response.result().item()) {
+        for (RegionCodeApiItem item : response.result().item()) {
             processed++;
 
             RegionCodeEntity regionCode = new RegionCodeEntity();
@@ -226,7 +226,7 @@ public class PublicApiService {
     }
 
     public int savePrices(
-            PriceApiResponseDTO response,
+            PriceApiResponse response,
             Consumer<String> log
     ) {
         if (response == null || response.result() == null || response.result().item() == null) {
@@ -239,7 +239,7 @@ public class PublicApiService {
         int applied = 0;
         int total = 0;
 
-        for (PriceApiItemDTO item : response.result().item()) {
+        for (PriceApiItem item : response.result().item()) {
             processed++;
 
             PriceEntity price = new PriceEntity();
@@ -313,33 +313,33 @@ public class PublicApiService {
         }
     }
 
-    public GoodApiResponseDTO parseGoodsResponse(String xml) {
+    public GoodApiResponse parseGoodsResponse(String xml) {
         try {
-            return xmlMapper.readValue(xml, GoodApiResponseDTO.class);
+            return xmlMapper.readValue(xml, GoodApiResponse.class);
         } catch (IOException ex) {
             throw new IllegalStateException("상품 응답 파싱 실패: " + ex.getMessage(), ex);
         }
     }
 
-    public StoreApiResponseDTO parseStoresResponse(String xml) {
+    public StoreApiResponse parseStoresResponse(String xml) {
         try {
-            return xmlMapper.readValue(xml, StoreApiResponseDTO.class);
+            return xmlMapper.readValue(xml, StoreApiResponse.class);
         } catch (IOException ex) {
             throw new IllegalStateException("매장 응답 파싱 실패: " + ex.getMessage(), ex);
         }
     }
 
-    public RegionCodeApiResponseDTO parseRegionCodesResponse(String xml) {
+    public RegionCodeApiResponse parseRegionCodesResponse(String xml) {
         try {
-            return xmlMapper.readValue(xml, RegionCodeApiResponseDTO.class);
+            return xmlMapper.readValue(xml, RegionCodeApiResponse.class);
         } catch (IOException ex) {
             throw new IllegalStateException("지역코드 응답 파싱 실패: " + ex.getMessage(), ex);
         }
     }
 
-    public PriceApiResponseDTO parsePricesResponse(String xml) {
+    public PriceApiResponse parsePricesResponse(String xml) {
         try {
-            return xmlMapper.readValue(xml, PriceApiResponseDTO.class);
+            return xmlMapper.readValue(xml, PriceApiResponse.class);
         } catch (IOException ex) {
             throw new IllegalStateException("가격 응답 파싱 실패: " + ex.getMessage(), ex);
         }
