@@ -33,7 +33,7 @@ public class UserSelectionLogController {
             description = "로그인 유저의 매장 선택 정보를 저장하고, "
                     + "일정 횟수 도달 시 선호 가중치를 자동 갱신합니다."
     )
-    @PostMapping("/insert/user-selection")
+    @PostMapping("/user-selection")
     public void updateUserSelectionLog(
             @CookieValue("accessToken") String accessToken,
             @RequestBody UserSelectionLogReq req
