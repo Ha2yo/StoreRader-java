@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "인증 API", description = "유저 정보 관리 API")
+@Tag(name = "인증 API", description = "인증 및 세션 관리 API")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
