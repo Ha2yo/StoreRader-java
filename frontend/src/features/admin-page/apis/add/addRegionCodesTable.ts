@@ -1,3 +1,3 @@
 export const addRegionCodesTable = {
-  regionCodes: "/admin/get/public-data/regionCodes",
+  regionCodes: "/admin/public-data/regionCodes/collect",
 } as const;

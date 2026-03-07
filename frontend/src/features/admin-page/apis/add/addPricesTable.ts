@@ -1,4 +1,4 @@
 export const addPricesTable = {
   prices: (inspectDay: string) =>
-     `/admin/get/public-data/prices?inspectDay=${inspectDay}`,
+     `/admin/public-data/prices/collect?inspectDay=${inspectDay}`,
 } as const;

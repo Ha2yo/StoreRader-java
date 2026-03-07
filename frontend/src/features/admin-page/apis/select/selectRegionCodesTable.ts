@@ -8,7 +8,7 @@ export async function selectRegionCodesTable(params:{
   sortKey: RegionCodeSortKey;
   sortOrder: SortOrder;
 }): Promise<PageResult<RegionCode>> {
-  const res = await apiClient.get("/admin/select/region-codes", {
+  const res = await apiClient.get("/admin/region-codes", {
     params: {
       page: params.page,
       size: params.size,

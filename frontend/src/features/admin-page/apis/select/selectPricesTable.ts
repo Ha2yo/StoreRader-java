@@ -8,7 +8,7 @@ export async function selectPricesTable(params:{
   sortKey: PriceSortKey;
   sortOrder: SortOrder;
 }): Promise<PageResult<Price>> {
-  const res = await apiClient.get("/admin/select/prices", {
+  const res = await apiClient.get("/admin/prices", {
     params: {
       page: params.page,
       size: params.size,

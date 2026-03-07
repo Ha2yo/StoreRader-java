@@ -8,7 +8,7 @@ export async function selectGoodsTable(params:{
   sortKey: GoodSortKey;
   sortOrder: SortOrder;
 }): Promise<PageResult<Good>> {
-  const res = await apiClient.get("/admin/select/goods", {
+  const res = await apiClient.get("/admin/goods", {
     params: {
       page: params.page,
       size: params.size,

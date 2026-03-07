@@ -1,3 +1,3 @@
 export const addGoodsTable = {
-  goods: "/admin/get/public-data/goods",
+  goods: "/admin/public-data/goods/collect",
 } as const;

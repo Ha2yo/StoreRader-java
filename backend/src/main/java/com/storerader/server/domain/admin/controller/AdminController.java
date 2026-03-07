@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Tag(name = "관리자 API", description = "관리자 전용 데이터 관리 API")
@@ -29,7 +26,7 @@ public class AdminController {
             summary = "전체 상품 조회",
             description = "상품 테이블의 데이터를 페이지 단위로 조회합니다."
     )
-    @GetMapping("/select/goods")
+    @GetMapping("/goods")
     public ResponseEntity<GoodList> getAllGoods(
             @Parameter(description = "페이지 번호", example = "0")
             @RequestParam int page,
@@ -50,7 +47,7 @@ public class AdminController {
             summary = "전체 매장 조회",
             description = "매장 테이블의 데이터를 페이지 단위로 조회합니다."
     )
-    @GetMapping("/select/stores")
+    @GetMapping("/stores")
     public ResponseEntity<StoreList> getAllStores(
             @Parameter(description = "페이지 번호", example = "0")
             @RequestParam int page,
@@ -71,7 +68,7 @@ public class AdminController {
             summary = "전체 지역코드 조회",
             description = "지역코드 테이블의 데이터를 페이지 단위로 조회합니다."
     )
-    @GetMapping("/select/region-codes")
+    @GetMapping("/region-codes")
     public ResponseEntity<RegionCodeList> getAllRegionCodes(
             @Parameter(description = "페이지 번호", example = "0")
             @RequestParam int page,
@@ -92,7 +89,7 @@ public class AdminController {
             summary = "전체 가격 조회",
             description = "가격 테이블의 데이터를 페이지 단위로 조회합니다."
     )
-    @GetMapping("/select/prices")
+    @GetMapping("/prices")
     public ResponseEntity<PriceList> getAllPriceCodes(
             @Parameter(description = "페이지 번호", example = "0")
             @RequestParam int page,
@@ -113,7 +110,7 @@ public class AdminController {
             summary = "공공데이터 상품 수집",
             description = "공공데이터포털의 상품 데이터를 조회하여 DB에 적재합니다."
     )
-    @GetMapping(value = "/get/public-data/goods", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/public-data/goods/collect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter fetchGoodsApi() {
         return adminService.fetchGoodsApi();
     }
@@ -122,7 +119,7 @@ public class AdminController {
             summary = "공공데이터 매장 수집",
             description = "공공데이터포털의 매장 데이터를 조회하여 DB에 적재합니다."
     )
-    @GetMapping(value = "/get/public-data/stores", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/public-data/stores/collect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter fetchStoresApi() {
         return adminService.fetchStoresApi();
     }
@@ -131,7 +128,7 @@ public class AdminController {
             summary = "공공데이터 지역코드 수집",
             description = "공공데이터포털의 지역코드 데이터를 조회하여 DB에 적재합니다."
     )
-    @GetMapping(value = "/get/public-data/regionCodes", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/public-data/regionCodes/collect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter fetchRegionCodesApi() {
         return adminService.fetchRegionCodesApi();
     }
@@ -140,7 +137,7 @@ public class AdminController {
             summary = "공공데이터 가격 수집",
             description = "공공데이터포털의 가격 데이터를 조회하여 DB에 적재합니다."
     )
-    @GetMapping(value = "/get/public-data/prices", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/public-data/prices/collect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter fetchPricesApi(
             @RequestParam String inspectDay
     ) {

@@ -1,3 +1,3 @@
 export const addStoresTable = {
-  stores: "/admin/get/public-data/stores",
+  stores: "/admin/public-data/stores/collect",
 } as const;
