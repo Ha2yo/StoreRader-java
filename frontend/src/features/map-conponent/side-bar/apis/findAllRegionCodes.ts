@@ -3,7 +3,7 @@ import apiClient from "../../../../contexts/apiClient";
 export async function findAllRegionCodes() {
   try {
     const res = await apiClient.get(
-      "/find/region-code/all"
+      "/region-codes"
     );
     console.log(res.data);
     return res.data;

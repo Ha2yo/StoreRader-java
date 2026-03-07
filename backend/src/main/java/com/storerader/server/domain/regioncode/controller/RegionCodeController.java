@@ -20,7 +20,7 @@ public class RegionCodeController {
             summary = "전체 지역 코드 목록 조회",
             description = "DB에 등록된 모든 지역 코드를 리스트로 반환합니다."
     )
-    @GetMapping("/find/region-code/all")
+    @GetMapping("/region-codes")
     public List<RegionCodeRes> findAllStores() {
         return regionCodeService.findAllRegionCodes();
     }
