@@ -18,7 +18,6 @@ import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListDTO;
 import com.storerader.server.domain.admin.dto.select.prices.FindAllPricesListDTO;
 import com.storerader.server.domain.admin.dto.select.regionCodes.FindAllRegionCodesListDTO;
 import com.storerader.server.domain.admin.dto.select.stores.FindAllStoresListDTO;
-import com.storerader.server.domain.admin.dto.select.users.FindAllUsersListDTO;
 import com.storerader.server.domain.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -36,16 +35,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class AdminController {
 
     private final AdminService adminService;
-
-    @GetMapping("/select/users")
-    public ResponseEntity<FindAllUsersListDTO> getAllUsers(
-            @RequestParam int page,
-            @RequestParam int size,
-            @RequestParam String sortKey,
-            @RequestParam String sortOrder
-    ) {
-        return ResponseEntity.ok(adminService.findAllUsers(page, size, sortKey, sortOrder));
-    }
 
     @GetMapping("/select/goods")
     public ResponseEntity<FindAllGoodsListDTO> getAllGoods(

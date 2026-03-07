@@ -20,16 +20,11 @@ import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiRespon
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.prices.PriceApiResponseDTO;
 import com.storerader.server.domain.admin.dto.add.stores.StoreApiResponseDTO;
-import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsDTO;
 import com.storerader.server.domain.admin.dto.select.goods.FindAllGoodsListDTO;
-import com.storerader.server.domain.admin.dto.select.prices.FindAllPricesDTO;
 import com.storerader.server.domain.admin.dto.select.prices.FindAllPricesListDTO;
-import com.storerader.server.domain.admin.dto.select.regionCodes.FindAllRegionCodesDTO;
 import com.storerader.server.domain.admin.dto.select.regionCodes.FindAllRegionCodesListDTO;
-import com.storerader.server.domain.admin.dto.select.stores.FindAllStoresDTO;
 import com.storerader.server.domain.admin.dto.select.stores.FindAllStoresListDTO;
-import com.storerader.server.domain.admin.dto.select.users.FindAllUsersDTO;
-import com.storerader.server.domain.admin.dto.select.users.FindAllUsersListDTO;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -54,32 +49,6 @@ public class AdminService {
 
     private final RegionCodeRepository regionCodeRepository;
     private final PublicApiService publicApiService;
-
-    /**
-     * 전체 유저 목록을 조회하여 관리자용 응답 DTO로 반환한다
-     *
-     * @return 유저 목록
-     */
-    @Transactional
-    public FindAllUsersListDTO findAllUsers(
-            int page,
-            int size,
-            String sortKey,
-            String sortOrder
-    ) {
-        Sort.Direction dir = "asc".equalsIgnoreCase(sortOrder)
-                ? Sort.Direction.ASC
-                : Sort.Direction.DESC;
-
-        Pageable pageable = PageRequest.of(
-                page,
-                size,
-                Sort.by(dir, sortKey)
-        );
-
-        Page<UserEntity> pageResult = userRepository.findAll(pageable);
-        return FindAllUsersListDTO.from(pageResult);
-    }
 
     @Transactional
     public FindAllGoodsListDTO findAllGoods(
