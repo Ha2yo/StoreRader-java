@@ -1,19 +1,3 @@
-/*
- * File: domain/admin/service/publicApiService.java
- * Description:
- *     공공 데이터 포털과 통신을 담당한다
- *
- * Responsibilities:
- *      1) fetchString()
- *          - 공공데이터포털에 HTTP 요청을 보내고 XML 형태로 반환한다
- *
- *      2) parseGoodsResponse()
- *          - 상품 관련 XML 응답을 DTO로 파싱한다
- *
- *      3) saveGoods()
- *          - 파싱된 상품 데이터를 DB에 저장/갱신한다
- */
-
 package com.storerader.server.domain.admin.service;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -50,9 +34,15 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * 공공데이터 포털 가격정보 API 연동 서비스
+ * 외부 공공 API에서 상품, 매장, 지역코드, 가격 정보를 조회한 뒤
+ * DB에 저장한다.
+ */
 @Service
 @RequiredArgsConstructor
 public class PublicApiService {
+
     private final GoodRepositorySQL goodRepositorySQL;
     private final StoreRepositorySQL storeRepositorySQL;
     private final RegionCodeRepositorySQL regionCodeRepositorySQL;
@@ -64,9 +54,18 @@ public class PublicApiService {
     @Value("${PUBLIC_API_KEY}")
     private String serviceKey;
 
+    // 공공데이터 가격정보 API 기본 URL
     private static final String BASE_URL =
             "http://openapi.price.go.kr/openApiImpl/ProductPriceInfoService";
 
+    /**
+     * 상품 데이터를 DB에 저장한다.
+     * API 응답의 상품 목록을 순회하며 반영한다.
+     *
+     * @param response 상품 API 응답 객체
+     * @param log 처리 과정 로그 콜백
+     * @return 실제 DB에 반영된 row 수
+     */
     @Transactional
     public int saveGoods(
             GoodApiResponse response,
@@ -110,6 +109,15 @@ public class PublicApiService {
         return applied;
     }
 
+    /**
+     * 매장 데이터를 DB에 저장한다.
+     * 주소 정보를 기반으로 VWorld 지오코딩을 수행하여
+     * 위도/경도 좌표를 계산한 뒤 저장한다.
+     *
+     * @param response 매장 API 응답 객체
+     * @param log 처리 과정 로그 콜백
+     * @return 실제 DB에 반영된 row 수
+     */
     @Transactional
     public int saveStores(
             StoreApiResponse response,
@@ -184,6 +192,14 @@ public class PublicApiService {
         return applied;
     }
 
+    /**
+     * 지역 코드 데이터를 DB에 저장한다.
+     * 부모 코드 값을 기준으로 행정구역 레벨을 구분하여 저장한다.
+     *
+     * @param response 지역 코드 API 응답 객체
+     * @param log 처리 과정 로그 콜백
+     * @return 실제 DB에 반영된 row 수
+     */
     @Transactional
     public int saveRegionCodes(
             RegionCodeApiResponse response,
@@ -206,7 +222,7 @@ public class PublicApiService {
             regionCode.setName(item.name());
             regionCode.setParentCode(item.parentCode());
 
-            if(item.parentCode().equals("020000000"))
+            if (item.parentCode().equals("020000000"))
                 regionCode.setLevel(1);
             else
                 regionCode.setLevel(2);
@@ -225,6 +241,14 @@ public class PublicApiService {
         return applied;
     }
 
+    /**
+     * 가격 데이터를 DB에 저장한다.
+     * API 응답의 가격 목록을 순회하며 반영한다.
+     *
+     * @param response 가격 API 응답 객체
+     * @param log 처리 과정 로그 콜백
+     * @return 실제 DB에 반영된 row 수
+     */
     public int savePrices(
             PriceApiResponse response,
             Consumer<String> log
@@ -274,13 +298,14 @@ public class PublicApiService {
         return applied;
     }
 
-    public String fetchString(
-            String path,
-            String label
-    ) {
-        return fetchString (path, label, Map.of());
-    }
-
+    /**
+     * 공공 API에 요청을 보내고 XML 문자열 응답을 반환한다.
+     *
+     * @param path API 경로
+     * @param label 로그용 API 이름
+     * @param params 추가 query parameter
+     * @return API 응답 XML 문자열
+     */
     public String fetchString(
             String path,
             String label,
@@ -313,38 +338,43 @@ public class PublicApiService {
         }
     }
 
-    public GoodApiResponse parseGoodsResponse(String xml) {
+    /**
+     * 공공 AI에 요청을 보내고 XML 문자열 응답을 반환한다.
+     * 추가 파라미터가 없는 경우 사용한다.
+     *
+     * @param path API 경로
+     * @param label 로그용 API 이름
+     * @return 응답 XML 문자열
+     */
+    public String fetchString(
+            String path,
+            String label
+    ) {
+        return fetchString(path, label, Map.of());
+    }
+
+    /**
+     * XML 문자열을 지정한 DTO 타입으로 변환한다.
+     *
+     * @param xml 파싱할 XML 문자열
+     * @param clazz 변환할 DTO 클래스 타입
+     * @param label 예외 메시지에 이용할 API 이름
+     * @return 변환된 DT 객체
+     */
+    public <T> T parseXML(String xml, Class<T> clazz, String label) {
         try {
-            return xmlMapper.readValue(xml, GoodApiResponse.class);
+            return xmlMapper.readValue(xml, clazz);
         } catch (IOException ex) {
-            throw new IllegalStateException("상품 응답 파싱 실패: " + ex.getMessage(), ex);
+            throw new IllegalStateException(label + " 응답 파싱 실패: " + ex.getMessage(), ex);
         }
     }
 
-    public StoreApiResponse parseStoresResponse(String xml) {
-        try {
-            return xmlMapper.readValue(xml, StoreApiResponse.class);
-        } catch (IOException ex) {
-            throw new IllegalStateException("매장 응답 파싱 실패: " + ex.getMessage(), ex);
-        }
-    }
-
-    public RegionCodeApiResponse parseRegionCodesResponse(String xml) {
-        try {
-            return xmlMapper.readValue(xml, RegionCodeApiResponse.class);
-        } catch (IOException ex) {
-            throw new IllegalStateException("지역코드 응답 파싱 실패: " + ex.getMessage(), ex);
-        }
-    }
-
-    public PriceApiResponse parsePricesResponse(String xml) {
-        try {
-            return xmlMapper.readValue(xml, PriceApiResponse.class);
-        } catch (IOException ex) {
-            throw new IllegalStateException("가격 응답 파싱 실패: " + ex.getMessage(), ex);
-        }
-    }
-
+    /**
+     * 문자열을 Integer로 변환한다.
+     *
+     * @param value 변환할 문자열
+     * @return Integer 값 또는 null
+     */
     public Integer parseInteger(String value) {
         if (value == null || value.isBlank())
             return null;

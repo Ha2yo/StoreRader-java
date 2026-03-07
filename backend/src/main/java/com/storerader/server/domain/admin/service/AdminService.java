@@ -1,17 +1,3 @@
-/*
- * File: domain/admin/service/AdminService.java
- * Description:
- *     관리자(admin) 도메인의 서비스 계층으로,
- *     관리자 전용 기능의 비즈니스 로직을 수행한다.
- *
- * Responsibilities:
- *      1) findAllUsers()
- *          - 전체 유저 목록을 조회하여 관리자용 DTO로 반환한다
- *
- *      2) fetchGoodApi()
- *          - 공공 API로부터 상품 데이터를 조회하고 저장한다
- */
-
 package com.storerader.server.domain.admin.service;
 
 import com.storerader.server.common.entity.*;
@@ -39,17 +25,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * 관리자 도메인 서비스
+ * 관리자 페이지에서 사용하는 조회 및 공공데이터 적재 기능을 담당한다.
+ */
 @RequiredArgsConstructor
 @Service
 public class AdminService {
-    private final UserRepository userRepository;
+
     private final GoodRepository goodRepository;
     private final StoreRepository storeRepository;
     private final PriceRepository priceRepository;
-
     private final RegionCodeRepository regionCodeRepository;
     private final PublicApiService publicApiService;
 
+    /**
+     * 상품 목록을 페이지 단위로 조회한다.
+     *
+     * @param page 조회할 페이지 번호
+     * @param size 페이지 크기
+     * @param sortKey 정렬 기준 커럼
+     * @param sortOrder 정렬 방향
+     * @return 상품 목록 리스트
+     */
     @Transactional
     public GoodList findAllGoods(
             int page,
@@ -71,6 +69,15 @@ public class AdminService {
         return GoodList.from(pageResult);
     }
 
+    /**
+     * 매장 목록을 페이지 단위로 조회한다.
+     *
+     * @param page 조회할 페이지 번호
+     * @param size 페이지 크기
+     * @param sortKey 정렬 기준 커럼
+     * @param sortOrder 정렬 방향
+     * @return 매장 목록 리스트
+     */
     @Transactional
     public StoreList findAllStores(
             int page,
@@ -92,6 +99,15 @@ public class AdminService {
         return StoreList.from(pageResult);
     }
 
+    /**
+     * 지역코드 목록을 페이지 단위로 조회한다.
+     *
+     * @param page 조회할 페이지 번호
+     * @param size 페이지 크기
+     * @param sortKey 정렬 기준 커럼
+     * @param sortOrder 정렬 방향
+     * @return 지역코드 목록 리스트
+     */
     @Transactional
     public RegionCodeList findAllRegionCodes(
             int page,
@@ -113,6 +129,15 @@ public class AdminService {
         return RegionCodeList.from(pageResult);
     }
 
+    /**
+     * 가격 목록을 페이지 단위로 조회한다.
+     *
+     * @param page 조회할 페이지 번호
+     * @param size 페이지 크기
+     * @param sortKey 정렬 기준 커럼
+     * @param sortOrder 정렬 방향
+     * @return 가격 목록 리스트
+     */
     @Transactional
     public PriceList findAllPrices(
             int page,
@@ -135,9 +160,10 @@ public class AdminService {
     }
 
     /**
-     * 공공 API로부터 상품 데이터를 조회하고 저장한다
+     * 공공 API에서 상품 데이터를 조회한 뒤 DB에 저장한다.
+     * 처리 진행 상황은 SSE 로그로 클라이언트에 전달된다.
      *
-     * @return 공공 API로부터 수신한 원본 XML 문자열
+     * @return 로그 전송을 위한 SSE emitter
      */
     public SseEmitter fetchGoodsApi() {
         SseEmitter emitter = new SseEmitter(0L);
@@ -154,7 +180,7 @@ public class AdminService {
                 );
                 log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
 
-                GoodApiResponse parsed = publicApiService.parseGoodsResponse(xml);
+                GoodApiResponse parsed = publicApiService.parseXML(xml, GoodApiResponse.class, "상품");
                 int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
                 log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
 
@@ -173,6 +199,12 @@ public class AdminService {
         return emitter;
     }
 
+    /**
+     * 공공 API에서 매장 데이터를 조회한 뒤 DB에 저장한다.
+     * 처리 진행 상황은 SSE 로그로 클라이언트에 전달된다.
+     *
+     * @return 로그 전송을 위한 SSE emitter
+     */
     public SseEmitter fetchStoresApi() {
         SseEmitter emitter = new SseEmitter(0L);
 
@@ -188,7 +220,7 @@ public class AdminService {
                 );
                 log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
 
-                StoreApiResponse parsed = publicApiService.parseStoresResponse(xml);
+                StoreApiResponse parsed = publicApiService.parseXML(xml, StoreApiResponse.class, "매장");
                 int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
                 log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
 
@@ -207,6 +239,12 @@ public class AdminService {
         return emitter;
     }
 
+    /**
+     * 공공 API에서 지역코드 데이터를 조회한 뒤 DB에 저장한다.
+     * 처리 진행 상황은 SSE 로그로 클라이언트에 전달된다.
+     *
+     * @return 로그 전송을 위한 SSE emitter
+     */
     public SseEmitter fetchRegionCodesApi() {
         SseEmitter emitter = new SseEmitter(0L);
 
@@ -223,7 +261,7 @@ public class AdminService {
                 );
                 log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
 
-                RegionCodeApiResponse parsed = publicApiService.parseRegionCodesResponse(xml);
+                RegionCodeApiResponse parsed = publicApiService.parseXML(xml, RegionCodeApiResponse.class, "지역코드");
                 int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
                 log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
 
@@ -242,6 +280,12 @@ public class AdminService {
         return emitter;
     }
 
+    /**
+     * 공공 API에서 가격 데이터를 조회한 뒤 DB에 저장한다.
+     * 처리 진행 상황은 SSE 로그로 클라이언트에 전달된다.
+     *
+     * @return 로그 전송을 위한 SSE emitter
+     */
     public SseEmitter fetchPricesApi(String inspectDay) {
         SseEmitter emitter = new SseEmitter(0L);
 
@@ -278,7 +322,7 @@ public class AdminService {
                         );
                         log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
 
-                        PriceApiResponse parsed = publicApiService.parsePricesResponse(xml);
+                        PriceApiResponse parsed = publicApiService.parseXML(xml, PriceApiResponse.class, "가격");
 
                         int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
                         log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
@@ -294,7 +338,7 @@ public class AdminService {
                     }
                 }
 
-                log.accept("\n가격 데이터 추가 완료 ("+total+"개)");
+                log.accept("\n가격 데이터 추가 완료 (" + total + "개)");
 
                 emitter.complete();
             } catch (Exception e) {
@@ -307,6 +351,12 @@ public class AdminService {
         return emitter;
     }
 
+    /**
+     * SSE emitter로 로그 메시지를 전송한다.
+     *
+     * @param emitter SSE 이벤트를 전송할 SseEmiter 객체
+     * @param msg 클라이언트로 전달할 로그 메시지
+     */
     private void safeSend(SseEmitter emitter, String msg) {
         try {
             emitter.send(SseEmitter.event().name("log").data(msg));
