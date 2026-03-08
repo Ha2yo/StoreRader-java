@@ -20,7 +20,7 @@ public class StoreController {
             summary = "전체 매장 목록 조회",
             description = "DB에 등록된 모든 매장 정보를 리스트로 반환합니다."
     )
-    @GetMapping("/find/store/all")
+    @GetMapping("/stores")
     public List<StoreRes> findAllStores() {
         return storeService.findAllStores();
     }

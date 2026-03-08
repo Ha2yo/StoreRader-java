@@ -4,7 +4,7 @@ import type { Store } from "../types/StoreItem";
 export async function findAllStore(): Promise<Store[]> {
   try {
     const res = await apiClient.get(
-      "/find/store/all"
+      "/stores"
     );
     return res.data;
   } catch (error) {
