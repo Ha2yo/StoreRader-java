@@ -1,5 +1,7 @@
 package com.storerader.server.domain.auth.controller;
 
+import com.storerader.server.common.exception.CustomException;
+import com.storerader.server.common.exception.ExceptionClass;
 import com.storerader.server.domain.auth.dto.response.GoogleLoginRes;
 import com.storerader.server.domain.auth.model.GoogleLoginResult;
 import com.storerader.server.domain.auth.dto.request.GoogleLoginReq;
@@ -99,7 +101,7 @@ public class AuthController {
             @RequestBody(required = false) RefreshAccessTokenReq refreshAccessTokenReq,
             HttpServletRequest request,
             HttpServletResponse response
-    ) {
+    ) throws CustomException {
         String refreshToken = null;
 
         // refreshToken 추출
@@ -112,7 +114,11 @@ public class AuthController {
         }
 
         if (refreshToken == null || refreshToken.isBlank()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new CustomException(
+                    ExceptionClass.REFRESH_TOKEN_NOT_FOUND,
+                    ExceptionClass.REFRESH_TOKEN_NOT_FOUND.getStatus(),
+                    ExceptionClass.REFRESH_TOKEN_NOT_FOUND.getMessage()
+            );
         }
 
         // Access Token 재발급
@@ -144,17 +150,25 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> getMyInfo(
             HttpServletRequest request
-    ) {
+    ) throws CustomException {
         String accessToken = cookieHelper.extractTokenFromCookie(request, "accessToken");
 
         if (accessToken == null || accessToken.isBlank()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 토큰이 없습니다.");
+            throw new CustomException(
+                    ExceptionClass.UNAUTHORIZED,
+                    ExceptionClass.UNAUTHORIZED.getStatus(),
+                    ExceptionClass.UNAUTHORIZED.getMessage()
+            );
         }
 
         try {
             return ResponseEntity.ok(authService.getMyInfo(accessToken));
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            throw new CustomException(
+                    ExceptionClass.TOKEN_INVALID,
+                    ExceptionClass.TOKEN_INVALID.getStatus(),
+                    e.getMessage()
+            );
         }
     }
 
