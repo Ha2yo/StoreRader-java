@@ -114,11 +114,7 @@ public class AuthController {
         }
 
         if (refreshToken == null || refreshToken.isBlank()) {
-            throw new CustomException(
-                    ExceptionClass.REFRESH_TOKEN_NOT_FOUND,
-                    ExceptionClass.REFRESH_TOKEN_NOT_FOUND.getStatus(),
-                    ExceptionClass.REFRESH_TOKEN_NOT_FOUND.getMessage()
-            );
+            throw new CustomException(ExceptionClass.REFRESH_TOKEN_NOT_FOUND);
         }
 
         // Access Token 재발급
@@ -150,25 +146,17 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> getMyInfo(
             HttpServletRequest request
-    ) throws CustomException {
+    ) {
         String accessToken = cookieHelper.extractTokenFromCookie(request, "accessToken");
 
         if (accessToken == null || accessToken.isBlank()) {
-            throw new CustomException(
-                    ExceptionClass.UNAUTHORIZED,
-                    ExceptionClass.UNAUTHORIZED.getStatus(),
-                    ExceptionClass.UNAUTHORIZED.getMessage()
-            );
+            throw new CustomException(ExceptionClass.UNAUTHORIZED);
         }
 
         try {
             return ResponseEntity.ok(authService.getMyInfo(accessToken));
         } catch (RuntimeException e) {
-            throw new CustomException(
-                    ExceptionClass.TOKEN_INVALID,
-                    ExceptionClass.TOKEN_INVALID.getStatus(),
-                    e.getMessage()
-            );
+            throw new CustomException(ExceptionClass.TOKEN_INVALID);
         }
     }
 
