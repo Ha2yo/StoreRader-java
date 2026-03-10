@@ -1,6 +1,8 @@
 package com.storerader.server.domain.admin.service;
 
 import com.storerader.server.common.entity.*;
+import com.storerader.server.common.exception.CustomException;
+import com.storerader.server.common.exception.ExceptionClass;
 import com.storerader.server.common.repository.*;
 import com.storerader.server.domain.admin.dto.add.RegionCode.RegionCodeApiResponse;
 import com.storerader.server.domain.admin.dto.add.goods.GoodApiResponse;
@@ -55,6 +57,14 @@ public class AdminService {
             String sortKey,
             String sortOrder
     ) {
+        if (page < 0 || size <= 0) {
+            throw new CustomException(ExceptionClass.INVALID_REQUEST);
+        }
+
+        if (!"asc".equalsIgnoreCase(sortOrder) && !"desc".equalsIgnoreCase(sortOrder)) {
+            throw new CustomException(ExceptionClass.INVALID_REQUEST);
+        }
+
         Sort.Direction dir = "asc".equalsIgnoreCase(sortOrder)
                 ? Sort.Direction.ASC
                 : Sort.Direction.DESC;
@@ -85,6 +95,14 @@ public class AdminService {
             String sortKey,
             String sortOrder
     ) {
+        if (page < 0 || size <= 0) {
+            throw new CustomException(ExceptionClass.INVALID_REQUEST);
+        }
+
+        if (!"asc".equalsIgnoreCase(sortOrder) && !"desc".equalsIgnoreCase(sortOrder)) {
+            throw new CustomException(ExceptionClass.INVALID_REQUEST);
+        }
+
         Sort.Direction dir = "asc".equalsIgnoreCase(sortOrder)
                 ? Sort.Direction.ASC
                 : Sort.Direction.DESC;
@@ -115,6 +133,14 @@ public class AdminService {
             String sortKey,
             String sortOrder
     ) {
+        if (page < 0 || size <= 0) {
+            throw new CustomException(ExceptionClass.INVALID_REQUEST);
+        }
+
+        if (!"asc".equalsIgnoreCase(sortOrder) && !"desc".equalsIgnoreCase(sortOrder)) {
+            throw new CustomException(ExceptionClass.INVALID_REQUEST);
+        }
+
         Sort.Direction dir = "asc".equalsIgnoreCase(sortOrder)
                 ? Sort.Direction.ASC
                 : Sort.Direction.DESC;
@@ -145,6 +171,14 @@ public class AdminService {
             String sortKey,
             String sortOrder
     ) {
+        if (page < 0 || size <= 0) {
+            throw new CustomException(ExceptionClass.INVALID_REQUEST);
+        }
+
+        if (!"asc".equalsIgnoreCase(sortOrder) && !"desc".equalsIgnoreCase(sortOrder)) {
+            throw new CustomException(ExceptionClass.INVALID_REQUEST);
+        }
+
         Sort.Direction dir = "asc".equalsIgnoreCase(sortOrder)
                 ? Sort.Direction.ASC
                 : Sort.Direction.DESC;

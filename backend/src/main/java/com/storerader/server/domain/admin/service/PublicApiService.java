@@ -5,6 +5,8 @@ import com.storerader.server.common.entity.GoodEntity;
 import com.storerader.server.common.entity.PriceEntity;
 import com.storerader.server.common.entity.RegionCodeEntity;
 import com.storerader.server.common.entity.StoreEntity;
+import com.storerader.server.common.exception.CustomException;
+import com.storerader.server.common.exception.ExceptionClass;
 import com.storerader.server.common.repository.sql.GoodRepositorySQL;
 import com.storerader.server.common.repository.sql.PriceRepositorySQL;
 import com.storerader.server.common.repository.sql.RegionCodeRepositorySQL;
@@ -63,7 +65,7 @@ public class PublicApiService {
      * API 응답의 상품 목록을 순회하며 반영한다.
      *
      * @param response 상품 API 응답 객체
-     * @param log 처리 과정 로그 콜백
+     * @param log      처리 과정 로그 콜백
      * @return 실제 DB에 반영된 row 수
      */
     @Transactional
@@ -115,7 +117,7 @@ public class PublicApiService {
      * 위도/경도 좌표를 계산한 뒤 저장한다.
      *
      * @param response 매장 API 응답 객체
-     * @param log 처리 과정 로그 콜백
+     * @param log      처리 과정 로그 콜백
      * @return 실제 DB에 반영된 row 수
      */
     @Transactional
@@ -197,7 +199,7 @@ public class PublicApiService {
      * 부모 코드 값을 기준으로 행정구역 레벨을 구분하여 저장한다.
      *
      * @param response 지역 코드 API 응답 객체
-     * @param log 처리 과정 로그 콜백
+     * @param log      처리 과정 로그 콜백
      * @return 실제 DB에 반영된 row 수
      */
     @Transactional
@@ -246,7 +248,7 @@ public class PublicApiService {
      * API 응답의 가격 목록을 순회하며 반영한다.
      *
      * @param response 가격 API 응답 객체
-     * @param log 처리 과정 로그 콜백
+     * @param log      처리 과정 로그 콜백
      * @return 실제 DB에 반영된 row 수
      */
     public int savePrices(
@@ -301,8 +303,8 @@ public class PublicApiService {
     /**
      * 공공 API에 요청을 보내고 XML 문자열 응답을 반환한다.
      *
-     * @param path API 경로
-     * @param label 로그용 API 이름
+     * @param path   API 경로
+     * @param label  로그용 API 이름
      * @param params 추가 query parameter
      * @return API 응답 XML 문자열
      */
@@ -311,13 +313,13 @@ public class PublicApiService {
             String label,
             Map<String, String> params
     ) {
-        UriComponentsBuilder a = UriComponentsBuilder.fromHttpUrl(BASE_URL)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(BASE_URL)
                 .path(path)
                 .queryParam("ServiceKey", serviceKey);
 
-        params.forEach(a::queryParam);
+        params.forEach(builder::queryParam);
 
-        URI uri = a.build(true).toUri();
+        URI uri = builder.build(true).toUri();
 
         try {
             String body = restClient.get()
@@ -326,15 +328,12 @@ public class PublicApiService {
                     .body(String.class);
 
             if (body == null || body.isBlank()) {
-                throw new IllegalStateException(label + " 본문 읽기 실패: 응답 본문이 비어있습니다.");
+                throw new CustomException(ExceptionClass.EXTERNAL_API_ERROR);
             }
 
             return body;
-        } catch (RestClientResponseException ex) {
-            HttpStatusCode status = ex.getStatusCode();
-            throw new IllegalStateException(label + " API 오류 상태: " + status, ex);
-        } catch (RestClientException ex) {
-            throw new IllegalStateException(label + " API 요청 실패: " + ex.getMessage(), ex);
+        } catch (Exception e) {
+            throw new CustomException(ExceptionClass.EXTERNAL_API_ERROR);
         }
     }
 
@@ -342,7 +341,7 @@ public class PublicApiService {
      * 공공 AI에 요청을 보내고 XML 문자열 응답을 반환한다.
      * 추가 파라미터가 없는 경우 사용한다.
      *
-     * @param path API 경로
+     * @param path  API 경로
      * @param label 로그용 API 이름
      * @return 응답 XML 문자열
      */
@@ -356,7 +355,7 @@ public class PublicApiService {
     /**
      * XML 문자열을 지정한 DTO 타입으로 변환한다.
      *
-     * @param xml 파싱할 XML 문자열
+     * @param xml   파싱할 XML 문자열
      * @param clazz 변환할 DTO 클래스 타입
      * @param label 예외 메시지에 이용할 API 이름
      * @return 변환된 DT 객체
