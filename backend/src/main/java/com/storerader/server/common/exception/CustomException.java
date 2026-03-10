@@ -1,20 +1,18 @@
 package com.storerader.server.common.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class CustomException extends Exception {
 
-    private ExceptionClass exceptionClass;
-    private HttpStatus httpStatus;
+    private final ExceptionClass exceptionClass;
+    private final HttpStatus httpStatus;
 
     public CustomException(ExceptionClass exceptionClass, HttpStatus httpStatus, String message) {
         super(exceptionClass.toString() + message);
         this.exceptionClass = exceptionClass;
         this.httpStatus = httpStatus;
-    }
-
-    public ExceptionClass getExceptionClass() {
-        return exceptionClass;
     }
 
     public int getHttpStatusCode() {
@@ -25,7 +23,4 @@ public class CustomException extends Exception {
         return httpStatus.getReasonPhrase();
     }
 
-    public HttpStatus getHttpStatus() {
-        return httpStatus;
-    }
 }

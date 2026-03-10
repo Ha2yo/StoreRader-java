@@ -18,10 +18,12 @@ public class CustomExceptionHandler {
 
         log.error("Advice 내 customExceptionHandler() 호출, {}, {}", request.getRequestURI(), e.getMessage());
 
+        ExceptionClass exceptionClass = e.getExceptionClass();
+
         Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("error_type", e.getHttpStatusType());
-        responseMap.put("code", String.valueOf(e.getHttpStatusCode()));
-        responseMap.put("message", e.getMessage());
+        responseMap.put("error_type", exceptionClass.getStatus().getReasonPhrase());
+        responseMap.put("code", exceptionClass.getCode());
+        responseMap.put("message", exceptionClass.getCode() + ", " + exceptionClass.getMessage());
 
         return ResponseEntity.status(e.getHttpStatus()).body(responseMap);
     }
