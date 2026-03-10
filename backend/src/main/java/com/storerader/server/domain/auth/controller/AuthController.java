@@ -101,7 +101,7 @@ public class AuthController {
             @RequestBody(required = false) RefreshAccessTokenReq refreshAccessTokenReq,
             HttpServletRequest request,
             HttpServletResponse response
-    ) throws CustomException {
+    ) {
         String refreshToken = null;
 
         // refreshToken 추출
@@ -153,11 +153,7 @@ public class AuthController {
             throw new CustomException(ExceptionClass.UNAUTHORIZED);
         }
 
-        try {
-            return ResponseEntity.ok(authService.getMyInfo(accessToken));
-        } catch (RuntimeException e) {
-            throw new CustomException(ExceptionClass.TOKEN_INVALID);
-        }
+        return ResponseEntity.ok(authService.getMyInfo(accessToken));
     }
 
     /**
