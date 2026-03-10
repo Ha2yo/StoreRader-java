@@ -4,6 +4,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.storerader.server.common.exception.CustomException;
+import com.storerader.server.common.exception.ExceptionClass;
 import com.storerader.server.common.repository.sql.UserPreferenceSQL;
 import com.storerader.server.domain.auth.model.GoogleIdTokenClaims;
 import com.storerader.server.common.entity.UserEntity;
@@ -12,6 +14,8 @@ import com.storerader.server.domain.auth.model.GoogleLoginResult;
 import com.storerader.server.domain.auth.dto.request.GoogleLoginReq;
 import com.storerader.server.domain.auth.dto.response.GoogleLoginRes;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.transaction.Transactional;
@@ -19,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -81,10 +86,7 @@ public class AuthService {
      * @param clientId 우리 서비스의 Google OAuth Client ID
      * @return 검증된 토큰의 클레임 (식별자/이메일/이름/프로필 등)
      */
-    public GoogleIdTokenClaims verifyGoogleIdToken(
-            String idToken,
-            String clientId
-    ) {
+    public GoogleIdTokenClaims verifyGoogleIdToken(String idToken, String clientId) {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                 new NetHttpTransport(),
                 new GsonFactory()
@@ -95,15 +97,15 @@ public class AuthService {
         try {
             GoogleIdToken token = verifier.verify(idToken);
 
-            if (token != null) {
-                GoogleIdToken.Payload payload = token.getPayload();
-
-                return GoogleIdTokenClaims.from(token.getPayload());
-            } else {
-                throw new IllegalArgumentException("유효하지 않은 ID Token입니다.");
+            if (token == null) {
+                throw new CustomException(ExceptionClass.UNAUTHORIZED);
             }
+
+            return GoogleIdTokenClaims.from(token.getPayload());
+        } catch (CustomException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("구글 토큰 검증 실패", e);
+            throw new CustomException(ExceptionClass.UNAUTHORIZED);
         }
     }
 
@@ -218,15 +220,16 @@ public class AuthService {
 
         // DB에서 해당 유저 및 저장된 토큰 정보 조회
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new CustomException(ExceptionClass.USER_NOT_FOUND));
 
         if (user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken)) {
-            throw new RuntimeException("유효하지 않은 Refresh Token입니다.");
+            throw new CustomException(ExceptionClass.TOKEN_INVALID);
         }
 
         // DB에 기록된 만료 시각 체크
-        if (user.getRefreshTokenExpiresAt().isBefore(OffsetDateTime.now())) {
-            throw new RuntimeException("Refresh Token이 만료되었습니다.");
+        if (user.getRefreshTokenExpiresAt() == null ||
+                user.getRefreshTokenExpiresAt().isBefore(OffsetDateTime.now())) {
+            throw new CustomException(ExceptionClass.TOKEN_EXPIRED);
         }
 
         // 새 Access Token 생성
@@ -244,11 +247,17 @@ public class AuthService {
     ) {
         SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
-        return Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            throw new CustomException(ExceptionClass.TOKEN_EXPIRED);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new CustomException(ExceptionClass.TOKEN_INVALID);
+        }
     }
 
     /**
@@ -260,29 +269,24 @@ public class AuthService {
     public GoogleLoginRes.UserResponse getMyInfo(
             String accessToken
     ) {
-
-        if (accessToken == null) {
-            throw new RuntimeException("인증 토큰이 없습니다.");
+        // 토큰이 만료되었거나 변조된 경우
+        if (accessToken == null || accessToken.isBlank()) {
+            throw new CustomException(ExceptionClass.UNAUTHORIZED);
         }
 
-        try {
-            // 토큰 해독 및 유저 ID 추출
-            Claims claims = decodeJwt(accessToken);
-            Long userId = Long.parseLong(claims.getSubject());
+        // 토큰 해독 및 유저 ID 추출
+        Claims claims = decodeJwt(accessToken);
+        Long userId = Long.parseLong(claims.getSubject());
 
-            // DB에서 유저 조회
-            UserEntity user = userRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+        // DB에서 유저 조회
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ExceptionClass.USER_NOT_FOUND));
 
-            return new GoogleLoginRes.UserResponse(
-                    user.getName(),
-                    user.getEmail(),
-                    user.getPicture(),
-                    user.getRole()
-            );
-        } catch (Exception e) {
-            // 토큰이 만료되었거나 변조된 경우
-            throw new RuntimeException("유효하지 않은 토큰입니다.", e);
-        }
+        return new GoogleLoginRes.UserResponse(
+                user.getName(),
+                user.getEmail(),
+                user.getPicture(),
+                user.getRole()
+        );
     }
 }
