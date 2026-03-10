@@ -1,5 +1,7 @@
 package com.storerader.server.domain.userPreference.controller;
 
+import com.storerader.server.common.exception.CustomException;
+import com.storerader.server.common.exception.ExceptionClass;
 import com.storerader.server.domain.auth.service.AuthService;
 import com.storerader.server.domain.userPreference.dto.res.UserPreferenceRes;
 import com.storerader.server.domain.userPreference.service.UserPreferenceService;
@@ -27,6 +29,9 @@ public class UserPreferenceController {
     public UserPreferenceRes findUserPreference(
             @CookieValue("accessToken") String accessToken
     ) {
+        if (accessToken == null || accessToken.isBlank()) {
+            throw new CustomException(ExceptionClass.UNAUTHORIZED);
+        }
 
         Claims claims = authService.decodeJwt(accessToken);
         Long userId = Long.parseLong(claims.getSubject());

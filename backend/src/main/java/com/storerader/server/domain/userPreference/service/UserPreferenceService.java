@@ -1,5 +1,7 @@
 package com.storerader.server.domain.userPreference.service;
 
+import com.storerader.server.common.exception.CustomException;
+import com.storerader.server.common.exception.ExceptionClass;
 import com.storerader.server.common.repository.sql.UserPreferenceSQL;
 import com.storerader.server.domain.userPreference.dto.res.UserPreferenceRes;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,12 @@ public class UserPreferenceService {
     public UserPreferenceRes findUserPreference(
             Long userId
     ) {
-        return userPreferenceSQL.findPreferenceByUserId(userId);
+        UserPreferenceRes res = userPreferenceSQL.findPreferenceByUserId(userId);
+
+        if (res == null) {
+            throw new CustomException(ExceptionClass.USER_NOT_FOUND);
+        }
+
+        return res;
     }
 }
