@@ -16,12 +16,12 @@ services:
     networks:
       - network
 
-  backend:
+  backend-blue:
     image: ha2yo/storerader-backend
-    container_name: con-storerader-back
+    container_name: con-storerader-back-blue
     restart: always
     ports:
-      - 8080:8080
+      - "127.0.0.1:8081:8080" # EC2 내부에서 헬스체크용으로 사용
     depends_on:
       - database
     environment:
@@ -34,7 +34,27 @@ services:
       - "APP_COOKIE_SECURE=${APP_COOKIE_SECURE}"
       - "PUBLIC_API_KEY=${PUBLIC_API_KEY}"
       - "VWORLD_API_KEY=${VWORLD_API_KEY}"
+    networks:
+      - network
 
+  backend-green:
+    image: ha2yo/storerader-backend
+    container_name: con-storerader-back-green
+    restart: always
+    ports:
+      - "127.0.0.1:8082:8080" # EC2 내부에서 헬스체크용으로 사용
+    depends_on:
+      - database
+    environment:
+      - "SPRING_DATASOURCE_URL=jdbc:postgresql://con-storerader-db:5432/${DB_NAME}"
+      - "SPRING_DATASOURCE_USERNAME=${DB_USER}"
+      - "SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}"
+      - "GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}"
+      - "JWT_SECRET=${JWT_SECRET}"
+      - "APP_COOKIE_SAME_SITE=${APP_COOKIE_SAME_SITE}"
+      - "APP_COOKIE_SECURE=${APP_COOKIE_SECURE}"
+      - "PUBLIC_API_KEY=${PUBLIC_API_KEY}"
+      - "VWORLD_API_KEY=${VWORLD_API_KEY}"
     networks:
       - network
 
@@ -44,12 +64,10 @@ services:
     restart: always
     ports:
       - "80:80"
-    depends_on:
-      - backend
+    volumes:
+      - ./nginx-config:/etc/nginx/conf.d  
     networks:
       - network
-
-
 
 networks:
   network:
