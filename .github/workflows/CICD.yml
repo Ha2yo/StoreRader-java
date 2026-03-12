@@ -98,6 +98,15 @@ jobs:
           set -e
           cd ~/StoreRader-java
 
+          if [ ! -f /swapfile ]; then
+            echo "Creating 2GB Swap file..."
+            sudo fallocate -l 2G /swapfile
+            sudo chmod 600 /swapfile
+            sudo mkswap /swapfile
+            sudo swapon /swapfile
+            echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+          fi
+
           echo "DB_NAME=${{ secrets.DB_NAME }}" > .env
           echo "DB_USER=${{ secrets.DB_USER }}" >> .env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
