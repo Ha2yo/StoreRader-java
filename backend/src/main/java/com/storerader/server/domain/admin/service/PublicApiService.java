@@ -251,6 +251,7 @@ public class PublicApiService {
      * @param log      처리 과정 로그 콜백
      * @return 실제 DB에 반영된 row 수
      */
+    @Transactional
     public int savePrices(
             PriceApiResponse response,
             Consumer<String> log
