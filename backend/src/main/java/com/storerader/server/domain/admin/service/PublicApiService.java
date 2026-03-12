@@ -33,6 +33,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -261,39 +263,21 @@ public class PublicApiService {
             return 0;
         }
 
-        boolean started = false;
-        int processed = 0;
+        List<PriceApiItem> items = response.result().item();
+        int totalCount = items.size();
+
+        log.accept("DB 배치 반영 시작... (총 " + totalCount + "건)");
+
+        int[][] updateCounts = priceRepositorySQL.upsertPrices(items);
+
         int applied = 0;
-        int total = 0;
-
-        for (PriceApiItem item : response.result().item()) {
-            processed++;
-
-            PriceEntity price = new PriceEntity();
-
-            if (price.getCreatedAt() == null) {
-                price.setCreatedAt(OffsetDateTime.now());
+        for (int[] batch : updateCounts) {
+            for (int count : batch) {
+                if (count > 0) applied += count;
             }
-
-            price.setInspectDay(item.inspectDay());
-            price.setStoreId(item.storeId());
-            price.setGoodId(item.goodId());
-            price.setPrice(item.price());
-            price.setIsOnePlusOne(item.onePlusOne());
-            price.setIsDiscount(item.discount());
-            price.setDiscountStart(item.discountStart());
-            price.setDiscountEnd(item.discountEnd());
-
-            if (!started) {
-                log.accept("DB에 반영 중..");
-                started = true;
-            }
-
-            int affected = priceRepositorySQL.upsertPrices(price);
-            if (affected > 0) applied += affected;
         }
 
-        log.accept(processed + "개 데이터 처리 완료");
+        log.accept(totalCount + "개 데이터 처리 완료");
 
         return applied;
     }
