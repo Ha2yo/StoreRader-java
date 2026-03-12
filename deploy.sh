@@ -34,7 +34,7 @@ do
     
     sleep 3
 done
-
+ 
 # 3. Nginx가 바라보는 방향 변경
 mkdir -p ./nginx-config
 echo "upstream backend { server con-storerader-back-${TARGET_ENV}:8080; }" > ./nginx-config/upstream.conf
