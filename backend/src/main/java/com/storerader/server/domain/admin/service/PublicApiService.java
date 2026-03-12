@@ -278,8 +278,8 @@ public class PublicApiService {
             price.setStoreId(item.storeId());
             price.setGoodId(item.goodId());
             price.setPrice(item.price());
-            price.setIsOnePlusOne(item.isOnePlusOne());
-            price.setIsDiscount(item.isDiscount());
+            price.setIsOnePlusOne(item.onePlusOne());
+            price.setIsDiscount(item.discount());
             price.setDiscountStart(item.discountStart());
             price.setDiscountEnd(item.discountEnd());
 
@@ -288,11 +288,8 @@ public class PublicApiService {
                 started = true;
             }
 
-            try {
-                int affected = priceRepositorySQL.upsertPrices(price);
-                if (affected > 0) applied += affected;
-            } catch (DataIntegrityViolationException e) {
-            }
+            int affected = priceRepositorySQL.upsertPrices(price);
+            if (affected > 0) applied += affected;
         }
 
         log.accept(processed + "개 데이터 처리 완료");

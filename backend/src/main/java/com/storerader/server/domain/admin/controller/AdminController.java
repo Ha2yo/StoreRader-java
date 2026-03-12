@@ -97,7 +97,7 @@ public class AdminController {
             @Parameter(description = "페이지 크기", example = "10")
             @RequestParam int size,
 
-            @Parameter(description = "정렬 기준 컬럼", example = "ideeeee")
+            @Parameter(description = "정렬 기준 컬럼", example = "id")
             @RequestParam String sortKey,
 
             @Parameter(description = "정렬 방향 (asc / desc)", example = "asc")

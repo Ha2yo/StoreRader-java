@@ -24,11 +24,11 @@ public record PriceApiItem(
 
         // 1+1 여부
         @JacksonXmlProperty(localName = "plusOneYn")
-        String isOnePlusOne,
+        String onePlusOne,
 
         // 할인 여부
         @JacksonXmlProperty(localName = "goodDnYn")
-        String isDiscount,
+        String discount,
 
         // 할인 시작일자
         @JacksonXmlProperty(localName = "goodDcStartDay")
