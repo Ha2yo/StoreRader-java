@@ -159,6 +159,7 @@ public class AuthController {
     /**
      * 로그아웃을 처리한다.
      *
+     * @param request 요청 객체
      * @param response 쿠키 삭제 헤더를 추가하기 위한 응답 객체
      * @return 성공 시 OK
      */
@@ -168,8 +169,18 @@ public class AuthController {
     )
     @PostMapping("/logout")
     public ResponseEntity<?> logout(
+            HttpServletRequest request,
             HttpServletResponse response
     ) {
+        String accessToken = cookieHelper.extractTokenFromCookie(request, "accessToken");
+
+        try {
+            if (accessToken != null && !accessToken.isBlank()) {
+                authService.logout(accessToken);
+            }
+        } catch (CustomException ignored) {
+        }
+
         cookieHelper.addCookie(response, cookieHelper.deleteCookie("accessToken"));
         cookieHelper.addCookie(response, cookieHelper.deleteCookie("refreshToken"));
         return ResponseEntity.ok().build();

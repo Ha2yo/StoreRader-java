@@ -307,4 +307,32 @@ public class AuthService {
                 role
         );
     }
+
+    /**
+     * DB에 저장된 Refresh Token 정보를 삭제하여,
+     * 기존 토큰으로 재발급받는 것을 차단한다.
+     *
+     * @param accessToken 로그아웃을 요청한 유저의 유효한 Access Token
+     */
+    @Transactional
+    public void logout(
+            String accessToken
+    ) {
+        // 토큰이 만료되었거나 변조된 경우
+        if (accessToken == null || accessToken.isBlank()) {
+            throw new CustomException(ExceptionClass.UNAUTHORIZED);
+        }
+
+        // 토큰 해독 및 유저 ID 추출
+        Claims claims = decodeJwt(accessToken);
+        Long userId = Long.parseLong(claims.getSubject());
+
+        // DB에서 유저 조회
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ExceptionClass.USER_NOT_FOUND));
+
+        // DB의 Refresh Token 정보 초기화
+        user.setRefreshToken(null);
+        user.setRefreshTokenExpiresAt(null);
+    }
 }
