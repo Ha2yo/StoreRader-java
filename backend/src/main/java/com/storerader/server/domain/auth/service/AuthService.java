@@ -145,9 +145,11 @@ public class AuthService {
     /**
      * JWT를 생성한다. (HS256)
      *
-     * @param userId     유저 아이디
-     * @param email      유저 이메일
-     * @param role       유저 권한
+     * @param userId    유저 아이디
+     * @param email     유저 이메일
+     * @param role      유저 권한
+     * @param name      유저 이름
+     * @param picture   프로필 사진 URL
      * @param expiration 만료 시각
      * @return 서명된 JWT 문자열
      */
@@ -155,6 +157,8 @@ public class AuthService {
             Long userId,
             String email,
             String role,
+            String name,
+            String picture,
             long expiration
     ) {
         Date now = new Date();
@@ -165,6 +169,8 @@ public class AuthService {
                 .subject(String.valueOf(userId))
                 .claim("email", email)
                 .claim("role", role)
+                .claim("name", name)
+                .claim("picture", picture)
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(key, Jwts.SIG.HS256)
@@ -180,7 +186,13 @@ public class AuthService {
     public String createAccessToken(
             @NonNull UserEntity user
     ) {
-        return createToken(user.getId(), user.getEmail(), user.getRole(), ACCESS_TOKEN_EXPIRATION);
+        return createToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole(),
+                user.getName(),
+                user.getPicture(),
+                ACCESS_TOKEN_EXPIRATION);
     }
 
     /**
@@ -193,7 +205,13 @@ public class AuthService {
     public String createAndSaveRefreshToken(
             @NonNull UserEntity user
     ) {
-        String token = createToken(user.getId(), user.getEmail(), user.getRole(), REFRESH_TOKEN_EXPIRATION);
+        String token = createToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRole(),
+                user.getName(),
+                user.getPicture(),
+                REFRESH_TOKEN_EXPIRATION);
 
         user.setRefreshToken(token);
         user.setRefreshTokenExpiresAt(
@@ -276,17 +294,17 @@ public class AuthService {
 
         // 토큰 해독 및 유저 ID 추출
         Claims claims = decodeJwt(accessToken);
-        Long userId = Long.parseLong(claims.getSubject());
 
-        // DB에서 유저 조회
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ExceptionClass.USER_NOT_FOUND));
+        String email = claims.get("email", String.class);
+        String role = claims.get("role", String.class);
+        String name = claims.get("name", String.class);
+        String picture = claims.get("picture", String.class);
 
         return new GoogleLoginRes.UserResponse(
-                user.getName(),
-                user.getEmail(),
-                user.getPicture(),
-                user.getRole()
+                name,
+                email,
+                picture,
+                role
         );
     }
 }
