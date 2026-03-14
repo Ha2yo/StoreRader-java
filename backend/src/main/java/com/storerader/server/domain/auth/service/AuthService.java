@@ -229,7 +229,7 @@ public class AuthService {
      * @return 새로 발급된 Access Token
      */
     @Transactional
-    public String refreshAccessToken(
+    public GoogleLoginResult refreshAccessToken(
             String refreshToken
     ) {
         // 토큰 복호화 및 검증
@@ -250,8 +250,11 @@ public class AuthService {
             throw new CustomException(ExceptionClass.TOKEN_EXPIRED);
         }
 
+        String newAccessToken = createAccessToken(user);
+        String newRefreshToken = createAndSaveRefreshToken(user);
+
         // 새 Access Token 생성
-        return createAccessToken(user);
+        return new GoogleLoginResult(newAccessToken, newRefreshToken, null);
     }
 
     /**

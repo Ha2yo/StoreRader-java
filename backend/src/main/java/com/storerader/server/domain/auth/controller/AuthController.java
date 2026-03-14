@@ -117,20 +117,29 @@ public class AuthController {
             throw new CustomException(ExceptionClass.REFRESH_TOKEN_NOT_FOUND);
         }
 
-        // Access Token 재발급
-        String newAccessToken = authService.refreshAccessToken(refreshToken);
+        GoogleLoginResult tokenResult = authService.refreshAccessToken(refreshToken);
 
         // 새 Access Token 쿠키 설정
         cookieHelper.addCookie(
                 response,
                 cookieHelper.buildCookie(
                         "accessToken",
-                        newAccessToken,
+                        tokenResult.accessToken(),
                         ACCESS_TOKEN_EXPIRATION
                 )
         );
 
-        return ResponseEntity.ok(new RefreshAccessTokenRes(newAccessToken));
+        // 새 Refresh Token 쿠키 설정
+        cookieHelper.addCookie(
+                response,
+                cookieHelper.buildCookie(
+                        "refreshToken",
+                        tokenResult.refreshToken(),
+                        REFRESH_TOKEN_EXPIRATION
+                )
+        );
+
+        return ResponseEntity.ok(new RefreshAccessTokenRes(tokenResult.accessToken()));
     }
 
     /**
