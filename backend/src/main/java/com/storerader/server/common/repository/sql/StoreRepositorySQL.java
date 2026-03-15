@@ -5,14 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class StoreRepositorySQL {
     private final JdbcTemplate jdbcTemplate;
 
-    public int upsertStores(StoreEntity store) {
-        return jdbcTemplate.update(
-                """
+    public int[][] upsertStores(List<StoreEntity> stores) {
+        String sql = """
                 INSERT INTO stores (
                             store_id,
                             store_name,
@@ -46,17 +47,19 @@ public class StoreRepositorySQL {
                             OR stores.post_no IS DISTINCT FROM EXCLUDED.post_no
                             OR stores.jibun_addr IS DISTINCT FROM EXCLUDED.jibun_addr
                             OR stores.road_addr IS DISTINCT FROM EXCLUDED.road_addr
-                """,
-                store.getStoreId(),
-                store.getStoreName(),
-                store.getTelNo(),
-                store.getPostNo(),
-                store.getJibunAddr(),
-                store.getRoadAddr(),
-                store.getLat(),
-                store.getLng(),
-                store.getAreaCode(),
-                store.getAreaDetailCode()
-        );
+                """;
+
+        return jdbcTemplate.batchUpdate(sql, stores, 1000, (ps, store) -> {
+            ps.setLong(1, store.getStoreId());
+            ps.setString(2, store.getStoreName());
+            ps.setString(3, store.getTelNo());
+            ps.setString(4, store.getPostNo());
+            ps.setString(5, store.getJibunAddr());
+            ps.setString(6, store.getRoadAddr());
+            ps.setDouble(7, store.getLat());
+            ps.setDouble(8, store.getLng());
+            ps.setString(9, store.getAreaCode());
+            ps.setString(10, store.getAreaDetailCode());
+        });
     }
 }

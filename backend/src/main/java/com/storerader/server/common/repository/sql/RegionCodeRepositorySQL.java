@@ -5,14 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class RegionCodeRepositorySQL {
     private final JdbcTemplate jdbcTemplate;
 
-    public int upsertRegionCodes(RegionCodeEntity regionCode) {
-        return jdbcTemplate.update(
-                """
+    public int[][] upsertRegionCodes(List<RegionCodeEntity> regionCodes) {
+        String sql = """
                 INSERT INTO regions (
                             code,
                             name,
@@ -29,11 +30,13 @@ public class RegionCodeRepositorySQL {
                         WHERE
                             regions.code IS DISTINCT FROM EXCLUDED.code
                             OR regions.name IS DISTINCT FROM EXCLUDED.name
-                """,
-                regionCode.getCode(),
-                regionCode.getName(),
-                regionCode.getParentCode(),
-                regionCode.getLevel()
-        );
+                """;
+
+        return jdbcTemplate.batchUpdate(sql, regionCodes, 1000, (ps, regionCode) -> {
+            ps.setString(1, regionCode.getCode());
+            ps.setString(2, regionCode.getName());
+            ps.setString(3, regionCode.getParentCode());
+            ps.setInt(4, regionCode.getLevel());
+        });
     }
 }

@@ -14,7 +14,7 @@ import java.util.List;
 public class PriceRepositorySQL {
     private final JdbcTemplate jdbcTemplate;
 
-    public int[][] upsertPrices(List<PriceApiItem> items) {
+    public int[][] upsertPrices(List<PriceEntity> prices) {
         String sql = """
             INSERT INTO prices (
                         good_id,
@@ -36,15 +36,15 @@ public class PriceRepositorySQL {
                         discount_end = EXCLUDED.discount_end
             """;
 
-        return jdbcTemplate.batchUpdate(sql, items, 1000, (ps, item) -> {
-            ps.setInt(1, item.goodId());
-            ps.setLong(2, item.storeId());
-            ps.setString(3, item.inspectDay());
-            ps.setInt(4, item.price());
-            ps.setString(5, item.onePlusOne());
-            ps.setString(6, item.discount());
-            ps.setString(7, item.discountStart());
-            ps.setString(8, item.discountEnd());
+        return jdbcTemplate.batchUpdate(sql, prices, 1000, (ps, price) -> {
+            ps.setInt(1, price.getGoodId());
+            ps.setLong(2, price.getStoreId());
+            ps.setString(3, price.getInspectDay());
+            ps.setInt(4, price.getPrice());
+            ps.setString(5, price.getIsOnePlusOne());
+            ps.setString(6, price.getIsDiscount());
+            ps.setString(7, price.getDiscountStart());
+            ps.setString(8, price.getDiscountEnd());
         });
     }
 

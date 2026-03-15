@@ -33,6 +33,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -80,36 +81,25 @@ public class PublicApiService {
             return 0;
         }
 
-        int processed = 0;
-        int applied = 0;
+        List<GoodEntity> entities = new ArrayList<>();
+        OffsetDateTime now = OffsetDateTime.now();
 
         for (GoodApiItem item : response.result().item()) {
-            processed++;
-
             GoodEntity good = new GoodEntity();
-
-            if (good.getCreatedAt() == null) {
-                good.setCreatedAt(OffsetDateTime.now());
-            }
-
+            good.setCreatedAt(now);
             good.setGoodId(item.goodId());
             good.setGoodName(item.goodName());
             good.setTotalCnt(parseInteger(item.goodTotalCnt()));
             good.setTotalDivCode(item.goodTotalDivCode());
+            good.setUpdatedAt(now);
 
-            good.setUpdatedAt(OffsetDateTime.now());
-
-            int affected = goodRepositorySQL.upsertGoods(good);
-            if (affected > 0)
-                applied += affected;
-
-            if (processed % 200 == 0) {
-                log.accept("DB에 반영 중.. \n(processed = " + processed + ", applied = " + applied + ")");
-            }
+            entities.add(good);
         }
+        log.accept("DB 배치 반영 시작... (총 " + entities.size() + "건)");
+        int[][] updateCounts = goodRepositorySQL.upsertGoods(entities);
+        int applied = countBatchApplied(updateCounts);
 
-        log.accept(processed + "개 데이터 처리 완료");
-
+        log.accept(entities.size() + "개 데이터 처리 완료 (DB 반영: " + applied + "건)");
         return applied;
     }
 
@@ -132,21 +122,19 @@ public class PublicApiService {
             return 0;
         }
 
-        int processed = 0;
-        int applied = 0;
+        List<StoreEntity> entities = new ArrayList<>();
+        OffsetDateTime now = OffsetDateTime.now();
         int geoCodeFail = 0;
         int geoCodeSuccess = 0;
+        int processed = 0;
 
         for (StoreApiItem item : response.result().item()) {
-
             boolean roadBlank = item.roadAddr() == null || item.roadAddr().isBlank();
             boolean jibunBlank = item.jibunAddr() == null || item.jibunAddr().isBlank();
 
-            if (roadBlank && jibunBlank)
-                continue;
+            if (roadBlank && jibunBlank) continue;
 
             String addr = !roadBlank ? item.roadAddr() : item.jibunAddr();
-
             processed++;
 
             var geoCoding = vworldService.geocode(addr, log);
@@ -155,44 +143,33 @@ public class PublicApiService {
                 continue;
             }
 
-            double lat = geoCoding.get().lat();
-            double lng = geoCoding.get().lng();
-
             geoCodeSuccess++;
-
             StoreEntity store = new StoreEntity();
-
-            if (store.getCreatedAt() == null) {
-                store.setCreatedAt(OffsetDateTime.now());
-            }
-
+            store.setCreatedAt(now);
             store.setStoreId(item.storeId());
             store.setStoreName(item.storeName());
             store.setTelNo(item.telNo());
             store.setPostNo(item.postNo());
             store.setJibunAddr(item.jibunAddr());
             store.setRoadAddr(item.roadAddr());
-            store.setLat(lat);
-            store.setLng(lng);
+            store.setLat(geoCoding.get().lat());
+            store.setLng(geoCoding.get().lng());
             store.setAreaCode(item.areaCode());
             store.setAreaDetailCode(item.areaDetailCode());
+            store.setUpdatedAt(now);
 
-            store.setUpdatedAt(OffsetDateTime.now());
-
-            int affected = storeRepositorySQL.upsertStores(store);
-            if (affected > 0)
-                applied += affected;
+            entities.add(store);
 
             if (processed % 100 == 0) {
-                log.accept("DB에 반영 중.. \n" +
-                        "(processed = " + processed + ", applied = " + applied + ",\n" +
-                        "geocode success = " + geoCodeSuccess + ", fail = " + geoCodeFail + ")");
+                log.accept("지오코딩 처리 중.. (success = " + geoCodeSuccess + ", fail = " + geoCodeFail + ")");
             }
         }
 
-        log.accept(processed + "개 데이터 처리 완료 (geocode success = " +
-                geoCodeSuccess + ", fail: " + geoCodeFail);
+        log.accept("지오코딩 완료. DB 배치 반영 시작... (총 " + entities.size() + "건)");
+        int[][] updateCounts = storeRepositorySQL.upsertStores(entities);
+        int applied = countBatchApplied(updateCounts);
 
+        log.accept(entities.size() + "개 데이터 처리 완료 (DB 반영: " + applied + "건, 지오코딩 실패: " + geoCodeFail + "건)");
         return applied;
     }
 
@@ -214,34 +191,23 @@ public class PublicApiService {
             return 0;
         }
 
-        int processed = 0;
-        int applied = 0;
+        List<RegionCodeEntity> entities = new ArrayList<>();
 
         for (RegionCodeApiItem item : response.result().item()) {
-            processed++;
-
             RegionCodeEntity regionCode = new RegionCodeEntity();
-
             regionCode.setCode(item.code());
             regionCode.setName(item.name());
             regionCode.setParentCode(item.parentCode());
+            regionCode.setLevel(item.parentCode().equals("020000000") ? 1 : 2);
 
-            if (item.parentCode().equals("020000000"))
-                regionCode.setLevel(1);
-            else
-                regionCode.setLevel(2);
-
-            int affected = regionCodeRepositorySQL.upsertRegionCodes(regionCode);
-            if (affected > 0)
-                applied += affected;
-
-            if (processed % 100 == 0) {
-                log.accept("DB에 반영 중.. \n(processed = " + processed + ", applied = " + applied + ")");
-            }
+            entities.add(regionCode);
         }
 
-        log.accept(processed + "개 데이터 처리 완료");
+        log.accept("DB 배치 반영 시작... (총 " + entities.size() + "건)");
+        int[][] updateCounts = regionCodeRepositorySQL.upsertRegionCodes(entities);
+        int applied = countBatchApplied(updateCounts);
 
+        log.accept(entities.size() + "개 데이터 처리 완료 (DB 반영: " + applied + "건)");
         return applied;
     }
 
@@ -263,22 +229,27 @@ public class PublicApiService {
             return 0;
         }
 
-        List<PriceApiItem> items = response.result().item();
-        int totalCount = items.size();
+        List<PriceEntity> entities = new ArrayList<>();
 
-        log.accept("DB 배치 반영 시작... (총 " + totalCount + "건)");
+        for (PriceApiItem item : response.result().item()) {
+            PriceEntity price = new PriceEntity();
+            price.setGoodId(item.goodId());
+            price.setStoreId(item.storeId());
+            price.setInspectDay(item.inspectDay());
+            price.setPrice(item.price());
+            price.setIsOnePlusOne(item.onePlusOne());
+            price.setIsDiscount(item.discount());
+            price.setDiscountStart(item.discountStart());
+            price.setDiscountEnd(item.discountEnd());
 
-        int[][] updateCounts = priceRepositorySQL.upsertPrices(items);
-
-        int applied = 0;
-        for (int[] batch : updateCounts) {
-            for (int count : batch) {
-                if (count > 0) applied += count;
-            }
+            entities.add(price);
         }
 
-        log.accept(totalCount + "개 데이터 처리 완료");
+        log.accept("DB 배치 반영 시작... (총 " + entities.size() + "건)");
+        int[][] updateCounts = priceRepositorySQL.upsertPrices(entities);
+        int applied = countBatchApplied(updateCounts);
 
+        log.accept(entities.size() + "개 데이터 처리 완료 (DB 반영: " + applied + "건)");
         return applied;
     }
 
@@ -364,5 +335,22 @@ public class PublicApiService {
         } catch (NumberFormatException ex) {
             return null;
         }
+    }
+
+    /**
+     * 배치 업데이트 실행 결과 배열을 순회하며
+     * 실제 DB에 반영된 총 데이터 건수를 합산하여 반환한다.
+     *
+     * @param updateCounts
+     * @return DB에 적용된 총 row 수
+     */
+    private int countBatchApplied(int[][] updateCounts) {
+        int applied = 0;
+        for (int[] batch : updateCounts) {
+            for (int count : batch) {
+                if (count > 0) applied += count;
+            }
+        }
+        return applied;
     }
 }
