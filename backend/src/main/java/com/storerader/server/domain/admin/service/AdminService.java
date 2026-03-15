@@ -320,7 +320,9 @@ public class AdminService {
      *
      * @return 로그 전송을 위한 SSE emitter
      */
-    public SseEmitter fetchPricesApi(String inspectDay) {
+    public SseEmitter fetchPricesApi(
+            String inspectDay
+    ) {
         SseEmitter emitter = new SseEmitter(0L);
 
         new Thread(() -> {
@@ -332,47 +334,61 @@ public class AdminService {
                 List<Long> storeIds = storeRepository.findAllStoreIds();
                 log.accept("대상 매장 수 = " + storeIds.size());
 
-                int total = 0;
+                java.util.concurrent.atomic.AtomicInteger totalSaved = new java.util.concurrent.atomic.AtomicInteger(0);
+                java.util.concurrent.atomic.AtomicInteger processedCount = new java.util.concurrent.atomic.AtomicInteger(0);
 
-                for (int i = 0; i < storeIds.size(); i++) {
-                    Long storeId = storeIds.get(i);
+                java.util.concurrent.ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(10);
 
-                    String storeName = storeRepository.findStoreNameByStoreId(storeId);
+                try {
+                    // 비동기 작업 생성
+                    List<java.util.concurrent.CompletableFuture<Void>> futures = storeIds.stream().map(storeId ->
+                            java.util.concurrent.CompletableFuture.runAsync(() -> {
 
-                    log.accept("\n[" + (i + 1) + "/" + storeIds.size() + "]\nstoreId = " + storeId +
-                            " (" + storeName + ")");
+                                String storeName = storeRepository.findStoreNameByStoreId(storeId);
+                                int currentIdx = processedCount.incrementAndGet();
 
-                    if (!storeRepository.existsByStoreId(storeId)) {
-                        log.accept("DB에 해당 매장 없으므로 스킵\n");
-                        continue;
-                    }
+                                log.accept("\n[" + currentIdx + "/" + storeIds.size() + "]\nstoreId = " + storeId + " (" + storeName + ")");
 
-                    try {
-                        String xml = publicApiService.fetchString(
-                                "/getProductPriceInfoSvc.do",
-                                "가격",
-                                Map.of("goodInspectDay", inspectDay,
-                                        "entpId", storeId.toString())
-                        );
-                        log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
+                                if (!storeRepository.existsByStoreId(storeId)) {
+                                    log.accept("DB에 해당 매장 없으므로 스킵\n");
+                                    return;
+                                }
 
-                        PriceApiResponse parsed = publicApiService.parseXML(xml, PriceApiResponse.class, "가격");
+                                try {
+                                    // API 호출
+                                    String xml = publicApiService.fetchString(
+                                            "/getProductPriceInfoSvc.do",
+                                            "가격",
+                                            Map.of("goodInspectDay", inspectDay,
+                                                    "entpId", storeId.toString())
+                                    );
+                                    log.accept("공공데이터 응답 수신 완료 (storeId=" + storeId + ", length=" + xml.length() + ")");
 
-                        int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
-                        log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
+                                    PriceApiResponse parsed = publicApiService.parseXML(xml, PriceApiResponse.class, "가격");
 
-                        int saved = publicApiService.savePrices(parsed, log);
-                        total += saved;
+                                    int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
 
-                        if (saved != 0) {
-                            log.accept("\nDB 반영 완료 (applied = " + saved + ")");
-                        }
-                    } catch (Exception e) {
-                        log.accept("오류 (storeId = " + storeId + "): " + e.getMessage());
-                    }
+                                    // DB 저장
+                                    int saved = publicApiService.savePrices(parsed, log);
+
+                                    if (saved != 0) {
+                                        totalSaved.addAndGet(saved);
+                                        log.accept("DB 반영 완료 (storeId=" + storeId + ", applied=" + saved + ")");
+                                    }
+                                } catch (Exception e) {
+                                    log.accept("오류 (storeId = " + storeId + "): " + e.getMessage());
+                                }
+                            }, executor)
+                    ).toList();
+
+                    // 모든 작업이 완료될 때까지 대기
+                    futures.forEach(java.util.concurrent.CompletableFuture::join);
+
+                } finally {
+                    executor.shutdown();
                 }
 
-                log.accept("\n가격 데이터 추가 완료 (" + total + "개)");
+                log.accept("\n가격 데이터 추가 완료 (총 " + totalSaved.get() + "개 반영)");
 
                 emitter.complete();
             } catch (Exception e) {
