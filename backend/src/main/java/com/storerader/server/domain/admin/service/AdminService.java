@@ -362,22 +362,24 @@ public class AdminService {
                                             Map.of("goodInspectDay", inspectDay,
                                                     "entpId", storeId.toString())
                                     );
-                                    log.accept("공공데이터 응답 수신 완료 (storeId=" + storeId + ", length=" + xml.length() + ")");
 
                                     PriceApiResponse parsed = publicApiService.parseXML(xml, PriceApiResponse.class, "가격");
-
                                     int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
 
-                                    // DB 저장
-                                    int saved = publicApiService.savePrices(parsed, log);
+                                    if (count == 0) {
+                                        log.accept("[storeId=" + storeId + "] 데이터 없음 (length=" + xml.length() + ")");
+                                    } else {
+                                        int saved = publicApiService.savePrices(parsed, log);
 
-                                    if (saved != 0) {
-                                        totalSaved.addAndGet(saved);
-                                        log.accept("DB 반영 완료 (storeId=" + storeId + ", applied=" + saved + ")");
+                                        if (saved > 0) {
+                                            totalSaved.addAndGet(saved);
+                                            log.accept("[storeId=" + storeId + "] DB 반영: " + saved + "건");
+                                        } else {
+                                            log.accept("[storeId=" + storeId + "] 전체 중복 (반영 0건)");
+                                        }
                                     }
                                 } catch (Exception e) {
-                                    log.accept("오류 (storeId = " + storeId + "): " + e.getMessage());
-                                }
+                                    log.accept("[storeId=" + storeId + "] 오류 발생: " + e.getMessage());                                }
                             }, executor)
                     ).toList();
 
@@ -410,8 +412,11 @@ public class AdminService {
     private void safeSend(SseEmitter emitter, String msg) {
         try {
             emitter.send(SseEmitter.event().name("log").data(msg));
-        } catch (IOException ignored) {
-            emitter.complete();
+        } catch (Exception ignored) {
+            try {
+                emitter.complete();
+            } catch (Exception e) {
+            }
         }
     }
 }

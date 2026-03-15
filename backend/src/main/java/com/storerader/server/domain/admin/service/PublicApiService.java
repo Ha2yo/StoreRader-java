@@ -249,7 +249,6 @@ public class PublicApiService {
             Consumer<String> log
     ) {
         if (response == null || response.result() == null || response.result().item() == null) {
-            log.accept("저장할 데이터가 없습니다.");
             return 0;
         }
 
@@ -269,12 +268,9 @@ public class PublicApiService {
             entities.add(price);
         }
 
-        log.accept("DB 배치 반영 시작... (총 " + entities.size() + "건)");
         int[][] updateCounts = priceRepositorySQL.upsertPrices(entities);
-        int applied = countBatchApplied(updateCounts);
 
-        log.accept(entities.size() + "개 데이터 처리 완료 (DB 반영: " + applied + "건)");
-        return applied;
+        return countBatchApplied(updateCounts);
     }
 
     /**
