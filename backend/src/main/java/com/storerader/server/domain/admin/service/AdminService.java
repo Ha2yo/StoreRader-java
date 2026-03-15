@@ -320,10 +320,9 @@ public class AdminService {
      *
      * @return 로그 전송을 위한 SSE emitter
      */
-    public SseEmitter fetchPricesApi(
-            String inspectDay
-    ) {
-        SseEmitter emitter = new SseEmitter(0L);
+    public SseEmitter fetchPricesApi(String inspectDay) {
+        // SSE 타임아웃 무제한 설정 (권장)
+        SseEmitter emitter = new SseEmitter(-1L);
 
         new Thread(() -> {
             try {
@@ -332,59 +331,70 @@ public class AdminService {
                 log.accept("가격 데이터 추가 시작 (inspectDay = " + inspectDay + ")");
 
                 List<Long> storeIds = storeRepository.findAllStoreIds();
-                log.accept("대상 매장 수 = " + storeIds.size());
+                log.accept("대상 매장 수 = " + storeIds.size() + "\n");
 
                 java.util.concurrent.atomic.AtomicInteger totalSaved = new java.util.concurrent.atomic.AtomicInteger(0);
-                java.util.concurrent.atomic.AtomicInteger processedCount = new java.util.concurrent.atomic.AtomicInteger(0);
-
                 java.util.concurrent.ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(5);
 
                 try {
-                    // 비동기 작업 생성
-                    List<java.util.concurrent.CompletableFuture<Void>> futures = storeIds.stream().map(storeId ->
-                            java.util.concurrent.CompletableFuture.runAsync(() -> {
+                    // 1. runAsync 대신 supplyAsync를 사용하여 비동기 작업을 생성합니다.
+                    // 작업을 마친 뒤 출력할 "완성된 로그 문자열(String)"을 반환하도록 합니다.
+                    List<java.util.concurrent.CompletableFuture<String>> futures = java.util.stream.IntStream.range(0, storeIds.size())
+                            .mapToObj(i -> {
+                                Long storeId = storeIds.get(i);
+                                int currentIdx = i + 1;
 
-                                String storeName = storeRepository.findStoreNameByStoreId(storeId);
-                                int currentIdx = processedCount.incrementAndGet();
+                                return java.util.concurrent.CompletableFuture.supplyAsync(() -> {
+                                    StringBuilder taskLog = new StringBuilder();
+                                    String storeName = storeRepository.findStoreNameByStoreId(storeId);
 
-                                log.accept("\n[" + currentIdx + "/" + storeIds.size() + "]\nstoreId = " + storeId + " (" + storeName + ")");
+                                    // 원하시는 포맷대로 조립: [1/590] \n storeId = 786 (...)
+                                    taskLog.append(String.format("[%d/%d]\nstoreId = %d (%s)\n", currentIdx, storeIds.size(), storeId, storeName));
 
-                                if (!storeRepository.existsByStoreId(storeId)) {
-                                    log.accept("DB에 해당 매장 없으므로 스킵\n");
-                                    return;
-                                }
-
-                                try {
-                                    // API 호출
-                                    String xml = publicApiService.fetchString(
-                                            "/getProductPriceInfoSvc.do",
-                                            "가격",
-                                            Map.of("goodInspectDay", inspectDay,
-                                                    "entpId", storeId.toString())
-                                    );
-
-                                    PriceApiResponse parsed = publicApiService.parseXML(xml, PriceApiResponse.class, "가격");
-                                    int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
-
-                                    if (count == 0) {
-                                        log.accept("[storeId=" + storeId + "] 데이터 없음 (length=" + xml.length() + ")");
-                                    } else {
-                                        int saved = publicApiService.savePrices(parsed, log);
-
-                                        if (saved > 0) {
-                                            totalSaved.addAndGet(saved);
-                                            log.accept("[storeId=" + storeId + "] DB 반영: " + saved + "건");
-                                        } else {
-                                            log.accept("[storeId=" + storeId + "] 전체 중복 (반영 0건)");
-                                        }
+                                    if (!storeRepository.existsByStoreId(storeId)) {
+                                        taskLog.append("DB에 해당 매장 없으므로 스킵\n");
+                                        return taskLog.toString();
                                     }
-                                } catch (Exception e) {
-                                    log.accept("[storeId=" + storeId + "] 오류 발생: " + e.getMessage());                                }
-                            }, executor)
-                    ).toList();
 
-                    // 모든 작업이 완료될 때까지 대기
-                    futures.forEach(java.util.concurrent.CompletableFuture::join);
+                                    try {
+                                        // API 호출
+                                        String xml = publicApiService.fetchString(
+                                                "/getProductPriceInfoSvc.do",
+                                                "가격",
+                                                Map.of("goodInspectDay", inspectDay,
+                                                        "entpId", storeId.toString())
+                                        );
+
+                                        PriceApiResponse parsed = publicApiService.parseXML(xml, PriceApiResponse.class, "가격");
+                                        int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
+
+                                        if (count == 0) {
+                                            taskLog.append("데이터 없음\n");
+                                        } else {
+                                            // 내부에서 찍히는 로그는 무시하도록 빈 Consumer 전달
+                                            int saved = publicApiService.savePrices(parsed, msg -> {});
+
+                                            if (saved > 0) {
+                                                totalSaved.addAndGet(saved);
+                                                taskLog.append("DB 반영: ").append(saved).append("건\n");
+                                            } else {
+                                                taskLog.append("전체 중복 (반영 0건)\n");
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        taskLog.append("오류 발생: ").append(e.getMessage()).append("\n");
+                                    }
+
+                                    return taskLog.toString();
+                                }, executor);
+                            }).toList();
+
+                    // 2. 여기서 순서를 보장합니다!
+                    // 작업 자체는 백그라운드에서 5개씩 병렬로 미친 듯이 돌고 있지만,
+                    // 화면에 던져주는 로그는 무조건 1번 작업부터 순서대로 기다렸다가 조립해서 던집니다.
+                    for (java.util.concurrent.CompletableFuture<String> future : futures) {
+                        log.accept(future.join());
+                    }
 
                 } finally {
                     executor.shutdown();
