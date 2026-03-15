@@ -33,11 +33,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * 공공데이터 포털 가격정보 API 연동 서비스
@@ -122,54 +123,77 @@ public class PublicApiService {
             return 0;
         }
 
-        List<StoreEntity> entities = new ArrayList<>();
+        List<StoreApiItem> items = response.result().item();
         OffsetDateTime now = OffsetDateTime.now();
-        int geoCodeFail = 0;
-        int geoCodeSuccess = 0;
-        int processed = 0;
 
-        for (StoreApiItem item : response.result().item()) {
-            boolean roadBlank = item.roadAddr() == null || item.roadAddr().isBlank();
-            boolean jibunBlank = item.jibunAddr() == null || item.jibunAddr().isBlank();
+        // 진행 상황 체킹을 위한 변수
+        java.util.concurrent.atomic.AtomicInteger processed = new java.util.concurrent.atomic.AtomicInteger(0);
+        java.util.concurrent.atomic.AtomicInteger geoCodeSuccess = new java.util.concurrent.atomic.AtomicInteger(0);
 
-            if (roadBlank && jibunBlank) continue;
+        // 스레드 풀 생성
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        List<StoreEntity> entities;
 
-            String addr = !roadBlank ? item.roadAddr() : item.jibunAddr();
-            processed++;
+        log.accept("매장 지오코딩 병렬 처리 시작... (총 " + items.size() + "건)");
 
-            var geoCoding = vworldService.geocode(addr, log);
-            if (geoCoding.isEmpty()) {
-                geoCodeFail++;
-                continue;
-            }
+        try {
+            List<CompletableFuture<StoreEntity>> futures = items.stream().map(item ->
+                    CompletableFuture.supplyAsync(() -> {
+                        boolean roadBlank = item.roadAddr() == null || item.roadAddr().isBlank();
+                        boolean jibunBlank = item.jibunAddr() == null || item.jibunAddr().isBlank();
 
-            geoCodeSuccess++;
-            StoreEntity store = new StoreEntity();
-            store.setCreatedAt(now);
-            store.setStoreId(item.storeId());
-            store.setStoreName(item.storeName());
-            store.setTelNo(item.telNo());
-            store.setPostNo(item.postNo());
-            store.setJibunAddr(item.jibunAddr());
-            store.setRoadAddr(item.roadAddr());
-            store.setLat(geoCoding.get().lat());
-            store.setLng(geoCoding.get().lng());
-            store.setAreaCode(item.areaCode());
-            store.setAreaDetailCode(item.areaDetailCode());
-            store.setUpdatedAt(now);
+                        if (roadBlank && jibunBlank) return null;
 
-            entities.add(store);
+                        String addr = !roadBlank ? item.roadAddr() : item.jibunAddr();
 
-            if (processed % 100 == 0) {
-                log.accept("지오코딩 처리 중.. (success = " + geoCodeSuccess + ", fail = " + geoCodeFail + ")");
-            }
+                        // VWorld API 호출
+                        var geoCoding = vworldService.geocode(addr, log);
+
+                        int currentProcessed = processed.incrementAndGet();
+
+                        // 100건마다 로깅 쏴주기
+                        if (currentProcessed % 100 == 0) {
+                            log.accept("지오코딩 처리 중.. (" + currentProcessed + "/" + items.size() + ")");
+                        }
+
+                        if (geoCoding.isEmpty()) return null; // 지오코딩 실패 시 스킵
+
+                        geoCodeSuccess.incrementAndGet();
+
+                        StoreEntity store = new StoreEntity();
+                        store.setCreatedAt(now);
+                        store.setStoreId(item.storeId());
+                        store.setStoreName(item.storeName());
+                        store.setTelNo(item.telNo());
+                        store.setPostNo(item.postNo());
+                        store.setJibunAddr(item.jibunAddr());
+                        store.setRoadAddr(item.roadAddr());
+                        store.setLat(geoCoding.get().lat());
+                        store.setLng(geoCoding.get().lng());
+                        store.setAreaCode(item.areaCode());
+                        store.setAreaDetailCode(item.areaDetailCode());
+                        store.setUpdatedAt(now);
+
+                        return store;
+                    }, executor)
+            ).toList();
+
+            // 모든 작업이 끝난 후 결과 취합
+            entities = futures.stream()
+                    .map(CompletableFuture::join) // 대기
+                    .filter(Objects::nonNull)     // null 제거
+                    .collect(Collectors.toList());
+
+        } finally {
+            executor.shutdown();
         }
 
-        log.accept("지오코딩 완료. DB 배치 반영 시작... (총 " + entities.size() + "건)");
+        log.accept("지오코딩 완료. DB 배치 반영 시작... (성공: " + entities.size() + "건)");
+
         int[][] updateCounts = storeRepositorySQL.upsertStores(entities);
         int applied = countBatchApplied(updateCounts);
 
-        log.accept(entities.size() + "개 데이터 처리 완료 (DB 반영: " + applied + "건, 지오코딩 실패: " + geoCodeFail + "건)");
+        log.accept("매장 데이터 처리 완료 (DB 반영: " + applied + "건)");
         return applied;
     }
 
