@@ -337,7 +337,7 @@ public class AdminService {
                 java.util.concurrent.atomic.AtomicInteger totalSaved = new java.util.concurrent.atomic.AtomicInteger(0);
                 java.util.concurrent.atomic.AtomicInteger processedCount = new java.util.concurrent.atomic.AtomicInteger(0);
 
-                java.util.concurrent.ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(10);
+                java.util.concurrent.ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(5);
 
                 try {
                     // 비동기 작업 생성
