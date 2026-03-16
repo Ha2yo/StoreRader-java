@@ -326,7 +326,6 @@ public class AdminService {
         new Thread(() -> {
             try {
                 Consumer<String> log = msg -> safeSend(emitter, msg);
-
                 log.accept("가격 데이터 추가 시작 (inspectDay = " + inspectDay + ")");
 
                 List<Long> storeIds = storeRepository.findAllStoreIds();
@@ -336,50 +335,58 @@ public class AdminService {
 
                 for (int i = 0; i < storeIds.size(); i++) {
                     Long storeId = storeIds.get(i);
-
                     String storeName = storeRepository.findStoreNameByStoreId(storeId);
-
                     log.accept("\n[" + (i + 1) + "/" + storeIds.size() + "]\nstoreId = " + storeId +
                             " (" + storeName + ")");
 
-                    if (!storeRepository.existsByStoreId(storeId)) {
-                        log.accept("DB에 해당 매장 없으므로 스킵\n");
-                        continue;
-                    }
+                    boolean success = false;
+                    for (int retry = 1; retry <= 3; retry++) {
+                        try {
+                            String xml = publicApiService.fetchString(
+                                    "/getProductPriceInfoSvc.do",
+                                    "가격",
+                                    Map.of("goodInspectDay", inspectDay, "entpId", storeId.toString())
+                            );
 
-                    try {
-                        String xml = publicApiService.fetchString(
-                                "/getProductPriceInfoSvc.do",
-                                "가격",
-                                Map.of("goodInspectDay", inspectDay,
-                                        "entpId", storeId.toString())
-                        );
-                        log.accept("공공데이터 응답 수신 완료 (xml length = " + xml.length() + ")");
+                            PriceApiResponse parsed = publicApiService.parseXML(xml, PriceApiResponse.class, "가격");
 
-                        PriceApiResponse parsed = publicApiService.parseXML(xml, PriceApiResponse.class, "가격");
+                            // 결과값이 null이 아닌지 체크 (가장 중요한 부분)
+                            if (parsed != null && parsed.result() != null) {
+                                int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
+                                log.accept("XML 파싱 완료 (items = " + count + ")");
 
-                        int count = parsed.result().item() == null ? 0 : parsed.result().item().size();
-                        log.accept("XML 파싱 완료 (items = " + count + ")\n\n");
+                                int saved = publicApiService.savePrices(parsed, log);
+                                total += saved;
+                                if (saved != 0) log.accept("DB 반영 완료 (applied = " + saved + ")");
 
-                        int saved = publicApiService.savePrices(parsed, log);
-                        total += saved;
+                                success = true; // 성공 시 플래그 설정
+                                break; // 재시도 루프 탈출
+                            } else {
+                                log.accept("응답 데이터(result)가 null입니다. 재시도 중... (" + retry + "/3)");
+                            }
 
-                        if (saved != 0) {
-                            log.accept("\nDB 반영 완료 (applied = " + saved + ")");
+                        } catch (Exception e) {
+                            log.accept("호출 시도 중 오류 발생 (" + retry + "/3): " + e.getMessage());
                         }
-                    } catch (Exception e) {
-                        log.accept("오류 (storeId = " + storeId + "): " + e.getMessage());
+
+                        // 재시도 전 잠깐의 대기 (선택 사항, API 서버 부하 방지용)
+                        if (retry < 3) {
+                            try { Thread.sleep(500); } catch (InterruptedException ignored) {}
+                        }
                     }
+
+                    if (!success) {
+                        log.accept(">> [실패] 3회 재시도 후에도 데이터를 받지 못해 스킵합니다. (storeId = " + storeId + ")\n");
+                    }
+                    // --- 재시도 로직 끝 ---
                 }
 
                 log.accept("\n가격 데이터 추가 완료 (" + total + "개)");
-
                 emitter.complete();
             } catch (Exception e) {
-                safeSend(emitter, "오류: " + e.getMessage());
+                safeSend(emitter, "치명적 오류: " + e.getMessage());
                 emitter.completeWithError(e);
             }
-
         }).start();
 
         return emitter;
