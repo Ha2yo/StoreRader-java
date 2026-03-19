@@ -1,0 +1,1 @@
+ALTER TABLE prices DROP CONSTRAINT prices_good_fk;
