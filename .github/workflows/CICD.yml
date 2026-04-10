@@ -74,7 +74,7 @@ jobs:
     # (2-3) Add github ip to AWS Security Group
     - name: Add GitHub IP to AWS
       run: |
-        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        aws ec2 authorize-security-group-ingress --region ap-northeast-2 --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
     # (2-4) Copy docker-compose.yml
     - name: Copy docker-compose.yml to EC2
@@ -134,4 +134,4 @@ jobs:
     - name: Remove IP FROM security group
       if: always()
       run: |
-        aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        aws ec2 revoke-security-group-ingress --region ap-northeast-2 --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
