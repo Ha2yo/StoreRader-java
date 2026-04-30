@@ -19,6 +19,7 @@
 - 관리자용 데이터 조회 및 공공데이터 수집
 
 <img width="2551" height="1320" alt="지도페이지1" src="https://github.com/user-attachments/assets/49b85d97-994d-4781-a0ae-b0ef345059cb" />
+<img width="2541" height="1313" alt="지도페이지4" src="https://github.com/user-attachments/assets/b6d167a1-bd74-422b-956e-c068c75d0f0a" />
 <img width="2552" height="1302" alt="관리자페이지3" src="https://github.com/user-attachments/assets/26e217c3-8405-4ea1-82ed-6be902b27f0b" />
 <img width="2541" height="1312" alt="관리자페이지4" src="https://github.com/user-attachments/assets/5ce60514-aef1-407d-9819-6a16f6674336" />
 
