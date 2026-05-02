@@ -136,6 +136,7 @@ public class AuthService {
                     newUser.setEmail(claims.email());
                     newUser.setName(claims.name());
                     newUser.setPicture(claims.picture());
+                    newUser.setRole("USER");
                     newUser.setCreatedAt(OffsetDateTime.now());
 
                     return userRepository.save(newUser);

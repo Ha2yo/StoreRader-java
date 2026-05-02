@@ -43,8 +43,8 @@ public class UserEntity {
     @Column(name = "refresh_token_expires_at")
     private OffsetDateTime refreshTokenExpiresAt;
 
-    @Column(name = "role")
-    private String role;
+    @Column(name = "role", nullable = false)
+    private String role = "USER";
 
     @Column(name = "picture")
     private String picture;
@@ -69,7 +69,7 @@ public class UserEntity {
         this.lastLogin = lastLogin;
         this.refreshToken = refreshToken;
         this.refreshTokenExpiresAt = refreshTokenExpiresAt;
-        this.role = role;
+        this.role = role != null ? role : "USER";
         this.picture = picture;
     }
 }
